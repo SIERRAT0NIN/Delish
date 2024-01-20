@@ -48,11 +48,7 @@ export default function NavBar() {
           <Image src="https://i.imgur.com/6ZZMkeb.png" width={"69"}></Image>
           <p className="font-bold text-inherit">Delish</p>
         </NavbarBrand>
-        <NavbarItem>
-          <Link color="foreground" href="/feature">
-            Features
-          </Link>
-        </NavbarItem>
+
         <NavbarItem>
           <Link href="recipes" color="foreground" aria-current="page">
             Explore Recipes
@@ -70,7 +66,7 @@ export default function NavBar() {
           <Link href="login">Login</Link>
         </NavbarItem>
         <NavbarItem>
-          <Button as={Link} color="warning" href="signup" variant="flat">
+          <Button as={Link} color="secondary" href="signup" variant="flat">
             Sign Up
           </Button>
         </NavbarItem>

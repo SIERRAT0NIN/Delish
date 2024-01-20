@@ -10,6 +10,7 @@ import Error from "./Error";
 import App from "../App";
 import Featured from "./Featured";
 import SignUp from "./SignUp";
+import "../App.css";
 
 function RouterApp() {
   const is_logged_in = true;
