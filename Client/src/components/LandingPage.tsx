@@ -1,7 +1,11 @@
 import React from "react";
+import { Card, CardFooter, Image, Button } from "@nextui-org/react";
+import NavBar from "./NavBar";
 
-const LandingPage = () => {
-  return <div>LandingPage</div>;
-};
-
-export default LandingPage;
+export default function LandingPage() {
+  return (
+    <>
+      <NavBar />
+    </>
+  );
+}
