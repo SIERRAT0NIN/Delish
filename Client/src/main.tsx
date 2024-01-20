@@ -1,10 +1,16 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import React from "react";
+import ReactDOM from "react-dom/client";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+import RouterApp from "./components/RouterApp.tsx";
+import { BrowserRouter as Router } from "react-router-dom";
+import { NextUIProvider } from "@nextui-org/react";
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-)
+    <Router>
+      <NextUIProvider>
+        <RouterApp />
+      </NextUIProvider>
+    </Router>
+  </React.StrictMode>
+);

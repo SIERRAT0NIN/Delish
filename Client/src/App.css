@@ -1,42 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body {
+  background-image: url("https://i.imgur.com/yCHmnqCh.png");
+  background-size: cover; /* Cover the entire page */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-attachment: fixed; /* Fixed background (doesn't scroll) */
+  background-position: center center; /* Center the image */
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  font-family: "Montserrat", sans-serif;
+}
+.user-card {
+  position: relative;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  padding: 20px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.items-center {
+  justify-content: center;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+.form-card {
+  padding: 20px;
 }
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.input-card {
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.nav-bar {
+  border-radius: 8px;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.dark-btn {
+  justify-content: space-around;
+  margin: 10px;
 }

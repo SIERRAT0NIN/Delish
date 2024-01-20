@@ -11,6 +11,7 @@ import {
   Image,
   Button,
 } from "@nextui-org/react";
+import NightmodeBtn from "./NightmodeBtn";
 
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -29,8 +30,14 @@ export default function NavBar() {
   ];
 
   return (
-    <Navbar isBordered isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen}>
-      <Image src="Client/src/images/FoodieLogo.png"></Image>
+    <Navbar
+      className="nav-bar content-stretch shadow-lg"
+      isBordered
+      isMenuOpen={isMenuOpen}
+      onMenuOpenChange={setIsMenuOpen}
+    >
+      <Image src="Client/src/images/FoodieLogo.png" />
+
       <NavbarContent className="sm:hidden" justify="start">
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -46,7 +53,9 @@ export default function NavBar() {
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarBrand>
           <Image src="https://i.imgur.com/6ZZMkeb.png" width={"69"}></Image>
-          <p className="font-bold text-inherit">Delish</p>
+          <button className="font-bold text-inherit">
+            <a href="/"> Delish</a>
+          </button>
         </NavbarBrand>
 
         <NavbarItem>
@@ -62,6 +71,8 @@ export default function NavBar() {
       </NavbarContent>
 
       <NavbarContent justify="end">
+        {/* <NightmodeBtn /> */}
+
         <NavbarItem className="hidden lg:flex">
           <Link href="login">Login</Link>
         </NavbarItem>

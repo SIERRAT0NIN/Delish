@@ -23,10 +23,10 @@ export default function UserInfoCard() {
           />
           <div className="flex flex-col gap-1 items-start justify-center">
             <h4 className="text-small font-semibold leading-none text-default-600">
-              Zoey Lang
+              Alberto Sierra
             </h4>
             <h5 className="text-small tracking-tight text-default-400">
-              @zoeylang
+              @chefBeto
             </h5>
           </div>
         </div>
@@ -47,11 +47,15 @@ export default function UserInfoCard() {
       </CardHeader>
       <CardBody className="px-3 py-0 text-small text-default-400">
         <p>
-          Frontend developer and UI/UX enthusiast. Join me on this coding
-          adventure!
+          Front-end Chef. Cooking up code.
+          <br />
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Et, ipsa
+          corporis consequuntur officia adipisci suscipit architecto molestias
+          veniam illo doloremque quas velit? Labore ea ad dolor incidunt iste,
+          soluta aspernatur?
         </p>
         <span className="pt-2">
-          #FrontendWithZoey
+          #FrontendWithAlberto
           <span className="py-2" aria-label="computer" role="img">
             💻
           </span>
@@ -63,7 +67,7 @@ export default function UserInfoCard() {
           <p className=" text-default-400 text-small">Following</p>
         </div>
         <div className="flex gap-1">
-          <p className="font-semibold text-default-400 text-small">97.1K</p>
+          <p className="font-semibold text-default-400 text-small">8.0B</p>
           <p className="text-default-400 text-small">Followers</p>
         </div>
       </CardFooter>
