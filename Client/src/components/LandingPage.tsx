@@ -2,6 +2,7 @@ import React from "react";
 import { Card, CardFooter, Image, Button } from "@nextui-org/react";
 import NavBar from "./NavBar";
 import UserInfoCard from "./UserInfoCard";
+import Footer from "./Footer";
 
 export default function LandingPage() {
   return (
@@ -25,6 +26,7 @@ export default function LandingPage() {
           </CardFooter>
         </Card>
       </div>
+      <Footer />
     </>
   );
 }
