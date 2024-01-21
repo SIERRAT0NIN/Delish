@@ -6,11 +6,13 @@ import UserInfoCard from "./UserInfoCard";
 export default function LandingPage() {
   return (
     <>
-      <NavBar />
-      <div className="justify-center flex">
-        <Card className="user-card flex">
+      <div className="mb-10">
+        <NavBar />
+      </div>
+      <div className="justify-center flex ">
+        <Card className="user-card flex ">
           <Image src="https://travelfoodatlas.com/wp-content/uploads/2020/08/Tacos-Al-Pastor.jpg.webp"></Image>
-          <h1 className="text-xl">Food Name</h1>
+          <h1 className="text-xl ">Food Name</h1>
           <p>
             <strong>Food Description:</strong>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. At amet est

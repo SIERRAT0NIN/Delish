@@ -41,3 +41,9 @@ body {
   justify-content: space-around;
   margin: 10px;
 }
+.profile-card {
+  padding: 30px;
+}
+.nav {
+  --navbar-height: 6rem;
+}

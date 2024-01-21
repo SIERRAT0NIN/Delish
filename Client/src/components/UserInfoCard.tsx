@@ -19,14 +19,14 @@ export default function UserInfoCard() {
             isBordered
             radius="full"
             size="md"
-            src="https://media.istockphoto.com/id/1150528651/photo/successful-it-developer.jpg?s=612x612&w=0&k=20&c=C5z2iTLEdxdR8vvK4KO7rnn5FLUDLr_TRYXaf5xE-60="
+            src="https://w7.pngwing.com/pngs/480/557/png-transparent-bart-simpsons-illustration-homer-simpson-lisa-simpson-marge-simpson-fox-satire-homer-television-face-animals.png"
           />
           <div className="flex flex-col gap-1 items-start justify-center">
             <h4 className="text-small font-semibold leading-none text-default-600">
               Alberto Sierra
             </h4>
             <h5 className="text-small tracking-tight text-default-400">
-              @chefBeto
+              @Alberto.sierra
             </h5>
           </div>
         </div>
@@ -67,7 +67,7 @@ export default function UserInfoCard() {
           <p className=" text-default-400 text-small">Following</p>
         </div>
         <div className="flex gap-1">
-          <p className="font-semibold text-default-400 text-small">8.0B</p>
+          <p className="font-semibold text-default-400 text-small">1.5k</p>
           <p className="text-default-400 text-small">Followers</p>
         </div>
       </CardFooter>
