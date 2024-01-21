@@ -17,14 +17,13 @@ export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const menuItems = [
+    "Create a new post",
     "Profile",
-    "Dashboard",
-    "Activity",
-    "Analytics",
-    "System",
-    "Deployments",
+    "Explore Recipes",
+    "Messages",
+    "Followers",
+    "Notification",
     "My Settings",
-    "Team Settings",
     "Help & Feedback",
     "Log Out",
   ];
@@ -52,7 +51,11 @@ export default function NavBar() {
 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarBrand>
-          <Image src="https://i.imgur.com/6ZZMkeb.png" width={"69"}></Image>
+          <Image
+            className="mr-10"
+            src="https://i.imgur.com/qc6msvk.png"
+            width={"69"}
+          ></Image>
           <button className="font-bold text-inherit">
             <a href="/"> Delish</a>
           </button>
@@ -68,12 +71,17 @@ export default function NavBar() {
             Profile
           </Link>
         </NavbarItem>
+        <NavbarItem>
+          <Link color="foreground" href="home">
+            Home
+          </Link>
+        </NavbarItem>
       </NavbarContent>
 
       <NavbarContent justify="end">
         {/* <NightmodeBtn /> */}
 
-        <NavbarItem className="hidden lg:flex">
+        <NavbarItem className="hidden lg:flex ">
           <Link href="login">Login</Link>
         </NavbarItem>
         <NavbarItem>
@@ -82,27 +90,30 @@ export default function NavBar() {
           </Button>
         </NavbarItem>
       </NavbarContent>
-
-      <NavbarMenu>
-        {menuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
-            <Link
-              className="w-full"
-              color={
-                index === 2
-                  ? "warning"
-                  : index === menuItems.length - 1
-                  ? "danger"
-                  : "foreground"
-              }
-              href="#"
-              size="lg"
-            >
-              {item}
-            </Link>
-          </NavbarMenuItem>
-        ))}
-      </NavbarMenu>
+      <div className="nav  ">
+        <NavbarMenu>
+          <div className="mt-7">
+            {menuItems.map((item, index) => (
+              <NavbarMenuItem key={`${item}-${index}`}>
+                <Link
+                  className="w-full  "
+                  color={
+                    index === 0
+                      ? "warning"
+                      : index === menuItems.length - 1
+                      ? "danger"
+                      : "foreground"
+                  }
+                  href={"#"}
+                  size="lg"
+                >
+                  {item}
+                </Link>
+              </NavbarMenuItem>
+            ))}
+          </div>
+        </NavbarMenu>
+      </div>
     </Navbar>
   );
 }

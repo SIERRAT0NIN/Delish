@@ -5,7 +5,7 @@ import LandingPage from "./LandingPage";
 import Profile from "./Profile";
 import Login from "./Login";
 import Home from "./Home";
-import SavedRecipes from "./SavedRecipes";
+import SavedRecipes from "./Explore";
 import Error from "./Error";
 import App from "../App";
 import Featured from "./Featured";
