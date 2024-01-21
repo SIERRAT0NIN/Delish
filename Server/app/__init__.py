@@ -2,29 +2,32 @@ from flask import Flask, request
 from flask_restful import Api, Resource
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlalchemy
-
-# Assuming .models is a module in the same package
-from .models import db, User  # Import your models here
+from .models import db, User   
 from flask_cors import CORS
 from flask_migrate import Migrate
-
+from flask_jwt_extended import JWTManager, create_access_token
+from dotenv import load_dotenv
+import os
+load_dotenv()  # Add this at the beginning
 
 def create_app():
     app = Flask(__name__)
     # Configure your app
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///DATABASE.db'
+    jwt_secret = os.getenv('JWT_SECRET')
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.db'
+    app.config['JWT_SECRET_KEY'] = jwt_secret   
+    jwt = JWTManager(app)  # Add this line
 
     db.init_app(app)
     Migrate(app, db)
 
-    # Set up CORS to allow all origins for the signup route
+ 
     CORS(app, resources={r"/signup": {"origins": "*"}, r"/login": {"origins": "*"}})
 
-
-    # Set up Flask-RESTful
+ 
     api = Api(app)
 
-    # Define your RESTful routes
+  
     class SignUp(Resource):
         def post(self):
             data = request.get_json()   
@@ -51,35 +54,31 @@ def create_app():
                 db.session.rollback()
                 return {'error': str(e)}, 500
 
-    # Add the SignUp resource to the API
+ 
     api.add_resource(SignUp, '/signup')
     class Login(Resource):
         def post(self):
             data = request.get_json()
-
             email = data.get('email')
             password = data.get('password')
-
+           
             if not email or not password:
                 return {'message': 'Email and password are required'}, 400
 
             user = User.query.filter_by(email=email).first()
 
             if user and check_password_hash(user.password_hash, password):
-                # User authenticated successfully
-                # Here you would typically generate a token or session
-                return {'message': 'Login successful'}, 200
+                access_token = create_access_token(identity=email)  # Make sure identity is correct
+    
+                return {'access_token': access_token}, 200
             else:
-                # Authentication failed
                 return {'message': 'Invalid username or password'}, 401
 
-    # Add the Login resource to the API
     api.add_resource(Login, '/login')
 
     return app
 
 
-# The main block to run the app
 if __name__ == "__main__":
-    app = create_app()  # Create an app using the factory function
-    app.run(debug=True)  # Run the app
+    app = create_app()  
+    app.run(debug=True)   
