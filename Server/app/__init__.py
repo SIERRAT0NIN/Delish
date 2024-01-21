@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask_restful import Api, Resource
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 import sqlalchemy
 
 # Assuming .models is a module in the same package
@@ -18,7 +18,8 @@ def create_app():
     Migrate(app, db)
 
     # Set up CORS to allow all origins for the signup route
-    CORS(app, resources={r"/signup": {"origins": "*"}})
+    CORS(app, resources={r"/signup": {"origins": "*"}, r"/login": {"origins": "*"}})
+
 
     # Set up Flask-RESTful
     api = Api(app)
@@ -52,6 +53,28 @@ def create_app():
 
     # Add the SignUp resource to the API
     api.add_resource(SignUp, '/signup')
+    class Login(Resource):
+        def post(self):
+            data = request.get_json()
+
+            email = data.get('email')
+            password = data.get('password')
+
+            if not email or not password:
+                return {'message': 'Email and password are required'}, 400
+
+            user = User.query.filter_by(email=email).first()
+
+            if user and check_password_hash(user.password_hash, password):
+                # User authenticated successfully
+                # Here you would typically generate a token or session
+                return {'message': 'Login successful'}, 200
+            else:
+                # Authentication failed
+                return {'message': 'Invalid username or password'}, 401
+
+    # Add the Login resource to the API
+    api.add_resource(Login, '/login')
 
     return app
 
