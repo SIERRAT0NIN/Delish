@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
-from werkzeug.security import generate_password_hash
+
 from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 class Profile(db.Model):

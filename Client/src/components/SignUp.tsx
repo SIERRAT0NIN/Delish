@@ -6,52 +6,53 @@ import * as Yup from "yup";
 
 // TypeScript interface for form values
 interface FormValues {
-  name: string;
+  username: string;
   email: string;
   password: string;
 }
 
 // Yup validation schema
 const SignUpSchema = Yup.object().shape({
-  name: Yup.string().required("Name is required"),
+  username: Yup.string().required("Username is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   password: Yup.string().required("Password is required"),
 });
 
 const SignUp: React.FC = () => {
   const initialValues: FormValues = {
-    name: "",
+    username: "",
     email: "",
     password: "",
   };
 
-  const handleSubmit = (
+  const handleSubmit = async (
     values: FormValues,
-    { setSubmitting }: FormikHelpers<FormValues>
+    { setSubmitting, resetForm, setStatus }: FormikHelpers<FormValues>
   ) => {
-    fetch("http://127.0.0.1:5000/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: values.name,
-        email: values.email,
-        password: values.password,
-        // confirmPassword is not sent to the server
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Success:", data);
-        setSubmitting(false);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setSubmitting(false);
+    try {
+      const response = await fetch("http://127.0.0.1:5000/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: values.username,
+          email: values.email,
+          password: values.password,
+        }),
       });
+      const data = await response.json();
+      console.log("Success:", data);
+      // Set a success status message
+      setStatus({ success: data.message });
+      resetForm();
+    } catch (error) {
+      console.error("Error:", error);
+      // Set an error status message
+      setStatus({ error: "Failed to sign up. Please try again." });
+    }
+    setSubmitting(false);
   };
-
   return (
     <div className="form-card">
       <NavBar />
@@ -65,12 +66,14 @@ const SignUp: React.FC = () => {
             <Form className="input-card ">
               <div className="input-card">
                 <Field
-                  name="name"
+                  name="username"
                   as={Input}
-                  placeholder="Enter your name"
+                  placeholder="Enter your username"
                   className="input-card "
                 />
-                {errors.name && touched.name ? <div>{errors.name}</div> : null}
+                {errors.username && touched.username ? (
+                  <div>{errors.username}</div>
+                ) : null}
 
                 <Field
                   name="email"
