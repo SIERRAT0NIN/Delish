@@ -20,7 +20,7 @@ export default function RecipeModal() {
     <>
       <div className="flex flex-col gap-2">
         <Button variant="faded" color="success" onPress={onOpen}>
-          Open Modal
+          Saved Recipes
         </Button>
 
         <Modal
