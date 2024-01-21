@@ -1,34 +1,65 @@
 import React from "react";
 import { Card, Input, Button } from "@nextui-org/react";
 import NavBar from "./NavBar";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, FormikHelpers } from "formik";
 import * as Yup from "yup";
 
+// TypeScript interface for form values
+interface FormValues {
+  name: string;
+  email: string;
+  password: string;
+}
+
+// Yup validation schema
 const SignUpSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   password: Yup.string().required("Password is required"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .required("Confirm password is required"),
 });
 
-const SignUp = () => {
+const SignUp: React.FC = () => {
+  const initialValues: FormValues = {
+    name: "",
+    email: "",
+    password: "",
+  };
+
+  const handleSubmit = (
+    values: FormValues,
+    { setSubmitting }: FormikHelpers<FormValues>
+  ) => {
+    fetch("http://127.0.0.1:5000/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: values.name,
+        email: values.email,
+        password: values.password,
+        // confirmPassword is not sent to the server
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
+        setSubmitting(false);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setSubmitting(false);
+      });
+  };
+
   return (
     <div className="form-card">
       <NavBar />
       <Card className="form-card">
         <Formik
-          initialValues={{
-            name: "",
-            email: "",
-            password: "",
-            confirmPassword: "",
-          }}
+          initialValues={initialValues}
           validationSchema={SignUpSchema}
-          onSubmit={(values) => {
-            console.log(values);
-          }}
+          onSubmit={handleSubmit}
         >
           {({ errors, touched }) => (
             <Form className="input-card ">
@@ -60,17 +91,6 @@ const SignUp = () => {
                 />
                 {errors.password && touched.password ? (
                   <div>{errors.password}</div>
-                ) : null}
-
-                <Field
-                  name="confirmPassword"
-                  type="password"
-                  as={Input}
-                  placeholder="Confirm your password"
-                  className="input-card "
-                />
-                {errors.confirmPassword && touched.confirmPassword ? (
-                  <div>{errors.confirmPassword}</div>
                 ) : null}
 
                 <Button type="submit">Submit</Button>
