@@ -11,6 +11,7 @@ import App from "../App";
 import Featured from "./Featured";
 import SignUp from "./SignUp";
 import "../App.css";
+import ChatBox from "./ChatBox";
 
 function RouterApp() {
   const is_logged_in = true;
@@ -24,6 +25,7 @@ function RouterApp() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/feature" element={<Featured />} />
+          <Route path="/chat" element={<ChatBox />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/recipes" element={<SavedRecipes />} />
           <Route path="/error" element={<Error />} />

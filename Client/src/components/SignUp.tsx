@@ -77,7 +77,7 @@ const SignUp: React.FC = () => {
   return (
     <div className="form-card">
       <NavBar />
-      <Card className="form-card">
+      <Card className="form-card mt-10">
         <Formik
           initialValues={initialValues}
           validationSchema={SignUpSchema}

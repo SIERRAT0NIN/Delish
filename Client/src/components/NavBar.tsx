@@ -76,6 +76,11 @@ export default function NavBar() {
             Home
           </Link>
         </NavbarItem>
+        <NavbarItem>
+          <Link color="foreground" href="chat">
+            Messages
+          </Link>
+        </NavbarItem>
       </NavbarContent>
 
       <NavbarContent justify="end">
