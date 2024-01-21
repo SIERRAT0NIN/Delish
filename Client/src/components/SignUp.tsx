@@ -1,9 +1,11 @@
-import React from "react";
-import { Card, Input, Button } from "@nextui-org/react";
+import React, { useState } from "react";
+import { Card, Input } from "@nextui-org/react";
 import NavBar from "./NavBar";
 import { Formik, Form, Field, FormikHelpers } from "formik";
 import * as Yup from "yup";
-
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 // TypeScript interface for form values
 interface FormValues {
   username: string;
@@ -19,6 +21,13 @@ const SignUpSchema = Yup.object().shape({
 });
 
 const SignUp: React.FC = () => {
+  const [open, setOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
+
   const initialValues: FormValues = {
     username: "",
     email: "",
@@ -41,17 +50,29 @@ const SignUp: React.FC = () => {
           password: values.password,
         }),
       });
+      if (!response.ok) throw new Error("Signup failed");
+
       const data = await response.json();
       console.log("Success:", data);
-      // Set a success status message
-      setStatus({ success: data.message });
+      setSnackbarMessage(data.message || "User created successfully");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
       resetForm();
     } catch (error) {
       console.error("Error:", error);
-      // Set an error status message
-      setStatus({ error: "Failed to sign up. Please try again." });
+      setSnackbarMessage("Failed to sign up. Please try again.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
     }
     setSubmitting(false);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
   };
   return (
     <div className="form-card">
@@ -102,6 +123,20 @@ const SignUp: React.FC = () => {
           )}
         </Formik>
       </Card>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
