@@ -4,15 +4,21 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import sqlalchemy
 from flask_socketio import SocketIO
 
-# Assuming .models is a module in the same package
-from models import db, User, Message  # Import your models here
+from .models import db, User, Message   
 from flask_cors import CORS
 from flask_migrate import Migrate
+from flask_jwt_extended import JWTManager, create_access_token
+from dotenv import load_dotenv
+import os
+load_dotenv()  # Add this at the beginning
 
 
 app = Flask(__name__)
 # Configure your app
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///DATABASE.db"
+jwt_secret = os.getenv('JWT_SECRET')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.db'
+app.config['JWT_SECRET_KEY'] = jwt_secret   
+jwt = JWTManager(app)  # Add this line
 
 db.init_app(app)
 
@@ -32,6 +38,7 @@ cors = CORS(app, resources={
 socketio = SocketIO(
     app, cors_allowed_origins="*"
 )
+
 
 # Define your RESTful routes
 class SignUp(Resource):
@@ -67,9 +74,15 @@ class SignUp(Resource):
 # Add the SignUp resource to the API
 api.add_resource(SignUp, "/signup")
 
+
 class Login(Resource):
     def post(self):
         data = request.get_json()
+        email = data.get('email')
+        password = data.get('password')
+        
+        if not email or not password:
+            return {'message': 'Email and password are required'}, 400
 
         email = data.get("email")
         password = data.get("password")
@@ -78,14 +91,13 @@ class Login(Resource):
             return {"message": "Email and password are required"}, 400
 
         user = User.query.filter_by(email=email).first()
-
         if user and check_password_hash(user.password_hash, password):
-            # User authenticated successfully
-            # Here you would typically generate a token or session
-            return {"message": "Login successful"}, 200
+            access_token = create_access_token(identity=email)  # Make sure identity is correct
+
+            return {'access_token': access_token}, 200
         else:
-            # Authentication failed
-            return {"message": "Invalid username or password"}, 401
+            return {'message': 'Invalid username or password'}, 401
+
 
 # Add the Login resource to the API
 api.add_resource(Login, "/login")
@@ -134,6 +146,5 @@ api.add_resource(Messages,'/messages')
 def handle_connect():
     print('Client connected')
 
-# The main block to run the app
 if __name__ == "__main__":
     socketio.run(app,debug=True)
