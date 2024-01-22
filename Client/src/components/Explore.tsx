@@ -7,7 +7,7 @@ import NavBar from "./NavBar";
 
 export default function Explore() {
   return (
-    <>
+    <div className="lg:container lg:mx-auto">
       <NavBar />
       <Card className="p-10">
         <div className="grid grid-cols-3 gap-2">
@@ -555,7 +555,7 @@ export default function Explore() {
           </div>
         </div>
       </Card>
-    </>
+    </div>
   );
 }
 

@@ -88,6 +88,10 @@ export default function NavBar() {
                 Messages
               </Link>
             </NavbarItem>
+
+            <Button as={Link} color="danger" href="logout" variant="ghost">
+              Logout
+            </Button>
           </NavbarContent>
         )}
       </NavbarContent>

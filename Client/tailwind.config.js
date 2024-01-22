@@ -11,13 +11,13 @@ export default {
     extend: {
       backdropFilter: {
         none: "none",
-        blur: "blur(10px)",
+        blur: "blur(15px)",
       },
       backgroundColor: {
-        glass: "rgba(255, 255, 255, 0.1)",
+        glass: "rgba(255, 255, 255, 0.4)",
       },
       borderColor: {
-        glass: "rgba(255, 255, 255, 0.3)",
+        glass: "rgba(255, 255, 255, 0.5)",
       },
     },
     container: {

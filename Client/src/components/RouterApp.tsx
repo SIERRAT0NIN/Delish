@@ -16,6 +16,7 @@ import NewHome from "./NewHome";
 
 import Explore from "./Explore";
 import ProtectedRoute from "./ProtectedRoute";
+import Logout from "./Logout";
 
 function RouterApp() {
   const isAuthenticated = localStorage.getItem("token"); // Check for token
@@ -32,6 +33,7 @@ function RouterApp() {
           <Route path="/developers" element={<Footer />} />
           <Route path="/three" element={<HomeThreeJS />} />
           <Route path="/*" element={<Error />} />
+          <Route path="/logout" element={<Logout />} />
         </>
       ) : (
         <>
