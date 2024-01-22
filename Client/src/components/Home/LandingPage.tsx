@@ -60,7 +60,7 @@ export default function LandingPage() {
                   width="200"
                   height="200"
                   className="w-full h-64 object-cover rounded-lg"
-                  src="https://travelfoodatlas.com/wp-content/uploads/2020/08/Tacos-Al-Pastor.jpg.webp"
+                  src="https://plus.unsplash.com/premium_photo-1663858367001-89e5c92d1e0e?q=80&w=2815&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 ></Image>
                 <h3 className="mt-4 text-xl font-bold">Post Title</h3>
                 <p className="mt-2 text-gray-500 dark:text-gray-400">
@@ -79,7 +79,7 @@ export default function LandingPage() {
                   width="200"
                   height="200"
                   className="w-full h-64 object-cover rounded-lg"
-                  src="https://travelfoodatlas.com/wp-content/uploads/2020/08/Tacos-Al-Pastor.jpg.webp"
+                  src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 ></Image>
                 <h3 className="mt-4 text-xl font-bold">Post Title</h3>
                 <p className="mt-2 text-gray-500 dark:text-gray-400">
@@ -98,7 +98,7 @@ export default function LandingPage() {
                   width="200"
                   height="200"
                   className="w-full h-64 object-cover rounded-lg"
-                  src="https://travelfoodatlas.com/wp-content/uploads/2020/08/Tacos-Al-Pastor.jpg.webp"
+                  src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 ></Image>
                 <h3 className="mt-4 text-xl font-bold">Post Title</h3>
                 <p className="mt-2 text-gray-500 dark:text-gray-400">
