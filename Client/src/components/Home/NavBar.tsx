@@ -17,18 +17,28 @@ export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const isAuthenticated = localStorage.getItem("token"); // Check for token
 
+  // const menuItems = [
+  //   "Create a new post",
+  //   "Profile",
+  //   "Explore Recipes",
+  //   "Messages",
+  //   "Followers",
+  //   "Notification",
+  //   "My Settings",
+  //   "Help & Feedback",
+  //   "Log Out",
+  // ];
   const menuItems = [
-    "Create a new post",
-    "Profile",
-    "Explore Recipes",
-    "Messages",
-    "Followers",
-    "Notification",
-    "My Settings",
-    "Help & Feedback",
-    "Log Out",
+    { label: "Create a new post", href: "/new-post" },
+    { label: "Profile", href: "/profile" },
+    { label: "Explore Recipes", href: "/explore-recipes" },
+    { label: "Messages", href: "/chat" },
+    { label: "Followers", href: "/followers" },
+    { label: "Notification", href: "/notifications" },
+    { label: "My Settings", href: "/settings" },
+    { label: "Help & Feedback", href: "/help" },
+    { label: "Log Out", href: "/logout" },
   ];
-
   return (
     <Navbar
       className="nav-bar content-stretch shadow-lg"
@@ -112,11 +122,11 @@ export default function NavBar() {
           </NavbarContent>
         )}
       </NavbarContent>
-      <div className="nav  ">
+      <div className="nav ">
         <NavbarMenu>
-          <div className="mt-7">
+          <div className="mt-7 pt-10">
             {menuItems.map((item, index) => (
-              <NavbarMenuItem key={`${item}-${index}`}>
+              <NavbarMenuItem className="mb-2" key={`${item}-${index}`}>
                 <Link
                   className="w-full  "
                   color={
@@ -126,10 +136,10 @@ export default function NavBar() {
                       ? "danger"
                       : "foreground"
                   }
-                  href={"#"}
+                  href={item.href}
                   size="lg"
                 >
-                  {item}
+                  {item.label}
                 </Link>
               </NavbarMenuItem>
             ))}

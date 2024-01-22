@@ -51,7 +51,7 @@ export default function LandingPage() {
           </h2>
           <div className="mt-8 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             <Card>
-              <CardBody className="flex flex-col items-center justify-center p-6">
+              <CardBody className=" flex flex-col items-center justify-center p-6">
                 <Image
                   style={{
                     aspectRatio: "200/200",
@@ -70,7 +70,7 @@ export default function LandingPage() {
               </CardBody>
             </Card>
             <Card>
-              <CardBody className="flex flex-col items-center justify-center p-6">
+              <CardBody className="flex flex-col items-center justify-center p-6 ">
                 <Image
                   style={{
                     aspectRatio: "200/200",
@@ -117,7 +117,7 @@ export default function LandingPage() {
       </main>
       <footer className="flex items-center justify-center py-6 bg-white dark:bg-gray-800 rounded-lg">
         <p className="text-gray-500 dark:text-gray-400 ">
-          © 2024 Social Media Platform. All rights reserved.
+          © 2024 Delish. All rights reserved.
         </p>
       </footer>
       {/* <NotificationCenter /> */}
