@@ -5,7 +5,7 @@
 import { Link } from "@nextui-org/react";
 import NavBar from "./NavBar";
 
-export default function Footer() {
+export default function Developers() {
   return (
     <>
       <NavBar />
@@ -42,7 +42,7 @@ export default function Footer() {
             </div>
           </footer>
         </div>
-        {/* <div className="bg-gray-100 dark:bg-gray-800">
+        <div className="bg-gray-100 dark:bg-gray-800">
           <footer className="container mx-auto py-6 px-4 md:px-6 flex flex-col items-center justify-center space-y-4 text-center">
             <h2 className="text-2xl font-bold">Landon C.</h2>
             <p className="text-gray-500 dark:text-gray-400">
@@ -73,7 +73,7 @@ export default function Footer() {
               </Link>
             </div>
           </footer>
-        </div> */}
+        </div>
         <div className="bg-gray-100 dark:bg-gray-800">
           <footer className="container mx-auto py-6 px-4 md:px-6 flex flex-col items-center justify-center space-y-4 text-center">
             <h2 className="text-2xl font-bold">Danner B.</h2>
