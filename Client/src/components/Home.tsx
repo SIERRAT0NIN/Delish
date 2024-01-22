@@ -4,8 +4,9 @@
  */
 import { Button, Card } from "@nextui-org/react";
 import NavBar from "./NavBar";
+import UserInfoCard from "./UserInfoCard";
 
-export default function Component() {
+export default function Home() {
   return (
     <>
       <NavBar />
@@ -21,6 +22,7 @@ export default function Component() {
             />
             <div className="p-2">
               <p className="text-sm">This is a beautiful sunset.</p>
+              <UserInfoCard />
               <Button variant="ghost">
                 <HeartIcon className="w-4 h-4" />
                 <span className="sr-only">Like</span>

@@ -33,12 +33,11 @@ const Login = () => {
       if (!response.ok) throw new Error("Login failed");
 
       const data = await response.json();
-      console.log(response);
+
       setSnackbarMessage(data.message || "Login successful");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
 
-      // Store the token if your API returns one, and manage login state
       localStorage.setItem("token", data.access_token);
 
       // Redirect or update UI state
@@ -49,7 +48,6 @@ const Login = () => {
     }
     setSubmitting(false);
   };
-  const token = localStorage.getItem("token");
 
   return (
     <div>

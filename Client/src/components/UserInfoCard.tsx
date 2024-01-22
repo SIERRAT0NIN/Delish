@@ -12,7 +12,7 @@ export default function UserInfoCard() {
   const [isFollowed, setIsFollowed] = React.useState(false);
 
   return (
-    <Card className="max-w-[100%] justify-center">
+    <Card className="max-w-[100%]   justify-center">
       <CardHeader className="justify-between">
         <div className="flex gap-5">
           <Avatar
@@ -45,14 +45,11 @@ export default function UserInfoCard() {
           {isFollowed ? "Unfollow" : "Follow"}
         </Button>
       </CardHeader>
-      <CardBody className="px-3 py-0 text-small text-default-400">
-        <p>
+      <CardBody className="px-3 py-0 text-small text-default-400 ">
+        <p className=" pt-5">
           Front-end Chef. Cooking up code.
           <br />
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Et, ipsa
-          corporis consequuntur officia adipisci suscipit architecto molestias
-          veniam illo doloremque quas velit? Labore ea ad dolor incidunt iste,
-          soluta aspernatur?
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit.
         </p>
         <span className="pt-2">
           #FrontendWithAlberto
