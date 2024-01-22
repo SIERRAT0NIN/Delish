@@ -8,94 +8,96 @@ import NavBar from "./NavBar";
 
 export default function Component() {
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 py-6 md:px-6 lg:py-16 md:py-12 ">
-      <div className="mb-10">
-        <NavBar />
-      </div>
-      <Card>
-        <div className="flex flex-col items-center space-y-6 profile-card">
-          <div className="justify-center contents">
-            <Avatar
-              src="https://w7.pngwing.com/pngs/480/557/png-transparent-bart-simpsons-illustration-homer-simpson-lisa-simpson-marge-simpson-fox-satire-homer-television-face-animals.png"
-              alt="User's name"
-              size="lg"
-              className="place-content-stretch"
-            />
-            <h1 className="text-2xl font-bold">@Alberto.Sierra</h1>
-            <p className="justify-center text-sm text-gray-500 dark:text-gray-400 line-clamp-4">
-              This is a short bio about the user. It's a brief introduction that
-              is limited to 150 characters.
-            </p>
-            <div className="flex space-x-4">
-              <div className="flex items-center space-x-2">
-                <UserIcon className="w-5 h-5" />
-                <span>3 Posts</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <UserIcon className="w-5 h-5" />
-                <span>1.2k followers</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <UsersIcon className="w-5 h-5" />
-                <span>500 following</span>
-              </div>
-            </div>
-          </div>
-
-          <RecipeModal />
-          <div className="grid grid-cols-3 gap-4 mt-6">
-            <div>
-              <Image
-                alt="Image caption"
-                className="aspect-square object-cover rounded-[12px]"
-                height={300}
-                src="https://media.cnn.com/api/v1/images/stellar/prod/230320152630-23-mexican-foods-conchas.jpg?c=original&q=h_618,c_fill"
-                width={300}
-              />
-              <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                Image caption
-              </div>
-              <div className="flex items-center space-x-2 mt-1">
-                <HeartIcon className="w-5 h-5" />
-                <span>120 likes</span>
-              </div>
-            </div>
-
-            <div>
-              <Image
-                alt="Image caption"
-                className="aspect-square object-cover rounded-[12px]"
-                height={300}
-                src="https://media.cnn.com/api/v1/images/stellar/prod/230320152630-23-mexican-foods-conchas.jpg?c=original&q=h_618,c_fill"
-                width={300}
-              />
-              <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                Image caption
-              </div>
-              <div className="flex items-center space-x-2 mt-1">
-                <HeartIcon className="w-5 h-5" />
-                <span>85 likes</span>
-              </div>
-            </div>
-            <div>
-              <Image
-                alt="Image caption"
-                className="aspect-square object-cover rounded-[12px]"
-                height={300}
-                src="https://media.cnn.com/api/v1/images/stellar/prod/230320152630-23-mexican-foods-conchas.jpg?c=original&q=h_618,c_fill"
-                width={300}
-              />
-              <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                Image caption
-              </div>
-              <div className="flex items-center space-x-2 mt-1">
-                <HeartIcon className="w-5 h-5" />
-                <span>200 likes</span>
-              </div>
-            </div>
-          </div>
+    <div className="lg:container lg:mx-auto">
+      <div className="w-full max-w-2xl mx-auto px-4 py-6 md:px-6 lg:py-16 md:py-12 ">
+        <div className="mb-10">
+          <NavBar />
         </div>
-      </Card>
+        <Card>
+          <div className="flex flex-col items-center space-y-6 profile-card">
+            <div className="justify-center contents">
+              <Avatar
+                src="https://w7.pngwing.com/pngs/480/557/png-transparent-bart-simpsons-illustration-homer-simpson-lisa-simpson-marge-simpson-fox-satire-homer-television-face-animals.png"
+                alt="User's name"
+                size="lg"
+                className="place-content-stretch"
+              />
+              <h1 className="text-2xl font-bold">@Alberto.Sierra</h1>
+              <p className="justify-center text-sm text-gray-500 dark:text-gray-400 line-clamp-4">
+                This is a short bio about the user. It's a brief introduction
+                that is limited to 150 characters.
+              </p>
+              <div className="flex space-x-4">
+                <div className="flex items-center space-x-2">
+                  <UserIcon className="w-5 h-5" />
+                  <span>3 Posts</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <UserIcon className="w-5 h-5" />
+                  <span>1.2k followers</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <UsersIcon className="w-5 h-5" />
+                  <span>500 following</span>
+                </div>
+              </div>
+            </div>
+
+            <RecipeModal />
+            <div className="grid grid-cols-3 gap-4 mt-6">
+              <div>
+                <Image
+                  alt="Image caption"
+                  className="aspect-square object-cover rounded-[12px]"
+                  height={300}
+                  src="https://media.cnn.com/api/v1/images/stellar/prod/230320152630-23-mexican-foods-conchas.jpg?c=original&q=h_618,c_fill"
+                  width={300}
+                />
+                <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                  Image caption
+                </div>
+                <div className="flex items-center space-x-2 mt-1">
+                  <HeartIcon className="w-5 h-5" />
+                  <span>120 likes</span>
+                </div>
+              </div>
+
+              <div>
+                <Image
+                  alt="Image caption"
+                  className="aspect-square object-cover rounded-[12px]"
+                  height={300}
+                  src="https://media.cnn.com/api/v1/images/stellar/prod/230320152630-23-mexican-foods-conchas.jpg?c=original&q=h_618,c_fill"
+                  width={300}
+                />
+                <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                  Image caption
+                </div>
+                <div className="flex items-center space-x-2 mt-1">
+                  <HeartIcon className="w-5 h-5" />
+                  <span>85 likes</span>
+                </div>
+              </div>
+              <div>
+                <Image
+                  alt="Image caption"
+                  className="aspect-square object-cover rounded-[12px]"
+                  height={300}
+                  src="https://media.cnn.com/api/v1/images/stellar/prod/230320152630-23-mexican-foods-conchas.jpg?c=original&q=h_618,c_fill"
+                  width={300}
+                />
+                <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                  Image caption
+                </div>
+                <div className="flex items-center space-x-2 mt-1">
+                  <HeartIcon className="w-5 h-5" />
+                  <span>200 likes</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
     </div>
   );
 }

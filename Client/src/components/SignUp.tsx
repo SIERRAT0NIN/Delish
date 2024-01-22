@@ -59,7 +59,7 @@ const SignUp: React.FC = () => {
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
       resetForm();
-      navigate("/home");
+      navigate("/");
     } catch (error) {
       console.error("Error:", error);
       setSnackbarMessage("Failed to sign up. Please try again.");
