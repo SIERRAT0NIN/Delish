@@ -13,6 +13,8 @@ import SignUp from "./SignUp";
 import "../App.css";
 import ChatBox from "./ChatBox";
 import HomeThreeJS from "./HomeThreeJS";
+import Footer from "./Footer";
+import NewHome from "./NewHome";
 
 function RouterApp() {
   const is_logged_in = true;
@@ -21,7 +23,7 @@ function RouterApp() {
     <Routes>
       {is_logged_in ? (
         <>
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<NewHome />} />
           <Route path="/home" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
@@ -29,13 +31,14 @@ function RouterApp() {
           <Route path="/chat" element={<ChatBox />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/recipes" element={<SavedRecipes />} />
+          <Route path="/developers" element={<Footer />} />
           <Route path="/three" element={<HomeThreeJS />} />
           <Route path="/error" element={<Error />} />
           <Route path="/app" element={<App />} />
         </>
       ) : (
         <>
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<NewHome />} />
         </>
       )}
     </Routes>
