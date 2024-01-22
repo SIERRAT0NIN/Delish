@@ -50,7 +50,7 @@ export default function Component() {
                   alt="Image caption"
                   className="aspect-square object-cover rounded-[12px]"
                   height={300}
-                  src="https://media.cnn.com/api/v1/images/stellar/prod/230320152630-23-mexican-foods-conchas.jpg?c=original&q=h_618,c_fill"
+                  src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?q=80&w=2912&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                   width={300}
                 />
                 <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
@@ -67,7 +67,7 @@ export default function Component() {
                   alt="Image caption"
                   className="aspect-square object-cover rounded-[12px]"
                   height={300}
-                  src="https://media.cnn.com/api/v1/images/stellar/prod/230320152630-23-mexican-foods-conchas.jpg?c=original&q=h_618,c_fill"
+                  src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                   width={300}
                 />
                 <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
@@ -83,7 +83,7 @@ export default function Component() {
                   alt="Image caption"
                   className="aspect-square object-cover rounded-[12px]"
                   height={300}
-                  src="https://media.cnn.com/api/v1/images/stellar/prod/230320152630-23-mexican-foods-conchas.jpg?c=original&q=h_618,c_fill"
+                  src="https://plus.unsplash.com/premium_photo-1675252369719-dd52bc69c3df?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                   width={300}
                 />
                 <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">

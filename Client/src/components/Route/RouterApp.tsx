@@ -11,12 +11,13 @@ import SignUp from "../Auth/SignUp";
 import "../../App.css";
 import ChatBox from "../Message/ChatBox";
 import HomeThreeJS from "../Misc/HomeThreeJS";
-import Footer from "../Home/Footer";
+
 import LandingPage from "../Home/LandingPage";
 
 import Explore from "../Home/Explore";
 
 import Logout from "../Auth/Logout";
+import Developers from "../Home/Developers";
 
 function RouterApp() {
   const isAuthenticated = localStorage.getItem("token"); // Check for token
@@ -31,7 +32,7 @@ function RouterApp() {
           <Route path="/chat" element={<ChatBox />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/explore_recipes" element={<Explore />} />
-          <Route path="/developers" element={<Footer />} />
+          <Route path="/developers" element={<Developers />} />
           <Route path="/three" element={<HomeThreeJS />} />
           <Route path="/*" element={<Error />} />
           <Route path="/logout" element={<Logout />} />
@@ -42,7 +43,7 @@ function RouterApp() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/developers" element={<Footer />} />
+          <Route path="/developers" element={<Developers />} />
         </>
       )}
     </Routes>

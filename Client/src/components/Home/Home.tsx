@@ -10,7 +10,6 @@ export default function Home() {
   return (
     <>
       <NavBar />
-
       <Card className="p-10 mt-10">
         <h1 className="flex justify-center text-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white p-5 rounded m-2">
           Home
@@ -22,7 +21,7 @@ export default function Home() {
                 alt="Image 1"
                 className="aspect-square object-cover w-full rounded-lg cursor-pointer"
                 height={300}
-                src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=2881&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 width={300}
               />
               <div className="p-2">
@@ -48,7 +47,7 @@ export default function Home() {
                 alt="Image 2"
                 className="aspect-square object-cover w-full rounded-lg cursor-pointer"
                 height={300}
-                src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=2881&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 width={300}
               />
               <div className="p-2">
