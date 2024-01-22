@@ -14,8 +14,9 @@ import {
 } from "@nextui-org/react";
 import NavBar from "./NavBar";
 import UserInfoCard from "./UserInfoCard";
+import NotificationCenter from "./NotificationCenter";
 
-export default function NewHome() {
+export default function LandingPage() {
   const isAuthenticated = localStorage.getItem("token"); // Check for token
 
   return (
@@ -119,6 +120,7 @@ export default function NewHome() {
           © 2024 Social Media Platform. All rights reserved.
         </p>
       </footer>
+      {/* <NotificationCenter /> */}
     </div>
   );
 }

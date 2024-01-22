@@ -53,7 +53,7 @@ export default function NavBar() {
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarBrand>
           <Image
-            className="mr-10"
+            className="mr-10  cursor-pointer"
             src="https://i.imgur.com/qc6msvk.png"
             width={"69"}
           ></Image>

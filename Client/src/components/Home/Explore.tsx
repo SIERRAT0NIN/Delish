@@ -10,6 +10,9 @@ export default function Explore() {
     <div className="lg:container lg:mx-auto">
       <NavBar />
       <Card className="p-10">
+        <h1 className="flex justify-center text-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white p-5 rounded m-2">
+          Explore
+        </h1>
         <div className="grid grid-cols-3 gap-2">
           <div className="relative group">
             <img

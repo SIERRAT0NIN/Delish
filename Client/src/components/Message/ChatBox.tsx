@@ -11,6 +11,9 @@ export default function ChatBox() {
     <>
       <NavBar />
       <Card className="mt-10 p-10">
+        <h1 className="flex justify-center text-lg bg-gradient-to-r from-pink-500 to-yellow-500 text-white p-5 rounded m-2">
+          Direct Messages
+        </h1>
         <div className="grid grid-cols-4 h-screen">
           <div className="flex flex-col bg-gray-100 dark:bg-gray-800 rounded-md">
             <div className="flex items-center gap-3 p-4 border-b border-gray-200 dark:border-gray-800 ">
