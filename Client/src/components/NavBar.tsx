@@ -15,6 +15,7 @@ import NightmodeBtn from "./NightmodeBtn";
 
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const isAuthenticated = localStorage.getItem("token"); // Check for token
 
   const menuItems = [
     "Create a new post",
@@ -61,39 +62,50 @@ export default function NavBar() {
           </button>
         </NavbarBrand>
 
-        <NavbarItem>
-          <Link href="recipes" color="foreground" aria-current="page">
-            Explore Recipes
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="profile">
-            Profile
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="home">
-            Home
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="chat">
-            Messages
-          </Link>
-        </NavbarItem>
+        {isAuthenticated && (
+          <NavbarContent justify="end">
+            <NavbarItem>
+              <Link
+                href="explore_recipes"
+                color="foreground"
+                aria-current="page"
+              >
+                Explore Recipes
+              </Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Link color="foreground" href="profile">
+                Profile
+              </Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Link color="foreground" href="home">
+                Home
+              </Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Link color="foreground" href="chat">
+                Messages
+              </Link>
+            </NavbarItem>
+          </NavbarContent>
+        )}
       </NavbarContent>
 
       <NavbarContent justify="end">
         {/* <NightmodeBtn /> */}
-
-        <NavbarItem className="hidden lg:flex ">
-          <Link href="login">Login</Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Button as={Link} color="secondary" href="signup" variant="flat">
-            Sign Up
-          </Button>
-        </NavbarItem>
+        {!isAuthenticated && (
+          <NavbarContent justify="end">
+            <NavbarItem className="hidden lg:flex ">
+              <Link href="login">Login</Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Button as={Link} color="secondary" href="signup" variant="flat">
+                Sign Up
+              </Button>
+            </NavbarItem>
+          </NavbarContent>
+        )}
       </NavbarContent>
       <div className="nav  ">
         <NavbarMenu>

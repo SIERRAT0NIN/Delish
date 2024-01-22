@@ -37,10 +37,10 @@ const Login = () => {
 
       const data = await response.json();
       localStorage.setItem("token", data.access_token);
+      navigate("/");
       setSnackbarMessage(data.message || "Login successful");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
-      navigate("/home");
 
       // Redirect or update UI state
     } catch (error) {
