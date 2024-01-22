@@ -5,6 +5,7 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { useNavigate } from "react-router-dom";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -12,6 +13,8 @@ const LoginSchema = Yup.object().shape({
 });
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
@@ -33,12 +36,11 @@ const Login = () => {
       if (!response.ok) throw new Error("Login failed");
 
       const data = await response.json();
-
+      localStorage.setItem("token", data.access_token);
       setSnackbarMessage(data.message || "Login successful");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
-
-      localStorage.setItem("token", data.access_token);
+      navigate("/home");
 
       // Redirect or update UI state
     } catch (error) {
@@ -52,7 +54,7 @@ const Login = () => {
   return (
     <div>
       <NavBar />
-      <div className="form-card">
+      <div className="  form-card mx-auto max-w-md space-y-6">
         <Card className="">
           <Formik
             initialValues={{ email: "", password: "" }}

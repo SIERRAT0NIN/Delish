@@ -1,13 +1,11 @@
-import { BrowserRouter as Router } from "react-router-dom";
 import { Route, Routes } from "react-router-dom";
 
-import LandingPage from "./LandingPage";
 import Profile from "./Profile";
 import Login from "./Login";
 import Home from "./Home";
 import SavedRecipes from "./Explore";
 import Error from "./Error";
-import App from "../App";
+
 import Featured from "./Featured";
 import SignUp from "./SignUp";
 import "../App.css";
@@ -16,29 +14,31 @@ import HomeThreeJS from "./HomeThreeJS";
 import Footer from "./Footer";
 import NewHome from "./NewHome";
 
-function RouterApp() {
-  const is_logged_in = true;
+import Explore from "./Explore";
 
+function RouterApp() {
+  const isAuthenticated = localStorage.getItem("token"); // Check for token
   return (
     <Routes>
-      {is_logged_in ? (
+      {isAuthenticated ? (
         <>
           <Route path="/" element={<NewHome />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
           <Route path="/feature" element={<Featured />} />
           <Route path="/chat" element={<ChatBox />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/recipes" element={<SavedRecipes />} />
+          <Route path="/explore_recipes" element={<Explore />} />
           <Route path="/developers" element={<Footer />} />
           <Route path="/three" element={<HomeThreeJS />} />
-          <Route path="/error" element={<Error />} />
-          <Route path="/app" element={<App />} />
+          <Route path="/*" element={<Error />} />
         </>
       ) : (
         <>
+          {/* If not logged in */}
           <Route path="/" element={<NewHome />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/developers" element={<Footer />} />
         </>
       )}
     </Routes>
