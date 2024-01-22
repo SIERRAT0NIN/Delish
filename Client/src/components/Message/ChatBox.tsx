@@ -4,7 +4,7 @@
  */
 
 import { Button, Input, Avatar, Link, Card } from "@nextui-org/react";
-import NavBar from "./NavBar";
+import NavBar from "../Home/NavBar";
 
 export default function ChatBox() {
   return (

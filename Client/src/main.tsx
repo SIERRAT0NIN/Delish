@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-import { AuthProvider } from "./components/AuthContext.tsx";
+import { AuthProvider } from "./components/Auth/AuthContext.tsx";
 
-import RouterApp from "./components/RouterApp.tsx";
+import RouterApp from "./components/Route/RouterApp.tsx";
 import { BrowserRouter as Router } from "react-router-dom";
 import { NextUIProvider } from "@nextui-org/react";
 

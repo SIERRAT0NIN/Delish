@@ -11,7 +11,7 @@ import {
   Image,
   Button,
 } from "@nextui-org/react";
-import NightmodeBtn from "./NightmodeBtn";
+import NightmodeBtn from "../Misc/NightmodeBtn";
 
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -65,12 +65,8 @@ export default function NavBar() {
         {isAuthenticated && (
           <NavbarContent justify="end">
             <NavbarItem>
-              <Link
-                href="explore_recipes"
-                color="foreground"
-                aria-current="page"
-              >
-                Explore Recipes
+              <Link color="foreground" href="home">
+                Home
               </Link>
             </NavbarItem>
             <NavbarItem>
@@ -79,10 +75,15 @@ export default function NavBar() {
               </Link>
             </NavbarItem>
             <NavbarItem>
-              <Link color="foreground" href="home">
-                Home
+              <Link
+                href="explore_recipes"
+                color="foreground"
+                aria-current="page"
+              >
+                Explore Recipes
               </Link>
             </NavbarItem>
+
             <NavbarItem>
               <Link color="foreground" href="chat">
                 Messages

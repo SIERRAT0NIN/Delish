@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Card, Input, Button } from "@nextui-org/react";
-import NavBar from "./NavBar";
+import NavBar from "../Home/NavBar";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Snackbar from "@mui/material/Snackbar";
