@@ -15,6 +15,7 @@ import Footer from "./Footer";
 import NewHome from "./NewHome";
 
 import Explore from "./Explore";
+import ProtectedRoute from "./ProtectedRoute";
 
 function RouterApp() {
   const isAuthenticated = localStorage.getItem("token"); // Check for token
