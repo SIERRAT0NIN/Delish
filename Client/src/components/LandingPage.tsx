@@ -3,11 +3,13 @@ import { Card, CardFooter, Image, Button } from "@nextui-org/react";
 import NavBar from "./NavBar";
 import UserInfoCard from "./UserInfoCard";
 import Footer from "./Footer";
+import NewHome from "./NewHome";
 
 export default function LandingPage() {
   return (
     <>
-      <div className="mb-10">
+      <NewHome />
+      {/* <div className="mb-10">
         <NavBar />
       </div>
       <div className="justify-center flex ">
@@ -26,7 +28,7 @@ export default function LandingPage() {
           </CardFooter>
         </Card>
       </div>
-      <Footer />
+      <Footer /> */}
     </>
   );
 }

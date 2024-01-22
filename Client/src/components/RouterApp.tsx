@@ -12,6 +12,7 @@ import Featured from "./Featured";
 import SignUp from "./SignUp";
 import "../App.css";
 import ChatBox from "./ChatBox";
+import HomeThreeJS from "./HomeThreeJS";
 
 function RouterApp() {
   const is_logged_in = true;
@@ -28,6 +29,7 @@ function RouterApp() {
           <Route path="/chat" element={<ChatBox />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/recipes" element={<SavedRecipes />} />
+          <Route path="/three" element={<HomeThreeJS />} />
           <Route path="/error" element={<Error />} />
           <Route path="/app" element={<App />} />
         </>
