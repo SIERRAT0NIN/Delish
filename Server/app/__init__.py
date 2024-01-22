@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import sqlalchemy
 from flask_socketio import SocketIO
 
-from .models import db, User, Message   
+from models import db, User, Message   
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager, create_access_token
