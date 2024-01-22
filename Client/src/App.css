@@ -47,3 +47,9 @@ body {
 .nav {
   --navbar-height: 6rem;
 }
+.notification-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  /* Add more styling as needed */
+}

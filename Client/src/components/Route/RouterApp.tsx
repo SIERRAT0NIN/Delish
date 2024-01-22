@@ -1,22 +1,22 @@
 import { Route, Routes } from "react-router-dom";
 
-import Profile from "./Profile";
-import Login from "./Login";
-import Home from "./Home";
-import SavedRecipes from "./Explore";
+import Profile from "../Home/Profile";
+import Login from "../Auth/Login";
+import Home from "../Home/Home";
+
 import Error from "./Error";
 
-import Featured from "./Featured";
-import SignUp from "./SignUp";
-import "../App.css";
-import ChatBox from "./ChatBox";
-import HomeThreeJS from "./HomeThreeJS";
-import Footer from "./Footer";
-import NewHome from "./NewHome";
+import Featured from "../Home/Featured";
+import SignUp from "../Auth/SignUp";
+import "../../App.css";
+import ChatBox from "../Message/ChatBox";
+import HomeThreeJS from "../Misc/HomeThreeJS";
+import Footer from "../Home/Footer";
+import LandingPage from "../Home/LandingPage";
 
-import Explore from "./Explore";
-import ProtectedRoute from "./ProtectedRoute";
-import Logout from "./Logout";
+import Explore from "../Home/Explore";
+
+import Logout from "../Auth/Logout";
 
 function RouterApp() {
   const isAuthenticated = localStorage.getItem("token"); // Check for token
@@ -24,7 +24,8 @@ function RouterApp() {
     <Routes>
       {isAuthenticated ? (
         <>
-          <Route path="/" element={<NewHome />} />
+          {/* If user is logged in */}
+          <Route path="/" element={<LandingPage />} />
           <Route path="/home" element={<Home />} />
           <Route path="/feature" element={<Featured />} />
           <Route path="/chat" element={<ChatBox />} />
@@ -38,7 +39,7 @@ function RouterApp() {
       ) : (
         <>
           {/* If not logged in */}
-          <Route path="/" element={<NewHome />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/developers" element={<Footer />} />
