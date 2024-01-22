@@ -12,6 +12,7 @@ interface FormValues {
   email: string;
   password: string;
 }
+import { useNavigate } from "react-router-dom";
 
 // Yup validation schema
 const SignUpSchema = Yup.object().shape({
@@ -27,7 +28,7 @@ const SignUp: React.FC = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
     "success"
   );
-
+  const navigate = useNavigate();
   const initialValues: FormValues = {
     username: "",
     email: "",
@@ -58,6 +59,7 @@ const SignUp: React.FC = () => {
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
       resetForm();
+      navigate("/home");
     } catch (error) {
       console.error("Error:", error);
       setSnackbarMessage("Failed to sign up. Please try again.");
