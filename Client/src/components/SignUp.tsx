@@ -75,69 +75,71 @@ const SignUp: React.FC = () => {
     setOpen(false);
   };
   return (
-    <div className="form-card">
+    <>
       <NavBar />
-      <Card className="form-card mt-10">
-        <Formik
-          initialValues={initialValues}
-          validationSchema={SignUpSchema}
-          onSubmit={handleSubmit}
-        >
-          {({ errors, touched }) => (
-            <Form className="input-card ">
-              <div className="input-card">
-                <Field
-                  name="username"
-                  as={Input}
-                  placeholder="Enter your username"
-                  className="input-card "
-                />
-                {errors.username && touched.username ? (
-                  <div>{errors.username}</div>
-                ) : null}
+      <div className="form-card mx-auto max-w-md space-y-6">
+        <Card className="form-card mt-10">
+          <Formik
+            initialValues={initialValues}
+            validationSchema={SignUpSchema}
+            onSubmit={handleSubmit}
+          >
+            {({ errors, touched }) => (
+              <Form className="input-card ">
+                <div className="input-card">
+                  <Field
+                    name="username"
+                    as={Input}
+                    placeholder="Enter your username"
+                    className="input-card "
+                  />
+                  {errors.username && touched.username ? (
+                    <div>{errors.username}</div>
+                  ) : null}
 
-                <Field
-                  name="email"
-                  as={Input}
-                  placeholder="Enter your email"
-                  className="input-card "
-                />
-                {errors.email && touched.email ? (
-                  <div>{errors.email}</div>
-                ) : null}
+                  <Field
+                    name="email"
+                    as={Input}
+                    placeholder="Enter your email"
+                    className="input-card "
+                  />
+                  {errors.email && touched.email ? (
+                    <div>{errors.email}</div>
+                  ) : null}
 
-                <Field
-                  name="password"
-                  type="password"
-                  as={Input}
-                  placeholder="Create a password"
-                  className="input-card "
-                />
-                {errors.password && touched.password ? (
-                  <div>{errors.password}</div>
-                ) : null}
+                  <Field
+                    name="password"
+                    type="password"
+                    as={Input}
+                    placeholder="Create a password"
+                    className="input-card "
+                  />
+                  {errors.password && touched.password ? (
+                    <div>{errors.password}</div>
+                  ) : null}
 
-                <Button type="submit">Submit</Button>
-              </div>
-            </Form>
-          )}
-        </Formik>
-      </Card>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert
+                  <Button type="submit">Submit</Button>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </Card>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
           onClose={() => setSnackbarOpen(false)}
-          severity={snackbarSeverity}
-          variant="filled"
-          sx={{ width: "100%" }}
         >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-    </div>
+          <Alert
+            onClose={() => setSnackbarOpen(false)}
+            severity={snackbarSeverity}
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
+      </div>{" "}
+    </>
   );
 };
 

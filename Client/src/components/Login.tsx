@@ -52,7 +52,7 @@ const Login = () => {
   return (
     <div>
       <NavBar />
-      <div className="form-card">
+      <div className="  form-card mx-auto max-w-md space-y-6">
         <Card className="">
           <Formik
             initialValues={{ email: "", password: "" }}
