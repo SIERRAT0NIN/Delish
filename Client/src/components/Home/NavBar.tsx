@@ -12,6 +12,7 @@ import {
   Button,
 } from "@nextui-org/react";
 import NightmodeBtn from "../Misc/NightmodeBtn";
+import CreatePostModal from "./CreatePostModal";
 
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -100,13 +101,24 @@ export default function NavBar() {
                 Messages
               </Link>
             </NavbarItem>
-
+            <NavbarItem>
+              {/* <Button
+                color="foreground"
+                href="chat "
+                color="success"
+                variant="shadow"
+                className="text-white"
+              >
+                Create Post
+              </Button> */}
+              <CreatePostModal />
+            </NavbarItem>
             <Button
               className="justify-self-end"
               as={Link}
               color="danger"
               href="logout"
-              variant="shadow"
+              variant="ghost"
             >
               Logout
             </Button>
