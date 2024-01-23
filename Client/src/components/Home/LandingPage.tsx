@@ -15,6 +15,7 @@ import {
 import NavBar from "./NavBar";
 import UserInfoCard from "./UserInfoCard";
 import NotificationCenter from "./NotificationCenter";
+import AddIngredients from "./AddIngredients";
 
 export default function LandingPage() {
   const isAuthenticated = localStorage.getItem("token"); // Check for token
@@ -119,6 +120,7 @@ export default function LandingPage() {
             © 2024 Delish. All rights reserved.
           </p>
         </footer>
+        <AddIngredients />
       </main>
 
       {/* <NotificationCenter /> */}

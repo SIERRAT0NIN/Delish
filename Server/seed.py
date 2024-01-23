@@ -1,9 +1,4 @@
-# seed.py
  
-# from app.models import User, Profile, Post, Comment, Tag, db
-# from app import create_app
-# from app.app_config import db
-
 from  app import create_app, db
 from  app.models import User, Profile, Post, Comment, Tag
 
@@ -19,7 +14,7 @@ def seed_database():
         db.create_all()
 
 
-    # Create users
+        # Create users
         user1 = User(username='john_doe', email='john@example.com', password_hash='hashed_password')
         user2 = User(username='jane_doe', email='jane@example.com', password_hash='hashed_password')
 
@@ -47,7 +42,7 @@ def seed_database():
         db.session.add_all([user1, user2, profile1, profile2, tag1, tag2, post1, post2, comment1, comment2])
         db.session.commit()
 
-    print('Database seeded!')
+    print('Database seeded!✨')
 
 if __name__ == '__main__':    
     seed_database()
