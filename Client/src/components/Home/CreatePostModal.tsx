@@ -23,7 +23,7 @@ export default function CreatePostModal() {
     <>
       <div className="flex flex-wrap gap-3">
         <Button
-          color="foreground"
+          // color="foreground"
           href="chat "
           color="success"
           variant="shadow"

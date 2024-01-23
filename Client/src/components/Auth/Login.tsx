@@ -1,18 +1,23 @@
 import React, { useState } from "react";
 import { Card, Input, Button } from "@nextui-org/react";
 import NavBar from "../Home/NavBar";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
+
+interface LoginValues {
+  email: string;
+  password: string;
+}
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
   password: Yup.string().required("Password is required"),
 });
 
-const Login = () => {
+const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -20,9 +25,13 @@ const Login = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
     "error"
   );
-  const handleLoginSubmit = async (values, { setSubmitting }) => {
+
+  const handleLoginSubmit = async (
+    values: LoginValues,
+    { setSubmitting }: FormikHelpers<LoginValues>
+  ) => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/login", {
+      const response = await fetch("/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -36,7 +45,7 @@ const Login = () => {
       if (!response.ok) throw new Error("Login failed");
 
       const data = await response.json();
-      localStorage.setItem("token", data.access_token);
+
       navigate("/");
       setSnackbarMessage(data.message || "Login successful");
       setSnackbarSeverity("success");
@@ -44,7 +53,9 @@ const Login = () => {
 
       // Redirect or update UI state
     } catch (error) {
-      setSnackbarMessage(error.message || "Failed to login. Please try again.");
+      setSnackbarMessage(
+        error.message || "Failed to login. Please try again."
+      );
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
@@ -54,7 +65,7 @@ const Login = () => {
   return (
     <div>
       <NavBar />
-      <div className="  form-card mx-auto max-w-md space-y-6">
+      <div className="form-card mx-auto max-w-md space-y-6">
         <Card className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
           <h1 className="pt-3">Login</h1>
           <Formik

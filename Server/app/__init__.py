@@ -1,13 +1,13 @@
-from flask import Flask, request
+from flask import Flask, request, make_response
 from flask_restful import Api, Resource
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlalchemy
 from flask_socketio import SocketIO
-
+from datetime import datetime, timedelta
 from models import db, User, Message   
 from flask_cors import CORS
 from flask_migrate import Migrate
-from flask_jwt_extended import JWTManager, create_access_token
+from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, set_access_cookies, set_refresh_cookies, jwt_required, get_jwt_identity
 from dotenv import load_dotenv
 import os
 load_dotenv()  # Add this at the beginning
@@ -17,7 +17,11 @@ app = Flask(__name__)
 # Configure your app
 jwt_secret = os.getenv('JWT_SECRET')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.db'
+app.config['JWT_TOKEN_LOCATION'] = ['cookies','headers']
+app.config['JWT_COOKIE_SAMESITE'] = 'Strict'
 app.config['JWT_SECRET_KEY'] = jwt_secret   
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=12)
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=30)
 jwt = JWTManager(app)  # Add this line
 
 db.init_app(app)
@@ -28,11 +32,13 @@ Migrate(app, db)
 api = Api(app)
 
 # Set up CORS to allow all origins for the signup route
-cors = CORS(app, resources={
+cors = CORS(app,supports_credentials=True,resources={
     r"/socket.io/*": {"origins": "http://localhost:5173"},
     r"/signup": {"origins": "http://localhost:5173"},
     r"/login": {"origins": "http://localhost:5173"},
     r"/messages": {"origins": "http://localhost:5173"},
+    r"/user": {"origins": "http://localhost:5173/"},
+    r"/refresh": {"origins": "http://localhost:5173/"}
 })
 
 socketio = SocketIO(
@@ -91,16 +97,61 @@ class Login(Resource):
             return {"message": "Email and password are required"}, 400
 
         user = User.query.filter_by(email=email).first()
+        print(user)
         if user and check_password_hash(user.password_hash, password):
-            access_token = create_access_token(identity=email)  # Make sure identity is correct
 
-            return {'access_token': access_token}, 200
+            access_token = create_access_token(
+                identity=email
+            )
+
+            refresh_token = create_refresh_token(
+                identity=email
+            )
+
+            response = make_response(user.to_dict(only=('id','username','email')), 200)
+            set_access_cookies(response, access_token)
+            set_refresh_cookies(response, refresh_token)
+
+            return response
         else:
             return {'message': 'Invalid username or password'}, 401
 
 
 # Add the Login resource to the API
 api.add_resource(Login, "/login")
+
+class RefreshToken(Resource):
+    @jwt_required(refresh=True)
+    def get(self):
+        try:
+            email = get_jwt_identity()
+
+            new_access_token = create_access_token(
+                    identity=email
+            )
+            
+            user = User.query.filter_by(email=email).first()
+            u = user.to_dict(only=('id','username','email'))
+            response = make_response(u, 200)
+            set_access_cookies(response, new_access_token)
+
+            return response
+        except Exception as e:
+
+            return {"error": e.args}, 500
+        
+api.add_resource(RefreshToken,'/refresh')
+
+class MyUser(Resource):
+    @jwt_required()
+    def get(self):
+        if user := User.query.filter_by(email=get_jwt_identity()).first():
+            u = user.to_dict(only=('id','username','email'))
+            return u,200
+        else:
+            return {'error':'User not found'}
+        
+api.add_resource(MyUser,'/user')
 
 class Messages(Resource):
     def get(self):
