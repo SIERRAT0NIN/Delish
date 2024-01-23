@@ -14,7 +14,7 @@ export default function Home() {
         <h1 className="flex justify-center text-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white p-5 rounded m-2">
           Home
         </h1>
-        <div className="grid grid-cols-1  gap-4">
+        <div className="grid grid-cols-1  gap-4 ">
           <div className="group">
             <Card className="p-3">
               <img
