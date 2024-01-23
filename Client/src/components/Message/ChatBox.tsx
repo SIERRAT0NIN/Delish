@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { Button, Input, Avatar, Card } from '@nextui-org/react';
+import { Button, Input, Avatar, Card, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
+import Modal from '../Misc/Modal';
 import NavBar from '../Home/NavBar';
 
 interface Message {
@@ -13,6 +14,8 @@ export default function ChatBox() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState<string>('');
   const [socket, setSocket] = useState<Socket | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState('');
 
   useEffect(() => {
     const newSocket = io('http://127.0.0.1:5000');
@@ -40,6 +43,19 @@ export default function ChatBox() {
       setMessages([...messages, newMessage]);
       setInputText('');
     }
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const startChat = () => {
+    console.log('Starting chat with:', selectedUser);
+    closeModal();
   };
 
   return (
@@ -143,6 +159,25 @@ export default function ChatBox() {
                 onChange={(e) => setInputText(e.target.value)}
               />
               <Button onClick={handleMessageSend}>Send</Button>
+              <Button onClick={openModal}>Create Chat</Button>
+              <Modal open={isModalOpen} onClose={closeModal}>
+                <h1>Create Chat</h1>
+                <div>
+                  <Input
+                    placeholder="Type a username"
+                    value={selectedUser}
+                    onChange={(e) => setSelectedUser(e.target.value)}
+                  />
+                </div>
+                <footer>
+                  <Button onClick={startChat}>
+                    Start Chat
+                  </Button>
+                  <Button onClick={closeModal}>
+                    Cancel
+                  </Button>
+                </footer>
+              </Modal>
             </div>
           </div>
         </div>
