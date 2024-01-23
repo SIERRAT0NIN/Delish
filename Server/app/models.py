@@ -1,8 +1,5 @@
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
-
-from flask_sqlalchemy import SQLAlchemy
-db = SQLAlchemy()
+from .app_config import db
 
 class Profile(db.Model):
     __tablename__ = 'profiles'
