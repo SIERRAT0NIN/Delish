@@ -29,6 +29,7 @@ export default function NavBar() {
   //   "Log Out",
   // ];
   const menuItems = [
+    { label: "Login", href: "/login" },
     { label: "Create a new post", href: "/new-post" },
     { label: "Profile", href: "/profile" },
     { label: "Explore Recipes", href: "/explore-recipes" },
@@ -41,7 +42,7 @@ export default function NavBar() {
   ];
   return (
     <Navbar
-      className="nav-bar content-stretch shadow-lg"
+      className="nav-bar content-stretch shadow-lg "
       isBordered
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
@@ -100,7 +101,13 @@ export default function NavBar() {
               </Link>
             </NavbarItem>
 
-            <Button as={Link} color="danger" href="logout" variant="ghost">
+            <Button
+              className="justify-self-end"
+              as={Link}
+              color="danger"
+              href="logout"
+              variant="shadow"
+            >
               Logout
             </Button>
           </NavbarContent>
