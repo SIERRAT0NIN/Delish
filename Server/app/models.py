@@ -3,8 +3,11 @@ from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.sql import func
 
 from flask_sqlalchemy import SQLAlchemy
-
 db = SQLAlchemy()
+
+class Profile(db.Model):
+    __tablename__ = 'profiles'
+
 
 
 class Profile(db.Model, SerializerMixin):
@@ -53,6 +56,7 @@ class Post(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     content = db.Column(db.Text, nullable=False)
+    ingredients = db.Column(db.Text, nullable=False)
     image_url = db.Column(db.String(255))
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     comments = db.relationship("Comment", backref="post", lazy="dynamic")

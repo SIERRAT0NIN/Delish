@@ -1,7 +1,7 @@
 import React from "react";
 import { Switch } from "@nextui-org/react";
-import { MoonIcon } from "./MoonIcon";
-import { SunIcon } from "./SunIcon";
+import { MoonIcon } from "./Moonicon";
+import { SunIcon } from "./Sunicon";
 
 export default function NightmodeBtn() {
   return (

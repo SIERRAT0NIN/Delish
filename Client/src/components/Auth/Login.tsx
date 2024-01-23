@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Card, Input, Button } from "@nextui-org/react";
-import NavBar from "./NavBar";
+import NavBar from "../Home/NavBar";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { useNavigate } from "react-router-dom";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -12,6 +13,8 @@ const LoginSchema = Yup.object().shape({
 });
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
@@ -33,13 +36,11 @@ const Login = () => {
       if (!response.ok) throw new Error("Login failed");
 
       const data = await response.json();
-      console.log(response);
+      localStorage.setItem("token", data.access_token);
+      navigate("/");
       setSnackbarMessage(data.message || "Login successful");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
-
-      // Store the token if your API returns one, and manage login state
-      localStorage.setItem("token", data.access_token);
 
       // Redirect or update UI state
     } catch (error) {
@@ -49,25 +50,25 @@ const Login = () => {
     }
     setSubmitting(false);
   };
-  const token = localStorage.getItem("token");
 
   return (
     <div>
       <NavBar />
-      <div className="form-card">
-        <Card className="">
+      <div className="  form-card mx-auto max-w-md space-y-6">
+        <Card className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          <h1 className="pt-3">Login</h1>
           <Formik
             initialValues={{ email: "", password: "" }}
             validationSchema={LoginSchema}
             onSubmit={handleLoginSubmit}
           >
             {({ errors, touched }) => (
-              <Form className="form-card">
+              <Form className="form-card ">
                 <Field
                   name="email"
                   as={Input}
                   placeholder="Enter your email"
-                  className="input-card "
+                  className="input-card  "
                 />
                 {errors.email && touched.email ? (
                   <div>{errors.email}</div>
@@ -84,7 +85,9 @@ const Login = () => {
                   <div>{errors.password}</div>
                 ) : null}
 
-                <Button type="submit">Submit</Button>
+                <Button variant="shadow" color="primary" type="submit">
+                  Submit
+                </Button>
               </Form>
             )}
           </Formik>

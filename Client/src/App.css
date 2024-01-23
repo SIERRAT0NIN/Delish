@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 body {
-  background-image: url("https://i.imgur.com/yCHmnqCh.png");
+  background-image: url("https://i.imgur.com/eOR73we.png");
   background-size: cover; /* Cover the entire page */
   background-repeat: no-repeat; /* Do not repeat the image */
   background-attachment: fixed; /* Fixed background (doesn't scroll) */
@@ -46,4 +46,15 @@ body {
 }
 .nav {
   --navbar-height: 6rem;
+}
+.notification-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  /* Add more styling as needed */
+}
+
+.home-cards {
+  justify-content: center;
+  display: flex;
 }
