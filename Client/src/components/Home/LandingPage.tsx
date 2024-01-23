@@ -27,7 +27,7 @@ export default function LandingPage() {
         </Link>
         <NavBar />
       </header>
-      <main className="flex-1  bg-glass border border-glass shadow-lg backdrop-filter-blur ">
+      <main className="flex-1 rounded bg-glass border border-glass shadow-lg backdrop-filter-blur ">
         <section className="flex flex-col items-center justify-center py-12 md:py-24 lg:py-32 ">
           <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
             Welcome to Delish!
@@ -114,12 +114,13 @@ export default function LandingPage() {
             </Button>
           </a>
         </section>
+        <footer className="flex items-center justify-center py-6 bg-white dark:bg-gray-800 ">
+          <p className="text-gray-500 dark:text-gray-400 ">
+            © 2024 Delish. All rights reserved.
+          </p>
+        </footer>
       </main>
-      <footer className="flex items-center justify-center py-6 bg-white dark:bg-gray-800 rounded-lg">
-        <p className="text-gray-500 dark:text-gray-400 ">
-          © 2024 Delish. All rights reserved.
-        </p>
-      </footer>
+
       {/* <NotificationCenter /> */}
     </div>
   );

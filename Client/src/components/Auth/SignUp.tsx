@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Card, Input } from "@nextui-org/react";
+import { Card, Input, Button } from "@nextui-org/react";
 import NavBar from "../Home/NavBar";
 import { Formik, Form, Field, FormikHelpers } from "formik";
 import * as Yup from "yup";
-import Button from "@mui/material/Button";
+
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 // TypeScript interface for form values
@@ -80,7 +80,8 @@ const SignUp: React.FC = () => {
     <>
       <NavBar />
       <div className="form-card mx-auto max-w-md space-y-6">
-        <Card className="form-card mt-10">
+        <Card className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 p-5">
+          <h1 className="pt-3">Sign Up!</h1>
           <Formik
             initialValues={initialValues}
             validationSchema={SignUpSchema}
@@ -120,7 +121,9 @@ const SignUp: React.FC = () => {
                     <div>{errors.password}</div>
                   ) : null}
 
-                  <Button type="submit">Submit</Button>
+                  <Button variant="shadow" color="primary" type="submit">
+                    Submit
+                  </Button>
                 </div>
               </Form>
             )}

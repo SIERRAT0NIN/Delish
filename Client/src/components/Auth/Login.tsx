@@ -55,19 +55,20 @@ const Login = () => {
     <div>
       <NavBar />
       <div className="  form-card mx-auto max-w-md space-y-6">
-        <Card className="">
+        <Card className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          <h1 className="pt-3">Login</h1>
           <Formik
             initialValues={{ email: "", password: "" }}
             validationSchema={LoginSchema}
             onSubmit={handleLoginSubmit}
           >
             {({ errors, touched }) => (
-              <Form className="form-card">
+              <Form className="form-card ">
                 <Field
                   name="email"
                   as={Input}
                   placeholder="Enter your email"
-                  className="input-card "
+                  className="input-card  "
                 />
                 {errors.email && touched.email ? (
                   <div>{errors.email}</div>
@@ -84,7 +85,9 @@ const Login = () => {
                   <div>{errors.password}</div>
                 ) : null}
 
-                <Button type="submit">Submit</Button>
+                <Button variant="shadow" color="primary" type="submit">
+                  Submit
+                </Button>
               </Form>
             )}
           </Formik>

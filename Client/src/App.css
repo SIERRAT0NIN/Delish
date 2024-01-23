@@ -53,3 +53,8 @@ body {
   gap: 4px;
   /* Add more styling as needed */
 }
+
+.home-cards {
+  justify-content: center;
+  display: flex;
+}
