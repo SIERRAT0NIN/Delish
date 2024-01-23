@@ -35,7 +35,7 @@ export default function Home() {
                     width={300}
                   />
                   <div className="p-2">
-                    <p className="text-sm">This is a beautiful sunset.</p>
+                    <p className="text-sm">Delicious meal</p>
                     <UserInfoCard />
                     <div>
                       <Button variant="ghost" color="danger" className="m-2">
@@ -78,17 +78,17 @@ export default function Home() {
                       </li>
                       <li>
                         <Chip color="primary" variant="dot" className="m-2 p-2">
-                          Ingredient 1
+                          Ingredient 2
                         </Chip>
                       </li>
                       <li>
                         <Chip color="primary" variant="dot" className="m-2 p-2">
-                          Ingredient 1
+                          Ingredient 3
                         </Chip>
                       </li>
                       <li>
                         <Chip color="primary" variant="dot" className="m-2 p-2">
-                          Ingredient 1
+                          Ingredient 4
                         </Chip>
                       </li>
                     </ul>

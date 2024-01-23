@@ -35,7 +35,7 @@ export default function UserInfoCard() {
             className={
               isFollowed
                 ? "bg-transparent text-foreground border-default-200"
-                : ""
+                : "text-white"
             }
             color="success"
             radius="full"
