@@ -48,7 +48,7 @@ export default function UserInfoCard() {
         </div>
       </CardHeader>
       <CardBody className="px-3 py-0 text-small text-default-400 ">
-        <p className=" pt-5">
+        <p className=" pt-5 text">
           Front-end Chef. Cooking up code.
           <br />
           Lorem ipsum dolor sit amet consectetur, adipisicing elit.
