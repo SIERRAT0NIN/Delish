@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 body {
-  background-image: url("https://i.imgur.com/yCHmnqCh.png");
+  background-image: url("https://i.imgur.com/eOR73we.png");
   background-size: cover; /* Cover the entire page */
   background-repeat: no-repeat; /* Do not repeat the image */
   background-attachment: fixed; /* Fixed background (doesn't scroll) */

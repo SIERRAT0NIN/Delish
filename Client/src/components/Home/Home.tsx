@@ -2,7 +2,7 @@
  * v0 by Vercel.
  * @see https://v0.dev/t/0c74MeFlbqY
  */
-import { Button, Card, CardBody, Image } from "@nextui-org/react";
+import { Button, Card, CardBody, Image, Chip } from "@nextui-org/react";
 import NavBar from "./NavBar";
 import UserInfoCard from "./UserInfoCard";
 
@@ -11,12 +11,22 @@ export default function Home() {
     <>
       <NavBar />
       <Card className="p-10 mt-10">
-        <h1 className="flex justify-center text-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white p-5 rounded m-2">
-          Home
-        </h1>
+        <div className="translate-y-9  ">
+          <Chip
+            variant="shadow"
+            classNames={{
+              base: "bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30",
+              content: "drop-shadow shadow-black text-white",
+            }}
+          >
+            Home
+          </Chip>
+
+          <h1 className="flex justify-center text-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white p-5 rounded m-2 blur-xl "></h1>
+        </div>
         <div className="grid grid-cols-1  gap-4">
           <div className="group">
-            <Card className="p-3">
+            <Card className="p-3 ">
               <img
                 alt="Image 1"
                 className="aspect-square object-cover w-full rounded-lg cursor-pointer"

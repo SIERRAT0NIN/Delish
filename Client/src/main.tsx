@@ -12,7 +12,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <Router>
       <NextUIProvider>
         <AuthProvider>
+          {/* <div className="dark"> */}
           <RouterApp />
+          {/* </div> */}
         </AuthProvider>
       </NextUIProvider>
     </Router>
