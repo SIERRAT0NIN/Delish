@@ -4,24 +4,35 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import sqlalchemy
 from flask_socketio import SocketIO
 from datetime import datetime, timedelta
-from models import db, User, Message   
+from models import db, User, Message, Chat
 from flask_cors import CORS
 from flask_migrate import Migrate
-from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, set_access_cookies, set_refresh_cookies, jwt_required, get_jwt_identity
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    create_refresh_token,
+    set_access_cookies,
+    set_refresh_cookies,
+    jwt_required,
+    get_jwt_identity,
+    unset_access_cookies,
+    unset_refresh_cookies
+)
 from dotenv import load_dotenv
 import os
+
 load_dotenv()  # Add this at the beginning
 
 
 app = Flask(__name__)
 # Configure your app
-jwt_secret = os.getenv('JWT_SECRET')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.db'
-app.config['JWT_TOKEN_LOCATION'] = ['cookies','headers']
-app.config['JWT_COOKIE_SAMESITE'] = 'Strict'
-app.config['JWT_SECRET_KEY'] = jwt_secret   
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=12)
-app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=30)
+jwt_secret = os.getenv("JWT_SECRET")
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.db"
+app.config["JWT_TOKEN_LOCATION"] = ["cookies", "headers"]
+app.config["JWT_COOKIE_SAMESITE"] = "Strict"
+app.config["JWT_SECRET_KEY"] = jwt_secret
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=12)
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
 jwt = JWTManager(app)  # Add this line
 
 db.init_app(app)
@@ -32,18 +43,20 @@ Migrate(app, db)
 api = Api(app)
 
 # Set up CORS to allow all origins for the signup route
-cors = CORS(app,supports_credentials=True,resources={
-    r"/socket.io/*": {"origins": "http://localhost:5173"},
-    r"/signup": {"origins": "http://localhost:5173"},
-    r"/login": {"origins": "http://localhost:5173"},
-    r"/messages": {"origins": "http://localhost:5173"},
-    r"/user": {"origins": "http://localhost:5173/"},
-    r"/refresh": {"origins": "http://localhost:5173/"}
-})
-
-socketio = SocketIO(
-    app, cors_allowed_origins="*"
+cors = CORS(
+    app,
+    supports_credentials=True,
+    resources={
+        r"/socket.io/*": {"origins": "http://localhost:5173"},
+        r"/signup": {"origins": "http://localhost:5173"},
+        r"/login": {"origins": "http://localhost:5173"},
+        r"/messages": {"origins": "http://localhost:5173"},
+        r"/user": {"origins": "http://localhost:5173/"},
+        r"/refresh": {"origins": "http://localhost:5173/"},
+    },
 )
+
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 
 # Define your RESTful routes
@@ -65,17 +78,30 @@ class SignUp(Resource):
             return {"message": "Username or email already taken"}, 400
 
         hashed_password = generate_password_hash(password)
-        new_user = User(
-            username=username, email=email, password_hash=hashed_password
-        )
+        new_user = User(username=username, email=email, password_hash=hashed_password)
+
+       
 
         try:
             db.session.add(new_user)
             db.session.commit()
-            return {"message": "User created successfully"}, 201
+
+            access_token = create_access_token(identity=email)
+
+            refresh_token = create_refresh_token(identity=email)
+
+            response = make_response(
+                new_user.to_dict(only=("id", "username", "email")), 200
+            )
+
+            set_access_cookies(response, access_token)
+            set_refresh_cookies(response, refresh_token)
+
+            return response
         except sqlalchemy.exc.IntegrityError as e:
             db.session.rollback()
             return {"error": str(e)}, 500
+
 
 # Add the SignUp resource to the API
 api.add_resource(SignUp, "/signup")
@@ -84,11 +110,11 @@ api.add_resource(SignUp, "/signup")
 class Login(Resource):
     def post(self):
         data = request.get_json()
-        email = data.get('email')
-        password = data.get('password')
-        
+        email = data.get("email")
+        password = data.get("password")
+
         if not email or not password:
-            return {'message': 'Email and password are required'}, 400
+            return {"message": "Email and password are required"}, 400
 
         email = data.get("email")
         password = data.get("password")
@@ -99,26 +125,24 @@ class Login(Resource):
         user = User.query.filter_by(email=email).first()
         print(user)
         if user and check_password_hash(user.password_hash, password):
+            access_token = create_access_token(identity=email)
 
-            access_token = create_access_token(
-                identity=email
+            refresh_token = create_refresh_token(identity=email)
+
+            response = make_response(
+                user.to_dict(only=("id", "username", "email")), 200
             )
-
-            refresh_token = create_refresh_token(
-                identity=email
-            )
-
-            response = make_response(user.to_dict(only=('id','username','email')), 200)
             set_access_cookies(response, access_token)
             set_refresh_cookies(response, refresh_token)
 
             return response
         else:
-            return {'message': 'Invalid username or password'}, 401
+            return {"message": "Invalid username or password"}, 401
 
 
 # Add the Login resource to the API
 api.add_resource(Login, "/login")
+
 
 class RefreshToken(Resource):
     @jwt_required(refresh=True)
@@ -126,43 +150,46 @@ class RefreshToken(Resource):
         try:
             email = get_jwt_identity()
 
-            new_access_token = create_access_token(
-                    identity=email
-            )
-            
+            new_access_token = create_access_token(identity=email)
+
             user = User.query.filter_by(email=email).first()
-            u = user.to_dict(only=('id','username','email'))
+            u = user.to_dict(only=("id", "username", "email"))
             response = make_response(u, 200)
             set_access_cookies(response, new_access_token)
 
             return response
         except Exception as e:
-
             return {"error": e.args}, 500
-        
-api.add_resource(RefreshToken,'/refresh')
+
+
+api.add_resource(RefreshToken, "/refresh")
+
 
 class MyUser(Resource):
     @jwt_required()
     def get(self):
         if user := User.query.filter_by(email=get_jwt_identity()).first():
-            u = user.to_dict(only=('id','username','email'))
-            return u,200
+            u = user.to_dict(only=("id", "username", "email"))
+            return u, 200
         else:
-            return {'error':'User not found'}
-        
-api.add_resource(MyUser,'/user')
+            return {"error": "User not found"}
+
+
+api.add_resource(MyUser, "/user")
+
 
 class Messages(Resource):
     def get(self):
-        socketio.emit('message',{
-            'id': 1,
-            'sender': "danner b",
-            'text': 'testtttt',
-        })
+        socketio.emit(
+            "message",
+            {
+                "id": 1,
+                "sender": "danner b",
+                "text": "testtttt",
+            },
+        )
         return [
-            message.to_dict(only=("id", "content"))
-            for message in Message.query.all()
+            message.to_dict(only=("id", "content")) for message in Message.query.all()
         ]
 
     def post(self):
@@ -185,17 +212,69 @@ class Messages(Resource):
             )
             db.session.add(message)
             db.session.commit()
-            return message.to_dict(only=('id'))
+            return message.to_dict(only=("id"))
 
         except Exception as e:
             db.session.rollback()
             return {"error": e.args}
-        
-api.add_resource(Messages,'/messages')
 
-@socketio.on('connect')
+
+api.add_resource(Messages, "/messages")
+
+
+class Chats(Resource):
+    @jwt_required()
+    def get(self):
+        if user := User.query.filter_by(email=get_jwt_identity()).first():
+            return user.to_dict(only=('all_chats.id',))
+
+    @jwt_required()
+    def post(self):
+        user1_id = request.json.get('user1_id')
+        user2_name = request.json.get('user2_name')
+
+        if user1_id and user2_name:
+            existing_chat = Chat.query.filter(
+                ((Chat.user1_id == user1_id) & (Chat.user2.username == user2_name)) |
+                ((Chat.user2_id == user1_id) & (Chat.user1.username == user2_name))
+            ).first()
+
+            if existing_chat:
+                return {"error": "Chat already exists"}
+
+            current_user = db.session.query(User).filter_by(id=user1_id).first()
+            other_user = db.session.query(User).filter_by(username=user2_name).first()
+
+            if current_user and other_user:
+                try:
+                    chat = Chat(user1_id=current_user.id, user2_id=other_user.id)
+                    db.session.add(chat)
+                    db.session.commit()
+                    return chat.to_dict(only=('id',))
+                except Exception as e:
+                    db.session.rollback()
+                    return {'error': str(e)}
+            else:
+                return {'error': 'Invalid user id or other user username'}
+        else:
+            return {'error': 'Invalid arguments'}
+        
+api.add_resource(Chats,'/chats')
+
+class Logout(Resource):
+    def delete(self):
+        response = make_response({}, 204)
+        unset_access_cookies(response)
+        unset_refresh_cookies(response)
+        return response
+    
+api.add_resource(Logout,'/user/logout')
+
+
+@socketio.on("connect")
 def handle_connect():
-    print('Client connected')
+    print("Client connected")
+
 
 if __name__ == "__main__":
-    socketio.run(app,debug=True)
+    socketio.run(app, debug=True)

@@ -22,7 +22,7 @@ import { useAuth } from "../Auth/AuthContext";
 
 function RouterApp() {
   const {user} = useAuth()
-  
+
   return (
     <Routes>
       {user ? (
@@ -33,6 +33,8 @@ function RouterApp() {
           <Route path="/feature" element={<Featured />} />
           <Route path="/chat" element={<ChatBox />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/explore_recipes" element={<Explore />} />
           <Route path="/developers" element={<Developers />} />
           <Route path="/three" element={<HomeThreeJS />} />

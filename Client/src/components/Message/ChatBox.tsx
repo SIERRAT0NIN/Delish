@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { Button, Input, Avatar, Card, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/react';
+import { Button, Input, Avatar, Card } from '@nextui-org/react';
 import Modal from '../Misc/Modal';
 import NavBar from '../Home/NavBar';
 
@@ -103,7 +103,7 @@ export default function ChatBox() {
               </div>
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto">
+          {/* <div className="flex-1 overflow-y-auto">
             <div className="group flex flex-col gap-4 py-2">
               <nav className="grid gap-1 px-2">
                 <Button className="justify-start gap-2" size="sm" variant="ghost">
@@ -123,9 +123,8 @@ export default function ChatBox() {
                 </Button>
               </nav>
             </div>
-          </div>
-        </div>
-        <div className="col-span-3 flex flex-col">
+          </div> */}
+          <div className="col-span-3 flex flex-col">
           <div className="flex items-center gap-3 p-4 border-b border-gray-200 dark:border-gray-800">
             <Avatar
               className="h-6 w-6"
@@ -181,6 +180,8 @@ export default function ChatBox() {
             </div>
           </div>
         </div>
+        </div> 
+        
       </Card>
     </>
   );

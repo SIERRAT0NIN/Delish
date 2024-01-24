@@ -1,11 +1,27 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from "react";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+// import { FormikHelpers } from 'formik';
 
 // Define the properties you expect in your AuthContext
+
+interface FormValues {
+  username: string;
+  email: string;
+  password: string;
+}
+
+interface LoginValues {
+  email: string;
+  password: string;
+}
+
 interface AuthContextProps {
-  isAuthenticated: boolean;
-  login: () => void;
-  logout: () => void;
+  // isAuthenticated: boolean;
+  login: (values: LoginValues) => Promise<void | boolean>;
+  logout: () => Promise<boolean>;
   refreshUser: () => Promise<boolean>;
+  signup: (values: FormValues) => Promise<void | boolean>;
   user: object | null
 }
 
@@ -29,8 +45,13 @@ export const useAuth = () => {
 
 // Create the AuthProvider component
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
+
 
   useEffect(()=>{
     refreshUser()
@@ -69,6 +90,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 return true;
               }) as Promise<boolean>;
             } else {
+              setUser(null)
               return false;
             }
           })
@@ -86,18 +108,105 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }) as Promise<boolean>;
   };
 
-  const login = () => {
-    setIsAuthenticated(true);
-    // Handle login logic
+  const login = (values: LoginValues): Promise<void | boolean> => {
+    return fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: values.email,
+        password: values.password,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Login failed");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setUser(data)
+        setSnackbarMessage(data.message || "Login successful");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+        // Redirect or update UI state
+        return true;
+      })
+      .catch((error) => {
+        setSnackbarMessage((error as Error).message || "Failed to login. Please try again.");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+        return false;
+      })
   };
 
-  const logout = () => {
-    setIsAuthenticated(false);
+  const logout = (): Promise<boolean> => {
+    return fetch('/api/user/logout',{
+      method: 'DELETE'
+    })
+    .then(resp =>{
+      if(resp.ok){
+        setUser(null);
+        return true
+      }else{
+        return false
+      }
+    })
+    .catch(()=>false)
+    
     // Handle logout logic
   };
 
+  const signup = (values: FormValues): Promise<void | boolean> => {
+    return fetch("/api/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: values.username,
+        email: values.email,
+        password: values.password,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return false;
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (!data) {
+          // Handle failure case
+          console.error("Signup failed");
+          setSnackbarMessage("Failed to sign up. Please try again.");
+          setSnackbarSeverity("error");
+          setSnackbarOpen(true);
+          return false;
+        }
+  
+        // Handle success case
+        console.log("Success:", data);
+        setUser(data);
+        setSnackbarMessage(data.message || "User created successfully");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+        // resetForm();
+        return true;
+      })
+      .catch((error) => {
+        // Handle any other errors
+        console.error("Error:", error);
+        setSnackbarMessage("Failed to sign up. Please try again.");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+        return false;
+      });
+  };
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, refreshUser, user }}>
+    <AuthContext.Provider value={{ signup, login, logout, refreshUser, user }}>
       {children}
     </AuthContext.Provider>
   );

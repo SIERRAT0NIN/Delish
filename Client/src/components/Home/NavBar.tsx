@@ -13,10 +13,11 @@ import {
 } from "@nextui-org/react";
 import NightmodeBtn from "../Misc/NightmodeBtn";
 import CreatePostModal from "./CreatePostModal";
+import { useAuth } from "../Auth/AuthContext";
 
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const isAuthenticated = localStorage.getItem("token"); // Check for token
+  const {user} = useAuth() // Check for token
 
   // const menuItems = [
   //   "Create a new post",
@@ -74,7 +75,7 @@ export default function NavBar() {
           </button>
         </NavbarBrand>
 
-        {isAuthenticated && (
+        {user && (
           <NavbarContent justify="end">
             <NavbarItem>
               <Link color="foreground" href="home">
@@ -128,7 +129,7 @@ export default function NavBar() {
 
       <NavbarContent justify="end">
         {/* <NightmodeBtn /> */}
-        {!isAuthenticated && (
+        {!user && (
           <NavbarContent justify="end">
             <NavbarItem className="hidden lg:flex ">
               <Link href="login">Login</Link>

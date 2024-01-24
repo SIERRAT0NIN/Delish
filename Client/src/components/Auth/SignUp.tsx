@@ -13,6 +13,7 @@ interface FormValues {
   password: string;
 }
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 
 // Yup validation schema
 const SignUpSchema = Yup.object().shape({
@@ -22,12 +23,13 @@ const SignUpSchema = Yup.object().shape({
 });
 
 const SignUp: React.FC = () => {
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
     "success"
   );
+  const {signup} = useAuth()
   const navigate = useNavigate();
   const initialValues: FormValues = {
     username: "",
@@ -37,45 +39,26 @@ const SignUp: React.FC = () => {
 
   const handleSubmit = async (
     values: FormValues,
-    { setSubmitting, resetForm, setStatus }: FormikHelpers<FormValues>
+    { setSubmitting, resetForm }: FormikHelpers<FormValues>
   ) => {
-    try {
-      const response = await fetch("/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: values.username,
-          email: values.email,
-          password: values.password,
-        }),
-      });
-      if (!response.ok) throw new Error("Signup failed");
-
-      const data = await response.json();
-      console.log("Success:", data);
-      setSnackbarMessage(data.message || "User created successfully");
-      setSnackbarSeverity("success");
-      setSnackbarOpen(true);
-      resetForm();
-      navigate("/");
-    } catch (error) {
-      console.error("Error:", error);
-      setSnackbarMessage("Failed to sign up. Please try again.");
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
-    }
+    signup(values).then(resp =>{
+      if(resp){
+        resetForm()
+        navigate('/')
+      }else{
+        alert('Signup failed')
+      }
+    })
     setSubmitting(false);
   };
 
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
+  // const handleClose = (event, reason) => {
+  //   if (reason === "clickaway") {
+  //     return;
+  //   }
 
-    setOpen(false);
-  };
+  //   setOpen(false);
+  // };
   return (
     <>
       <NavBar />

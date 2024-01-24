@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 
 interface LoginValues {
   email: string;
@@ -19,7 +20,7 @@ const LoginSchema = Yup.object().shape({
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-
+  const {login} = useAuth()
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
@@ -28,37 +29,16 @@ const Login: React.FC = () => {
 
   const handleLoginSubmit = async (
     values: LoginValues,
-    { setSubmitting }: FormikHelpers<LoginValues>
+    { setSubmitting, resetForm }: FormikHelpers<LoginValues>
   ) => {
-    try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: values.email,
-          password: values.password,
-        }),
-      });
-
-      if (!response.ok) throw new Error("Login failed");
-
-      const data = await response.json();
-
-      navigate("/");
-      setSnackbarMessage(data.message || "Login successful");
-      setSnackbarSeverity("success");
-      setSnackbarOpen(true);
-
-      // Redirect or update UI state
-    } catch (error) {
-      setSnackbarMessage(
-        error.message || "Failed to login. Please try again."
-      );
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
-    }
+    login(values).then(resp =>{
+      if(resp){
+        resetForm()
+        navigate('/')
+      }else{
+        alert('Signup failed')
+      }
+    })
     setSubmitting(false);
   };
 
