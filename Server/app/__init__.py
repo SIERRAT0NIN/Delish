@@ -196,7 +196,7 @@ class Messages(Resource):
 
         sender_id = json.get("sender_id")
 
-        reciever_id = json.get("reciever_id")
+        receiver_id = json.get("receiver_id")
 
         chat_id = json.get("chat_id")
 
@@ -205,7 +205,7 @@ class Messages(Resource):
         try:
             message = Message(
                 sender_id=sender_id,
-                reciever_id=reciever_id,
+                receiver_id=receiver_id,
                 chat_id=chat_id,
                 content=content,
             )
@@ -284,7 +284,7 @@ class ChatID(Resource):
         #     return {"error": "Chat not found or unauthorized access"}, 404
 
         # Return the chat details
-        return chat.to_dict(only=('messages.id','messages.sender.username','messages.reciever.username'))
+        return chat.to_dict(only=('messages.content','messages.id','messages.sender.username','messages.receiver.username','user1_id','user2_id'))
 
 
 # Add the resource to your API
@@ -305,6 +305,40 @@ api.add_resource(Logout, "/user/logout")
 @socketio.on("connect")
 def handle_connect():
     print("Client connected")
+
+@socketio.on('message')
+def handle_message(_message):
+    chat_id = _message.get('chat_id')
+
+    sender_id = _message.get('sender_id')
+
+    receiver_id = _message.get('receiver_id')
+
+    content = _message.get('content')
+
+    if chat_id and sender_id and receiver_id and content:
+        print('111111')
+        message = Message(chat_id=chat_id,sender_id=sender_id,receiver_id=receiver_id,content=content)
+        try:
+
+            db.session.add(message)
+
+            db.session.commit()
+            
+            m = message.to_dict(only=('id','sender_id','receiver_id','chat_id','content'))
+
+            print(message)
+
+            socketio.emit('message',m)
+
+        except Exception as e:
+            db.session.rollback()
+            return {'error':e.args}
+        
+        print(message)
+            
+    else:
+        print("Invalid args")
 
 
 if __name__ == "__main__":

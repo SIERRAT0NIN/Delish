@@ -7,8 +7,15 @@ import { useAuth } from '../Auth/AuthContext';
 
 interface Message {
   id: number;
-  sender: string;
+  sender: number;
   text: string;
+}
+interface ServerMessage {
+  id: number;
+  chat_id: number;
+  sender_id: number;
+  receiver_id: number;
+  content: string;
 }
 
 export default function ChatBox() {
@@ -25,8 +32,14 @@ export default function ChatBox() {
     const newSocket = io('http://127.0.0.1:5000');
     setSocket(newSocket);
 
-    newSocket.on('message', (message: Message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
+    newSocket.on('message', (message: ServerMessage) => {
+      console.log(message)
+      const newMessage : Message = {
+        id: message.id,
+        sender: message.sender_id,
+        text: message.content,
+      }
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
 
     return () => {
@@ -48,28 +61,36 @@ export default function ChatBox() {
   }, [])
 
   useEffect(()=>{
-    fetch(`/api/chats/${activeChat}`)
-    .then(resp =>{
-      if(resp.ok){
-        resp.json().then(setMessages)
-      }else{
-        resp.json().then(e => alert(e.error))
-      }
-    }).catch(e => console.table(e))
+    if(activeChat.hasOwnProperty('id')){
+      fetch(`/api/chats/${activeChat.id}`)
+      .then(resp =>{
+        if(resp.ok){
+          resp.json().then(data => setMessages(data.messages))
+        }else{
+          resp.json().then(e => alert(e.error))
+        }
+      }).catch(e => console.table(e))
+    }
   },[activeChat])
 
   const handleMessageSend = () => {
     if (socket) {
-      const newMessage: Message = {
-        id: messages.length + 1,
-        sender: 'Landon C.',
-        text: inputText,
-      };
-      socket.emit('message', newMessage);
-      setMessages([...messages, newMessage]);
-      setInputText('');
+      if(activeChat.id){
+        const newMessage = {
+          chat_id: activeChat.id,
+          sender_id: user?.id,
+          receiver_id: activeChat.user1_id === user?.id ? activeChat.user2_id : activeChat.user1_id,
+          content: inputText,
+        };
+        socket.emit('message', newMessage);
+        setInputText('');
+      }else{
+        alert("Please choose a chat first, or create one")
+      }
     }
   };
+
+  console.log(activeChat)
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -118,7 +139,7 @@ export default function ChatBox() {
                 src="https://www.gyfted.me/_next/image?url=%2Fimg%2Fcharacters%2Fned-flanders.png&w=640&q=75"
               ></Avatar>
               <div className="grid gap-0.5 text-xs">
-                <div className="font-medium">Landon C.</div>
+                <div className="font-medium">{user?.username}</div>
                 <div className="text-green-500 dark:text-green-400">Online</div>
               </div>
             </div>
@@ -130,7 +151,7 @@ export default function ChatBox() {
                       className="justify-start gap-2"
                       size="sm"
                       variant="ghost"
-                      onClick={()=>setActiveChat(chat.id)}
+                      onClick={()=>setActiveChat(chat)}
                     >
                       <div className="flex items-center gap-2">
                         <Avatar
@@ -190,7 +211,7 @@ export default function ChatBox() {
               </div>
             </div>
             <div className="flex-1 overflow-y-auto p-4">
-              {/* {messages.map((message) => (
+              {messages.length ? messages.map((message) => (
               <div key={message.id} className="flex items-end gap-2 mb-4">
                 <Avatar
                   className="h-6 w-6"
@@ -198,10 +219,10 @@ export default function ChatBox() {
                   src="https://www.onthisday.com/images/people/homer-simpson.jpg?w=360"
                 />
                 <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-2">
-                  <p className="text-sm">{message.text}</p>
+                  <p className="text-sm">{message.text || message.content}</p>
                 </div>
               </div>
-            ))} */}
+            )) : <p>No messages yet</p>}
             </div>
             <div className="border-t border-gray-200 dark:border-gray-800 p-4">
               <div className="flex items-center gap-2">
