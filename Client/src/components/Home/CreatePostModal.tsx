@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -14,7 +14,18 @@ import {
 
 export default function CreatePostModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [file, setFile] = useState(null);
 
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleSubmit = () => {
+    const formData = new FormData();
+    formData.append("file", file);
+    onClose();
+    // Send the FormData object to a server
+  };
   const handleOpen = () => {
     onOpen();
   };
@@ -23,7 +34,6 @@ export default function CreatePostModal() {
     <>
       <div className="flex flex-wrap gap-3">
         <Button
-          color="foreground"
           href="chat "
           color="success"
           variant="shadow"
@@ -41,6 +51,13 @@ export default function CreatePostModal() {
                 Create a post!
               </ModalHeader>
               <ModalBody>
+                <div className="flex align-center">
+                  <input
+                    className="bg-orange-300 rounded-lg p-3"
+                    type="file"
+                    onChange={handleFileChange}
+                  />
+                </div>
                 <div className="flex">
                   <Textarea
                     label="Recipe"
@@ -83,7 +100,7 @@ export default function CreatePostModal() {
                 <Button
                   className="bg-orange-300 text-white"
                   variant="shadow"
-                  onPress={onClose}
+                  onPress={handleSubmit}
                 >
                   Post
                 </Button>

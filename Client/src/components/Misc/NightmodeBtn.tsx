@@ -20,7 +20,7 @@ export default function NightmodeBtn() {
     setIsDarkMode(!isDarkMode);
   };
   return (
-    <div className="dark-mode1">
+    <div className="content-stretch">
       <Switch
         checked={isDarkMode}
         onChange={handleToggle}

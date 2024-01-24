@@ -1,7 +1,3 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/exl6rpCLK3c
- */
 import { Link } from "@nextui-org/react";
 import NavBar from "./NavBar";
 

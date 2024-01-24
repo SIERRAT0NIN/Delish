@@ -1,18 +1,20 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/iU0SyKmviOr
- */
-import { Button, Card } from "@nextui-org/react";
+import { Button, Card, Tooltip } from "@nextui-org/react";
 import NavBar from "./NavBar";
 
 export default function Explore() {
+  const toolTip = "Check out post from other users!";
+
   return (
-    <div className="lg:container mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="lg:container mx-auto px-4 lg:px-8">
       <NavBar />
-      <Card className="p-6 sm:p-10  sm:mt-10">
-        <h1 className="text-center text-base sm:text-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 sm:py-5 rounded mb-3≥">
-          Explore
-        </h1>
+      <Card className="p-1 mt-5 sm:p-10  sm:m-10">
+        <div className="">
+          <Tooltip color="foreground" content={toolTip}>
+            <h1 className="mb-5 text-center text-base sm:text-lg bg-gradient-to-r from-purple-500 to-pink-300 text-white py-3 sm:py-5 rounded ">
+              Explore
+            </h1>
+          </Tooltip>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <div className="relative group">
             <img
@@ -24,11 +26,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -45,11 +47,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -66,11 +68,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -87,11 +89,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -108,11 +110,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -129,11 +131,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -150,11 +152,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -171,11 +173,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -192,11 +194,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -213,11 +215,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -234,11 +236,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -255,11 +257,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -276,11 +278,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -297,11 +299,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -318,11 +320,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -339,11 +341,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -360,11 +362,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -381,11 +383,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -402,11 +404,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -423,11 +425,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -444,11 +446,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -465,11 +467,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -486,11 +488,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -507,11 +509,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -528,11 +530,11 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <MessageCircleIcon className="w-6 h-6" />
                   <span className="sr-only">Comment</span>
                 </Button>
@@ -549,7 +551,7 @@ export default function Explore() {
             />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
               <div className="flex flex-col items-center space-y-2">
-                <Button variant="ghost">
+                <Button color="danger" variant="ghost">
                   <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>

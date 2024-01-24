@@ -58,3 +58,9 @@ body {
 .dark-mode1 {
   justify-content: stretch;
 }
+.dancing-script {
+  font-family: "Dancing Script", cursive;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-size: 2em;
+}
