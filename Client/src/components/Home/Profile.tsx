@@ -14,7 +14,7 @@ export default function Component() {
           <NavBar />
         </div>
         <Card>
-          <div className="text-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white p-5 rounded m-5 text-center">
+          <div className="text-lg bg-gradient-to-r from-violet-200 to-green-500 text-white p-5 rounded m-5 text-center">
             Profile
           </div>
           <div className="flex flex-col items-center space-y-6 profile-card">

@@ -6,7 +6,7 @@ export default function Developers() {
     <>
       <NavBar />
       <div className="rounded-lg mt-10">
-        <div className="bg-gray-100 dark:bg-gray-800  ">
+        <div className="bg-gray-100 dark:bg-gray-800 rounded-t-lg">
           <footer className="container mx-auto py-6 px-4 md:px-6 flex flex-col items-center justify-center space-y-4 text-center ">
             <h2 className="text-2xl font-bold">Alberto S.</h2>
             <p className="text-gray-500 dark:text-gray-400">
@@ -100,9 +100,41 @@ export default function Developers() {
                 <span className="sr-only">LinkedIn</span>
               </Link>
             </div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">© 2024</p>
           </footer>
         </div>
+      </div>
+      <div className="bg-gray-100 dark:bg-gray-800 rounded-b-lg">
+        <footer className="container mx-auto py-6 px-4 md:px-6 flex flex-col items-center justify-center space-y-4 text-center">
+          <h2 className="text-2xl font-bold">Austin O.</h2>
+          <p className="text-gray-500 dark:text-gray-400">
+            Full-stack developer specializing in modern web technologies.
+            Passionate about creating intuitive and dynamic user experiences.
+          </p>
+          <div className="flex space-x-4">
+            <Link
+              className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+              href="#"
+            >
+              <GithubIcon className="h-6 w-6" />
+              <span className="sr-only">GitHub</span>
+            </Link>
+            <Link
+              className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+              href="#"
+            >
+              <TwitterIcon className="h-6 w-6" />
+              <span className="sr-only">Twitter</span>
+            </Link>
+            <Link
+              className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+              href="#"
+            >
+              <LinkedinIcon className="h-6 w-6" />
+              <span className="sr-only">LinkedIn</span>
+            </Link>
+          </div>
+          <p className="text-sm text-gray-500 dark:text-gray-400">© 2024</p>
+        </footer>
       </div>
     </>
   );
