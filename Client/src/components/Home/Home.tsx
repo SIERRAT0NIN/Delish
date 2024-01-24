@@ -16,11 +16,11 @@ import UserInfoCard from "./UserInfoCard";
 
 export default function Home() {
   return (
-    <>
+    <div className="container max-width: 1536px">
       <NavBar />
       <div className="flex justify-center items-center min-h-screen px-4 mt-10">
         <Card className="mx-auto overflow-hidden" style={{ maxWidth: "100%" }}>
-          <h1 className="text-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white p-5 rounded m-2 text-center">
+          <h1 className="text-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white p-5 rounded m-5 text-center">
             Home
           </h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex justify-center home-cards p-5 ">
@@ -114,7 +114,7 @@ export default function Home() {
           </div>
         </Card>
       </div>
-    </>
+    </div>
   );
 }
 

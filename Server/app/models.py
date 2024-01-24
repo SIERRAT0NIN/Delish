@@ -1,9 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.sql import func
-
-from flask_sqlalchemy import SQLAlchemy
-db = SQLAlchemy()
+from .app_config import db
 
 class Profile(db.Model, SerializerMixin):
     __tablename__ = "profiles"

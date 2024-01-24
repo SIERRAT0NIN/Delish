@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 body {
-  background-image: url("https://i.imgur.com/eOR73we.png");
+  background-image: url("https://i.imgur.com/yCHmnqC.png");
   background-size: cover; /* Cover the entire page */
   background-repeat: no-repeat; /* Do not repeat the image */
   background-attachment: fixed; /* Fixed background (doesn't scroll) */
@@ -24,9 +24,6 @@ body {
   padding: 20px;
 }
 
-.items-center {
-  justify-content: center;
-}
 .form-card {
   padding: 20px;
 }
@@ -57,4 +54,13 @@ body {
 .home-cards {
   justify-content: center;
   display: flex;
+}
+.dark-mode1 {
+  justify-content: stretch;
+}
+.dancing-script {
+  font-family: "Dancing Script", cursive;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-size: 2em;
 }

@@ -20,10 +20,12 @@ from flask_jwt_extended import (
     unset_refresh_cookies,
 )
 from dotenv import load_dotenv
+
+from .app_config import db
 import os
 
 load_dotenv()  # Add this at the beginning
-
+ 
 
 app = Flask(__name__)
 # Configure your app
