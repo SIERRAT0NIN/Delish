@@ -25,8 +25,8 @@ const handleToggle = () => {
         checked={isDarkMode}
         onChange={handleToggle}
         color="success"
-        startContent={isDarkMode ? <MoonIcon /> : <SunIcon />}
-        endContent={isDarkMode ? <SunIcon /> : <MoonIcon />}
+        startContent={isDarkMode ? <SunIcon/> : <SunIcon />}
+        endContent={isDarkMode ? <MoonIcon /> : <MoonIcon />}
         className="dark-btn "
       >
         Dark Mode
