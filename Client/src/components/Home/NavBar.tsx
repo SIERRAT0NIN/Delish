@@ -118,24 +118,9 @@ export default function NavBar() {
         )}
       </NavbarContent>
 
-      <NavbarContent justify="end">
-        {/* <NightmodeBtn /> */}
-        {!user && (
-          <NavbarContent justify="end">
-            <NavbarItem className="hidden lg:flex ">
-              <Link href="login">Login</Link>
-            </NavbarItem>
-            <NavbarItem>
-              <Button as={Link} color="secondary" href="signup" variant="flat">
-                Sign Up
-              </Button>
-            </NavbarContent>
-          )}
-        </NavbarContent>
-
         <NavbarContent justify="center">
           {<NightmodeBtn />}
-          {!isAuthenticated && (
+          {!user && (
             <NavbarContent justify="end">
               <NavbarItem className="hidden lg:flex ">
                 <Link href="login">Login</Link>

@@ -59,7 +59,7 @@ export default function ChatBox() {
         });
 
     
-        newSocket.on('message', (message: ServerMessage) => {
+        newSocket.on('server_message', (message: ServerMessage) => {
           console.log("NEW MESSAGE:")
           console.log(message)
           const newMessage: Message = {
@@ -89,15 +89,13 @@ export default function ChatBox() {
           receiver_id: activeChat.user1_id === user?.id ? activeChat.user2_id : activeChat.user1_id,
           content: inputText,
         };
-        socket.emit('message', newMessage);
+        socket.emit('client_message', newMessage);
         setInputText('');
       } else {
         alert("Please choose a chat first, or create one")
       }
     }
   };
-
-  console.log(activeChat)
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -119,7 +117,7 @@ export default function ChatBox() {
       })
         .then(resp => {
           if (resp.ok) {
-            resp.json().then(console.log)
+            resp.json().then(chat => setActiveChat({id:chat.id}))
           }
           else {
             resp.json().then(e => alert(e.error))
@@ -219,15 +217,14 @@ export default function ChatBox() {
             </div>
             <div className="flex-1 overflow-y-auto p-4">
               {messages.length ? messages.map((message) => {
-                console.log(message.sender.id == user?.id)
                 return(
-                <div key={message.id} className={`flex items-end gap-2 mb-4`} style={{flexDirection:message.sender.id == user?.id ? 'row' : 'row-reverse'}}>
+                <div key={message.id} className={`flex items-end gap-2 mb-4`} style={{flexDirection:message.sender == user?.id || message.sender?.id == user?.id ? 'row' : 'row-reverse'}}>
                   <Avatar
                     className="h-6 w-6"
                     alt={message.sender}
                     src="https://www.onthisday.com/images/people/homer-simpson.jpg?w=360"
                   />
-                  <div className={`bg-gray-100 dark:bg-gray-800 rounded-lg p-2 ${message.sender.id == user?.id ? 'self-end' : 'self-start'}`}>
+                  <div className={`bg-gray-100 dark:bg-gray-800 rounded-lg p-2 ${message.sender == user?.id || message.sender?.id == user?.id ? 'self-end' : 'self-start'}`}>
                     <p className="text-sm">{message.text || message.content}</p>
                   </div>
                 </div>

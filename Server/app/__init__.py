@@ -20,8 +20,6 @@ from flask_jwt_extended import (
     unset_refresh_cookies,
 )
 from dotenv import load_dotenv
-
-from .app_config import db
 import os
 
 load_dotenv()  # Add this at the beginning
@@ -319,7 +317,7 @@ def on_leave(data):
     room = data['room']
     leave_room(room)
 
-@socketio.on('message')
+@socketio.on('client_message')
 def handle_message(_message):
     chat_id = _message.get('chat_id')
     sender_id = _message.get('sender_id')
@@ -339,7 +337,7 @@ def handle_message(_message):
 
             # Emit the message to the specific chatroom
             print(f'Broadcasted message to room chat_{chat_id}')
-            socketio.emit('message', m, room=f'chat_{chat_id}')
+            socketio.emit('server_message', m, room=f'chat_{chat_id}')
 
         except Exception as e:
             db.session.rollback()
