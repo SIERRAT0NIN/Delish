@@ -127,7 +127,7 @@ export default function NavBar() {
       </NavbarContent>
 
       <NavbarContent justify="end">
-        {/* <NightmodeBtn /> */}
+        {<NightmodeBtn /> }
         {!isAuthenticated && (
           <NavbarContent justify="end">
             <NavbarItem className="hidden lg:flex ">

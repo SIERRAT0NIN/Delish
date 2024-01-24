@@ -20,7 +20,7 @@ export default function LandingPage() {
   const isAuthenticated = localStorage.getItem("token"); // Check for token
 
   return (
-    <div className="flex flex-col min-h-screen lg:container lg:mx-auto rounded">
+    <div className="flex flex-col min-h-screen lg:container lg:mx-auto rounded ">
       <header className="flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-800">
         <Link href="#">
           <span className="sr-only">Delish</span>
