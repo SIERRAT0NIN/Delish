@@ -8,13 +8,13 @@ import NavBar from "./NavBar";
 
 export default function Component() {
   return (
-    <div className="lg:container lg:mx-auto">
-      <div className="w-full max-w-2xl mx-auto px-4 py-6 md:px-6 lg:py-16 md:py-12 ">
+    <div className="w-full">
+      <div className=" mx-auto px-4 py-6 md:px-6 lg:py-16 md:py-12 ">
         <div className="mb-10">
           <NavBar />
         </div>
         <Card>
-          <div className="text-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white p-5 rounded m-2 text-center">
+          <div className="text-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white p-5 rounded m-5 text-center">
             Profile
           </div>
           <div className="flex flex-col items-center space-y-6 profile-card">

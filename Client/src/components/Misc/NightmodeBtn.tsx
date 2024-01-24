@@ -27,7 +27,6 @@ export default function NightmodeBtn() {
         color="success"
         startContent={isDarkMode ? <SunIcon /> : <SunIcon />}
         endContent={isDarkMode ? <MoonIcon /> : <MoonIcon />}
-        className="dark-btn "
       >
         Dark Mode
       </Switch>

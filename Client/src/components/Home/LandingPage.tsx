@@ -1,8 +1,3 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/EvGAMCINoOi
- */
-
 import {
   Card,
   Link,
@@ -14,8 +9,6 @@ import {
 } from "@nextui-org/react";
 import NavBar from "./NavBar";
 import UserInfoCard from "./UserInfoCard";
-import NotificationCenter from "./NotificationCenter";
-import AddIngredients from "./AddIngredients";
 
 export default function LandingPage() {
   const isAuthenticated = localStorage.getItem("token"); // Check for token
@@ -30,10 +23,10 @@ export default function LandingPage() {
       </header>
       <main className="flex-1 rounded bg-glass border border-glass shadow-lg backdrop-filter-blur ">
         <section className="flex flex-col items-center justify-center py-12 md:py-24 lg:py-32 ">
-          <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
-            Welcome to Delish!
+          <h1 className="text-3xl  font-bold text-black tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
+            Welcome to <span className="dancing-script">Delish!</span>
           </h1>
-          <p className="mt-4 max-w-[700px] text-black-500 md:text-xl dark:text-gray-400">
+          <p className="mt-4 max-w-[700px] text-black-500 md:text-xl  text-black">
             Connect with friends and the world around you on Delish to share
             your beautiful meals and delicious recipes
           </p>
@@ -117,10 +110,10 @@ export default function LandingPage() {
         </section>
         <footer className="flex items-center justify-center py-6 bg-white dark:bg-gray-800 ">
           <p className="text-gray-500 dark:text-gray-400 ">
-            © 2024 Delish. All rights reserved.
+            © 2024 <span className="dancing-script">Delish.</span>
+            All rights reserved.
           </p>
         </footer>
-        <AddIngredients />
       </main>
 
       {/* <NotificationCenter /> */}
