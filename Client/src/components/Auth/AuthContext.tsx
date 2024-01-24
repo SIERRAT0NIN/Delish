@@ -1,9 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-// import { FormikHelpers } from 'formik';
-
-// Define the properties you expect in your AuthContext
 
 interface FormValues {
   username: string;
@@ -17,19 +14,16 @@ interface LoginValues {
 }
 
 interface AuthContextProps {
-  // isAuthenticated: boolean;
   login: (values: LoginValues) => Promise<void | boolean>;
   logout: () => Promise<boolean>;
   refreshUser: () => Promise<boolean>;
   signup: (values: FormValues) => Promise<void | boolean>;
   getCookie: (name: string) => string;
-  user: object | null
+  user: object | null;
 }
 
-// Create the AuthContext with the defined properties
 export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
-// Define the props for the AuthProvider component
 interface AuthProviderProps {
   children: ReactNode;
 }
@@ -44,19 +38,18 @@ export const useAuth = () => {
   return authContext;
 };
 
-// Create the AuthProvider component
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
-    "success"
-  );
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
+  const [loadingLogout, setLoadingLogout] = useState(false);
 
-
-  useEffect(()=>{
-    refreshUser()
-  },[])
+  useEffect(() => {
+    if(!loadingLogout){
+      refreshUser();
+    }
+  }, []);
 
   const getCookie = (name: string): string => {
     const value = `; ${document.cookie}`;
@@ -75,8 +68,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }).then(res => {
       if (res.ok) {
         return res.json().then(data => {
-          setUser(data);
-          return true;
+          if(!loadingLogout){
+            setUser(data);
+            return true;
+          }
+          
         }) as Promise<boolean>;
       } else {
         if (res.status === 401) {
@@ -87,18 +83,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }).then(res => {
             if (res.ok) {
               return res.json().then(data => {
-                setUser(data);
-                return true;
+                if(!loadingLogout){
+                  setUser(data);
+                  return true;
+                }
               }) as Promise<boolean>;
             } else {
               setUser(null)
               return false;
             }
           })
-          .catch(e => {
-            console.error(e);
-            return false;
-          }) as Promise<boolean>;
+            .catch(e => {
+              console.error(e);
+              return false;
+            }) as Promise<boolean>;
         } else {
           return false;
         }
@@ -131,7 +129,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setSnackbarMessage(data.message || "Login successful");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
-        // Redirect or update UI state
         return true;
       })
       .catch((error) => {
@@ -139,24 +136,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setSnackbarSeverity("error");
         setSnackbarOpen(true);
         return false;
-      })
+      });
   };
 
   const logout = (): Promise<boolean> => {
-    return fetch('/api/user/logout',{
+    setLoadingLogout(true);
+    return fetch('/api/user/logout', {
       method: 'DELETE'
     })
-    .then(resp =>{
-      if(resp.ok){
-        setUser(null);
-        return true
-      }else{
-        return false
-      }
-    })
-    .catch(()=>false)
-    
-    // Handle logout logic
+      .then(resp => {
+        if (resp.ok) {
+          setUser(null);
+          return true;
+        } else {
+          return false;
+        }
+      })
+      .catch(() => false)
+      .finally(() => {
+        setLoadingLogout(false);
+      });
   };
 
   const signup = (values: FormValues): Promise<void | boolean> => {
@@ -179,25 +178,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       })
       .then((data) => {
         if (!data) {
-          // Handle failure case
           console.error("Signup failed");
           setSnackbarMessage("Failed to sign up. Please try again.");
           setSnackbarSeverity("error");
           setSnackbarOpen(true);
           return false;
         }
-  
-        // Handle success case
+
         console.log("Success:", data);
         setUser(data);
         setSnackbarMessage(data.message || "User created successfully");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
-        // resetForm();
         return true;
       })
       .catch((error) => {
-        // Handle any other errors
         console.error("Error:", error);
         setSnackbarMessage("Failed to sign up. Please try again.");
         setSnackbarSeverity("error");
@@ -208,7 +203,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ signup, login, logout, refreshUser, user, getCookie }}>
-      {children}
+        <div>Loading...</div>
+        {children}
     </AuthContext.Provider>
   );
 };

@@ -11,14 +11,14 @@ function Logout() {
     logout().then((data) =>{
       console.log(data)
       if(data){
-        navigate('/')
+        navigate('/login')
       }else{
         alert("Failed to logout")
       }
     })
     // Redirect to login or home page
    
-  }, [navigate]);
+  }, [navigate,logout]);
 
   // Optionally, you can render a message or a loader here
   return <div>Logging out...</div>;

@@ -3,7 +3,7 @@ from flask_restful import Api, Resource
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlalchemy
 from sqlalchemy import or_
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, join_room, leave_room
 from datetime import datetime, timedelta
 from models import db, User, Message, Chat
 from flask_cors import CORS
@@ -48,16 +48,16 @@ cors = CORS(
     app,
     supports_credentials=True,
     resources={
-        r"/socket.io/*": {"origins": "http://localhost:5173"},
+        r"/socket.io/*": {"origins": ['http://10.0.0.200:5173']},
         r"/signup": {"origins": "http://localhost:5173"},
         r"/login": {"origins": "http://localhost:5173"},
         r"/messages": {"origins": "http://localhost:5173"},
-        r"/user": {"origins": "http://localhost:5173/"},
-        r"/refresh": {"origins": "http://localhost:5173/"},
+        r"/user": {"origins": "http://localhost:5173"},
+        r"/refresh": {"origins": "http://localhost:5173"},
     },
 )
 
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins=['http://10.0.0.200:5173'])
 
 
 # Define your RESTful routes
@@ -284,7 +284,7 @@ class ChatID(Resource):
         #     return {"error": "Chat not found or unauthorized access"}, 404
 
         # Return the chat details
-        return chat.to_dict(only=('messages.content','messages.id','messages.sender.username','messages.receiver.username','user1_id','user2_id'))
+        return chat.to_dict(only=('messages.content','messages.id','messages.sender.username','messages.sender.id','messages.receiver.username','messages.receiver.id','user1_id','user2_id'))
 
 
 # Add the resource to your API
@@ -306,40 +306,51 @@ api.add_resource(Logout, "/user/logout")
 def handle_connect():
     print("Client connected")
 
+@socketio.on('join')
+def handle_join(data):
+    room = data['room']
+    join_room(room)
+
+@socketio.on('leave')
+def on_leave(data):
+    # username = data['username']
+    room = data['room']
+    leave_room(room)
+
 @socketio.on('message')
 def handle_message(_message):
     chat_id = _message.get('chat_id')
-
     sender_id = _message.get('sender_id')
-
     receiver_id = _message.get('receiver_id')
-
     content = _message.get('content')
 
     if chat_id and sender_id and receiver_id and content:
         print('111111')
-        message = Message(chat_id=chat_id,sender_id=sender_id,receiver_id=receiver_id,content=content)
+        message = Message(chat_id=chat_id, sender_id=sender_id, receiver_id=receiver_id, content=content)
         try:
-
             db.session.add(message)
-
             db.session.commit()
-            
-            m = message.to_dict(only=('id','sender_id','receiver_id','chat_id','content'))
+
+            m = message.to_dict(only=('id', 'sender_id', 'receiver_id', 'chat_id', 'content'))
 
             print(message)
 
-            socketio.emit('message',m)
+            # Emit the message to the specific chatroom
+            print(f'Broadcasted message to room chat_{chat_id}')
+            socketio.emit('message', m, room=f'chat_{chat_id}')
 
         except Exception as e:
             db.session.rollback()
-            return {'error':e.args}
-        
+            return {'error': e.args}
+
         print(message)
-            
     else:
         print("Invalid args")
 
+@socketio.on("connect_error")
+def error(err):
+  print(err)
+
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, host='0.0.0.0', port=5050)

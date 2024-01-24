@@ -29,27 +29,6 @@ export default function ChatBox() {
   const { user, getCookie } = useAuth()
 
   useEffect(() => {
-    const newSocket = io('http://127.0.0.1:5000');
-    setSocket(newSocket);
-
-    newSocket.on('message', (message: ServerMessage) => {
-      console.log(message)
-      const newMessage : Message = {
-        id: message.id,
-        sender: message.sender_id,
-        text: message.content,
-      }
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-    });
-
-    return () => {
-      if (newSocket) {
-        newSocket.disconnect();
-      }
-    };
-  }, []);
-
-  useEffect(() => {
     fetch('/api/chats')
       .then(resp => {
         if (resp.ok) {
@@ -60,22 +39,50 @@ export default function ChatBox() {
       })
   }, [])
 
-  useEffect(()=>{
-    if(activeChat.hasOwnProperty('id')){
+  useEffect(() => {
+    if (activeChat.hasOwnProperty('id')) {
       fetch(`/api/chats/${activeChat.id}`)
-      .then(resp =>{
-        if(resp.ok){
-          resp.json().then(data => setMessages(data.messages))
-        }else{
-          resp.json().then(e => alert(e.error))
-        }
-      }).catch(e => console.table(e))
+        .then(resp => {
+          if (resp.ok) {
+            resp.json().then(data => setMessages(data.messages))
+          } else {
+            resp.json().then(e => alert(e.error))
+          }
+        }).catch(e => console.table(e))
+
+        const newSocket = io('http://10.0.0.200:5050');
+        setSocket(newSocket);
+
+        newSocket.on('connect', () => {
+          console.log('Connected to server');
+          newSocket.emit('join', { room: `chat_${activeChat.id}` });
+        });
+
+    
+        newSocket.on('message', (message: ServerMessage) => {
+          console.log("NEW MESSAGE:")
+          console.log(message)
+          const newMessage: Message = {
+            id: message.id,
+            sender: message.sender_id,
+            text: message.content,
+          }
+          setMessages((prevMessages) => [...prevMessages, newMessage]);
+        });
+    
+        return () => {
+          if (newSocket) {
+            newSocket.disconnect();
+          }
+        };
     }
-  },[activeChat])
+  }, [activeChat])
+
+  console.log(messages)
 
   const handleMessageSend = () => {
     if (socket) {
-      if(activeChat.id){
+      if (activeChat.id) {
         const newMessage = {
           chat_id: activeChat.id,
           sender_id: user?.id,
@@ -84,7 +91,7 @@ export default function ChatBox() {
         };
         socket.emit('message', newMessage);
         setInputText('');
-      }else{
+      } else {
         alert("Please choose a chat first, or create one")
       }
     }
@@ -151,7 +158,7 @@ export default function ChatBox() {
                       className="justify-start gap-2"
                       size="sm"
                       variant="ghost"
-                      onClick={()=>setActiveChat(chat)}
+                      onClick={() => setActiveChat(chat)}
                     >
                       <div className="flex items-center gap-2">
                         <Avatar
@@ -211,18 +218,20 @@ export default function ChatBox() {
               </div>
             </div>
             <div className="flex-1 overflow-y-auto p-4">
-              {messages.length ? messages.map((message) => (
-              <div key={message.id} className="flex items-end gap-2 mb-4">
-                <Avatar
-                  className="h-6 w-6"
-                  alt={message.sender}
-                  src="https://www.onthisday.com/images/people/homer-simpson.jpg?w=360"
-                />
-                <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-2">
-                  <p className="text-sm">{message.text || message.content}</p>
+              {messages.length ? messages.map((message) => {
+                console.log(message.sender.id == user?.id)
+                return(
+                <div key={message.id} className={`flex items-end gap-2 mb-4`} style={{flexDirection:message.sender.id == user?.id ? 'row' : 'row-reverse'}}>
+                  <Avatar
+                    className="h-6 w-6"
+                    alt={message.sender}
+                    src="https://www.onthisday.com/images/people/homer-simpson.jpg?w=360"
+                  />
+                  <div className={`bg-gray-100 dark:bg-gray-800 rounded-lg p-2 ${message.sender.id == user?.id ? 'self-end' : 'self-start'}`}>
+                    <p className="text-sm">{message.text || message.content}</p>
+                  </div>
                 </div>
-              </div>
-            )) : <p>No messages yet</p>}
+              )}) : <p>No messages yet</p>}
             </div>
             <div className="border-t border-gray-200 dark:border-gray-800 p-4">
               <div className="flex items-center gap-2">
