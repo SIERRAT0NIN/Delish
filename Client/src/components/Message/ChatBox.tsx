@@ -217,15 +217,16 @@ export default function ChatBox() {
             </div>
             <div className="flex-1 overflow-y-auto p-4">
               {messages.length ? messages.map((message) => {
+                const isMe = message.sender == user?.id || message.sender?.id == user?.id 
                 return(
-                <div key={message.id} className={`flex items-end gap-2 mb-4`} style={{flexDirection:message.sender == user?.id || message.sender?.id == user?.id ? 'row' : 'row-reverse'}}>
+                <div key={message.id} className={`flex items-end gap-2 mb-4`} style={{flexDirection:isMe ? 'row' : 'row-reverse'}}>
                   <Avatar
                     className="h-6 w-6"
                     alt={message.sender}
-                    src="https://www.onthisday.com/images/people/homer-simpson.jpg?w=360"
+                    src={isMe ? "https://www.onthisday.com/images/people/homer-simpson.jpg?w=360" : "https://www.gyfted.me/_next/image?url=%2Fimg%2Fcharacters%2Fned-flanders.png&w=640&q=75"}
                   />
-                  <div className={`bg-gray-100 dark:bg-gray-800 rounded-lg p-2 ${message.sender == user?.id || message.sender?.id == user?.id ? 'self-end' : 'self-start'}`}>
-                    <p className="text-sm">{message.text || message.content}</p>
+                  <div className={`bg-gray-100 dark:bg-gray-800 rounded-lg p-2 ${isMe ? 'self-end' : 'self-start'}`}>
+                    <p className="text-sm">{message.content || message.text}</p>
                   </div>
                 </div>
               )}) : <p>No messages yet</p>}
