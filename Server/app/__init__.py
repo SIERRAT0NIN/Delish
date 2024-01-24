@@ -2,6 +2,7 @@ from flask import Flask, request, make_response
 from flask_restful import Api, Resource
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlalchemy
+from sqlalchemy import or_
 from flask_socketio import SocketIO
 from datetime import datetime, timedelta
 from models import db, User, Message, Chat
@@ -16,7 +17,7 @@ from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity,
     unset_access_cookies,
-    unset_refresh_cookies
+    unset_refresh_cookies,
 )
 from dotenv import load_dotenv
 import os
@@ -79,8 +80,6 @@ class SignUp(Resource):
 
         hashed_password = generate_password_hash(password)
         new_user = User(username=username, email=email, password_hash=hashed_password)
-
-       
 
         try:
             db.session.add(new_user)
@@ -172,7 +171,7 @@ class MyUser(Resource):
             u = user.to_dict(only=("id", "username", "email"))
             return u, 200
         else:
-            return {"error": "User not found"}
+            return {"error": "User not found"}, 404
 
 
 api.add_resource(MyUser, "/user")
@@ -216,7 +215,7 @@ class Messages(Resource):
 
         except Exception as e:
             db.session.rollback()
-            return {"error": e.args}
+            return {"error": e.args}, 500
 
 
 api.add_resource(Messages, "/messages")
@@ -226,40 +225,71 @@ class Chats(Resource):
     @jwt_required()
     def get(self):
         if user := User.query.filter_by(email=get_jwt_identity()).first():
-            return user.to_dict(only=('all_chats.id',))
+            return user.to_dict(only=("all_chats.id",'all_chats.user1_id','all_chats.user2_id','all_chats.user1.username','all_chats.user2.username',))
 
     @jwt_required()
     def post(self):
-        user1_id = request.json.get('user1_id')
-        user2_name = request.json.get('user2_name')
+        user1_id = request.json.get("user1_id")
+        user2_name = request.json.get("user2_name")
 
         if user1_id and user2_name:
-            existing_chat = Chat.query.filter(
-                ((Chat.user1_id == user1_id) & (Chat.user2.username == user2_name)) |
-                ((Chat.user2_id == user1_id) & (Chat.user1.username == user2_name))
-            ).first()
+            existing_chat = (
+                Chat.query.join(
+                    User,
+                    or_(
+                        (Chat.user1_id == user1_id) & (User.id == Chat.user2_id),
+                        (Chat.user2_id == user1_id) & (User.id == Chat.user1_id),
+                    ),
+                )
+                .filter(User.username == user2_name)
+                .first()
+            )
 
             if existing_chat:
-                return {"error": "Chat already exists"}
+                return {"error": "Chat already exists"}, 400
 
-            current_user = db.session.query(User).filter_by(id=user1_id).first()
-            other_user = db.session.query(User).filter_by(username=user2_name).first()
-
-            if current_user and other_user:
+            if (current_user := User.query.filter_by(id=user1_id).first()) and (
+                other_user := User.query.filter_by(username=user2_name).first()
+            ):
+                if current_user.id == other_user.id:
+                    return {"error": "You cant start a chat with yourself"}, 400
                 try:
                     chat = Chat(user1_id=current_user.id, user2_id=other_user.id)
                     db.session.add(chat)
                     db.session.commit()
-                    return chat.to_dict(only=('id',))
+                    return chat.to_dict(only=("id",))
                 except Exception as e:
                     db.session.rollback()
-                    return {'error': str(e)}
+                    return {"error": str(e)}, 500
             else:
-                return {'error': 'Invalid user id or other user username'}
+                return {"error": "Invalid user id or other user username"}, 400
         else:
-            return {'error': 'Invalid arguments'}
-        
-api.add_resource(Chats,'/chats')
+            return {"error": "Invalid arguments"}, 400
+
+
+api.add_resource(Chats, "/chats")
+
+class ChatID(Resource):
+    @jwt_required()
+    def get(self,id):
+
+        # Get the current user's identity from the JWT
+        # current_user_id = get_jwt_identity()
+
+        chat = db.session.get(Chat,id)
+
+        #! Query the database to check if the user is part of the chat
+
+        # if not chat:
+        #     return {"error": "Chat not found or unauthorized access"}, 404
+
+        # Return the chat details
+        return chat.to_dict(only=('messages.id','messages.sender.username','messages.reciever.username'))
+
+
+# Add the resource to your API
+api.add_resource(ChatID, '/chats/<int:id>')
+
 
 class Logout(Resource):
     def delete(self):
@@ -267,8 +297,9 @@ class Logout(Resource):
         unset_access_cookies(response)
         unset_refresh_cookies(response)
         return response
-    
-api.add_resource(Logout,'/user/logout')
+
+
+api.add_resource(Logout, "/user/logout")
 
 
 @socketio.on("connect")

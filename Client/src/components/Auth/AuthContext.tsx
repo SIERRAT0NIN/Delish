@@ -22,6 +22,7 @@ interface AuthContextProps {
   logout: () => Promise<boolean>;
   refreshUser: () => Promise<boolean>;
   signup: (values: FormValues) => Promise<void | boolean>;
+  getCookie: (name: string) => string;
   user: object | null
 }
 
@@ -206,7 +207,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ signup, login, logout, refreshUser, user }}>
+    <AuthContext.Provider value={{ signup, login, logout, refreshUser, user, getCookie }}>
       {children}
     </AuthContext.Provider>
   );
