@@ -14,6 +14,9 @@ export default function Component() {
           <NavBar />
         </div>
         <Card>
+          <div className="text-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white p-5 rounded m-2 text-center">
+            Profile
+          </div>
           <div className="flex flex-col items-center space-y-6 profile-card">
             <div className="justify-center contents">
               <Avatar
@@ -43,7 +46,6 @@ export default function Component() {
               </div>
             </div>
 
-            <RecipeModal />
             <div className="grid grid-cols-3 gap-4 mt-6">
               <div>
                 <Image

@@ -7,13 +7,13 @@ import NavBar from "./NavBar";
 
 export default function Explore() {
   return (
-    <div className="lg:container lg:mx-auto">
+    <div className="lg:container mx-auto px-4 sm:px-6 lg:px-8">
       <NavBar />
-      <Card className="p-10">
-        <h1 className="flex justify-center text-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white p-5 rounded m-2">
+      <Card className="p-6 sm:p-10  sm:mt-10">
+        <h1 className="text-center text-base sm:text-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 sm:py-5 rounded mb-3≥">
           Explore
         </h1>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <div className="relative group">
             <img
               alt="Image"

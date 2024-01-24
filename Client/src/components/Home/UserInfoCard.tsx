@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardHeader,
@@ -9,10 +9,10 @@ import {
 } from "@nextui-org/react";
 
 export default function UserInfoCard() {
-  const [isFollowed, setIsFollowed] = React.useState(false);
+  const [isFollowed, setIsFollowed] = useState(false);
 
   return (
-    <Card className="max-w-[100%]   justify-center">
+    <Card className="max-w-[100%] bg-glass border border-glass shadow-sm backdrop-filter-blur  justify-center">
       <CardHeader className="justify-between">
         <div className="flex gap-5">
           <Avatar
@@ -21,7 +21,7 @@ export default function UserInfoCard() {
             size="md"
             src="https://w7.pngwing.com/pngs/480/557/png-transparent-bart-simpsons-illustration-homer-simpson-lisa-simpson-marge-simpson-fox-satire-homer-television-face-animals.png"
           />
-          <div className="flex flex-col gap-1 items-start justify-center">
+          <div className="flex flex-col gap-1 items-start justify-center pr-5">
             <h4 className="text-small font-semibold leading-none text-default-600">
               Alberto Sierra
             </h4>
@@ -30,23 +30,25 @@ export default function UserInfoCard() {
             </h5>
           </div>
         </div>
-        <Button
-          className={
-            isFollowed
-              ? "bg-transparent text-foreground border-default-200"
-              : ""
-          }
-          color="primary"
-          radius="full"
-          size="sm"
-          variant={isFollowed ? "bordered" : "solid"}
-          onPress={() => setIsFollowed(!isFollowed)}
-        >
-          {isFollowed ? "Unfollow" : "Follow"}
-        </Button>
+        <div className="">
+          <Button
+            className={
+              isFollowed
+                ? "bg-transparent text-foreground border-default-200"
+                : "text-white"
+            }
+            color="success"
+            radius="full"
+            size="sm"
+            variant={isFollowed ? "bordered" : "solid"}
+            onPress={() => setIsFollowed(!isFollowed)}
+          >
+            {isFollowed ? "Unfollow" : "Follow"}
+          </Button>
+        </div>
       </CardHeader>
       <CardBody className="px-3 py-0 text-small text-default-400 ">
-        <p className=" pt-5">
+        <p className=" pt-5 text">
           Front-end Chef. Cooking up code.
           <br />
           Lorem ipsum dolor sit amet consectetur, adipisicing elit.
