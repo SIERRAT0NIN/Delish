@@ -18,12 +18,14 @@ import Explore from "../Home/Explore";
 
 import Logout from "../Auth/Logout";
 import Developers from "../Home/Developers";
+import { useAuth } from "../Auth/AuthContext";
 
 function RouterApp() {
-  const isAuthenticated = localStorage.getItem("token"); // Check for token
+  const {user} = useAuth()
+
   return (
     <Routes>
-      {isAuthenticated ? (
+      {user ? (
         <>
           {/* If user is logged in */}
           <Route path="/" element={<LandingPage />} />
@@ -31,6 +33,8 @@ function RouterApp() {
           <Route path="/feature" element={<Featured />} />
           <Route path="/chat" element={<ChatBox />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/explore_recipes" element={<Explore />} />
           <Route path="/developers" element={<Developers />} />
           <Route path="/three" element={<HomeThreeJS />} />

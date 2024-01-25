@@ -13,10 +13,11 @@ import {
 } from "@nextui-org/react";
 import NightmodeBtn from "../Misc/NightmodeBtn";
 import CreatePostModal from "./CreatePostModal";
+import { useAuth } from "../Auth/AuthContext";
 
 export default function NavBar() {
+  const {user} = useAuth() // Check for token
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const isAuthenticated = localStorage.getItem("token");
 
   const menuItems = [
     { label: "Login", href: "/login" },
@@ -65,27 +66,27 @@ export default function NavBar() {
             </button>
           </NavbarBrand>
 
-          {isAuthenticated && (
-            <NavbarContent justify="end">
-              <NavbarItem>
-                <Link color="foreground" href="home">
-                  Home
-                </Link>
-              </NavbarItem>
-              <NavbarItem>
-                <Link color="foreground" href="profile">
-                  Profile
-                </Link>
-              </NavbarItem>
-              <NavbarItem>
-                <Link
-                  href="explore_recipes"
-                  color="foreground"
-                  aria-current="page"
-                >
-                  Explore Recipes
-                </Link>
-              </NavbarItem>
+        {user && (
+          <NavbarContent justify="end">
+            <NavbarItem>
+              <Link color="foreground" href="home">
+                Home
+              </Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Link color="foreground" href="profile">
+                Profile
+              </Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Link
+                href="explore_recipes"
+                color="foreground"
+                aria-current="page"
+              >
+                Explore Recipes
+              </Link>
+            </NavbarItem>
 
               <NavbarItem>
                 <Link color="foreground" href="chat">
@@ -102,24 +103,24 @@ export default function NavBar() {
               >
                 Create Post
               </Button> */}
-                <CreatePostModal />
-              </NavbarItem>
-              <Button
-                className="justify-self-end"
-                as={Link}
-                color="danger"
-                href="logout"
-                variant="ghost"
-              >
-                Logout
-              </Button>
-            </NavbarContent>
-          )}
-        </NavbarContent>
+              <CreatePostModal />
+            </NavbarItem>
+            <Button
+              className="justify-self-end"
+              as={Link}
+              color="danger"
+              href="logout"
+              variant="ghost"
+            >
+              Logout
+            </Button>
+          </NavbarContent>
+        )}
+      </NavbarContent>
 
         <NavbarContent justify="center">
           {<NightmodeBtn />}
-          {!isAuthenticated && (
+          {!user && (
             <NavbarContent justify="end">
               <NavbarItem className="hidden lg:flex ">
                 <Link href="login">Login</Link>

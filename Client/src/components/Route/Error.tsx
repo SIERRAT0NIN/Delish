@@ -2,7 +2,7 @@
  * v0 by Vercel.
  * @see https://v0.dev/t/xLAwhjQ8ErW
  */
-import { Link, Button } from "@nextui-org/react";
+import { Link } from "@nextui-org/react";
 
 export default function Component() {
   return (
