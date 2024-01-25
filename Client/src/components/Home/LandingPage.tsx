@@ -9,9 +9,11 @@ import {
 } from "@nextui-org/react";
 import NavBar from "./NavBar";
 import UserInfoCard from "./UserInfoCard";
+import NotificationCenter from "./NotificationCenter";
+import { useAuth } from "../Auth/AuthContext";
 
 export default function LandingPage() {
-  const isAuthenticated = localStorage.getItem("token"); // Check for token
+  const {user} = useAuth()
 
   return (
     <div className="flex flex-col min-h-screen lg:container lg:mx-auto rounded ">
@@ -30,7 +32,7 @@ export default function LandingPage() {
             Connect with friends and the world around you on Delish to share
             your beautiful meals and delicious recipes
           </p>
-          {!isAuthenticated && (
+          {!user && (
             <Link
               className="mt-8 inline-flex h-10 items-center justify-center rounded-md bg-gray-900 px-8 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300"
               href="signup"
