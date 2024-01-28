@@ -15,6 +15,7 @@ import NightmodeBtn from "../Misc/NightmodeBtn";
 import CreatePostModal from "./CreatePostModal";
 import { useAuth } from "../Auth/AuthContext";
 import Logo3D from "./Logo3D";
+import LogoIcon from "./LogoIcon3D";
 
 export default function NavBar() {
   const { user } = useAuth(); // Check for token
@@ -60,13 +61,15 @@ export default function NavBar() {
 
         <NavbarContent className="hidden sm:flex gap-4" justify="center">
           <NavbarBrand>
-            <Image
+            {/* <Image
               className="mr-10  cursor-pointer"
               src="https://i.imgur.com/qc6msvk.png"
               width={"69"}
-            ></Image>
+            ></Image> */}
+            <LogoIcon />
+
             <button className="font-bold dancing-script">
-              <a href="/"> Delish</a>
+              <a href="/"> </a>
             </button>
           </NavbarBrand>
 
