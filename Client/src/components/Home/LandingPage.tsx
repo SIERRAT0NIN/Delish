@@ -11,9 +11,11 @@ import NavBar from "./NavBar";
 import UserInfoCard from "./UserInfoCard";
 import NotificationCenter from "./NotificationCenter";
 import { useAuth } from "../Auth/AuthContext";
+import Cake3D from "./Cake3D";
+import Logo3D from "./Logo3D";
 
 export default function LandingPage() {
-  const {user} = useAuth()
+  const { user } = useAuth();
 
   return (
     <div className="flex flex-col min-h-screen lg:container lg:mx-auto rounded ">
@@ -26,7 +28,10 @@ export default function LandingPage() {
       <main className="flex-1 rounded bg-glass border border-glass shadow-lg backdrop-filter-blur ">
         <section className="flex flex-col items-center justify-center py-12 md:py-24 lg:py-32 ">
           <h1 className="text-3xl  font-bold text-black tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
-            Welcome to <span className="dancing-script">Delish!</span>
+            Welcome to
+            <span>
+              <Logo3D />
+            </span>
           </h1>
           <p className="mt-4 max-w-[700px] text-black-500 md:text-xl  text-black">
             Connect with friends and the world around you on Delish to share
@@ -40,6 +45,7 @@ export default function LandingPage() {
               Sign Up Now
             </Link>
           )}
+          <Cake3D />
         </section>
         <section className="px-6 py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-center">

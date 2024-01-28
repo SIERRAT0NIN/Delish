@@ -37,9 +37,8 @@ class SignUp(Resource):
         except sqlalchemy.exc.IntegrityError as e:
             db.session.rollback()
             return {'error': str(e)}, 500
-
-
 api.add_resource(SignUp, '/signup')
+
 class Login(Resource):
     def post(self):
         data = request.get_json()
