@@ -14,9 +14,10 @@ import {
 import NightmodeBtn from "../Misc/NightmodeBtn";
 import CreatePostModal from "./CreatePostModal";
 import { useAuth } from "../Auth/AuthContext";
+import Logo3D from "./Logo3D";
 
 export default function NavBar() {
-  const {user} = useAuth() // Check for token
+  const { user } = useAuth(); // Check for token
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const menuItems = [
@@ -40,7 +41,10 @@ export default function NavBar() {
         isMenuOpen={isMenuOpen}
         onMenuOpenChange={setIsMenuOpen}
       >
-        <Image src="Client/src/images/FoodieLogo.png" />
+        {/* <Image src="Client/src/images/FoodieLogo.png" /> */}
+        {/* <div className="w-100px">
+          <Logo3D />
+        </div> */}
 
         <NavbarContent className="sm:hidden" justify="start">
           <NavbarMenuToggle
@@ -66,27 +70,27 @@ export default function NavBar() {
             </button>
           </NavbarBrand>
 
-        {user && (
-          <NavbarContent justify="end">
-            <NavbarItem>
-              <Link color="foreground" href="home">
-                Home
-              </Link>
-            </NavbarItem>
-            <NavbarItem>
-              <Link color="foreground" href="profile">
-                Profile
-              </Link>
-            </NavbarItem>
-            <NavbarItem>
-              <Link
-                href="explore_recipes"
-                color="foreground"
-                aria-current="page"
-              >
-                Explore Recipes
-              </Link>
-            </NavbarItem>
+          {user && (
+            <NavbarContent justify="end">
+              <NavbarItem>
+                <Link color="foreground" href="home">
+                  Home
+                </Link>
+              </NavbarItem>
+              <NavbarItem>
+                <Link color="foreground" href="profile">
+                  Profile
+                </Link>
+              </NavbarItem>
+              <NavbarItem>
+                <Link
+                  href="explore_recipes"
+                  color="foreground"
+                  aria-current="page"
+                >
+                  Explore Recipes
+                </Link>
+              </NavbarItem>
 
               <NavbarItem>
                 <Link color="foreground" href="chat">
@@ -103,20 +107,20 @@ export default function NavBar() {
               >
                 Create Post
               </Button> */}
-              <CreatePostModal />
-            </NavbarItem>
-            <Button
-              className="justify-self-end"
-              as={Link}
-              color="danger"
-              href="logout"
-              variant="ghost"
-            >
-              Logout
-            </Button>
-          </NavbarContent>
-        )}
-      </NavbarContent>
+                <CreatePostModal />
+              </NavbarItem>
+              <Button
+                className="justify-self-end"
+                as={Link}
+                color="danger"
+                href="logout"
+                variant="ghost"
+              >
+                Logout
+              </Button>
+            </NavbarContent>
+          )}
+        </NavbarContent>
 
         <NavbarContent justify="center">
           {<NightmodeBtn />}

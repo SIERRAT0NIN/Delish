@@ -1,19 +1,41 @@
+import React, { useEffect, useState } from "react";
 import { Button, Card, Tooltip } from "@nextui-org/react";
 import NavBar from "./NavBar";
 
 export default function Explore() {
   const toolTip = "Check out post from other users!";
+  const [images, setImages] = useState([]);
 
+  const fetchPostImage = async (postId) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:5000/post/${postId}/image`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      setImages((prevImages) => [...prevImages, data.image_url]);
+    } catch (error) {
+      console.error(
+        "There has been a problem with your fetch operation:",
+        error
+      );
+    }
+  };
+
+  useEffect(() => {
+    const postIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    postIds.forEach(fetchPostImage);
+  }, []);
   return (
     <div className="lg:container mx-auto px-4 lg:px-8">
       <NavBar />
       <Card className="p-1 mt-5 sm:p-10  sm:m-10">
         <div className="">
-          <Tooltip color="foreground" content={toolTip}>
-            <h1 className="mb-5 text-center text-base sm:text-lg bg-gradient-to-r from-purple-500 to-pink-300 text-white py-3 sm:py-5 rounded ">
-              Explore
-            </h1>
-          </Tooltip>
+          <h1 className="mb-5 text-center text-base sm:text-lg bg-gradient-to-r from-purple-500 to-pink-300 text-white py-3 sm:py-5 rounded ">
+            Explore
+          </h1>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <div className="relative group">

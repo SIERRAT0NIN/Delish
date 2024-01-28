@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
-import { Button, Input, Avatar, Card } from '@nextui-org/react';
-import Modal from '../Misc/Modal';
-import NavBar from '../Home/NavBar';
-import { useAuth } from '../Auth/AuthContext';
+import React, { useEffect, useState } from "react";
+import { io, Socket } from "socket.io-client";
+import { Button, Input, Avatar, Card } from "@nextui-org/react";
+import Modal from "../Misc/Modal";
+import NavBar from "../Home/NavBar";
+import { useAuth } from "../Auth/AuthContext";
 
 interface Message {
   id: number;
@@ -20,65 +20,64 @@ interface ServerMessage {
 
 export default function ChatBox() {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [inputText, setInputText] = useState<string>('');
+  const [inputText, setInputText] = useState<string>("");
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState('');
-  const [activeChat, setActiveChat] = useState({})
-  const [chats, setChats] = useState([])
-  const { user, getCookie } = useAuth()
+  const [selectedUser, setSelectedUser] = useState("");
+  const [activeChat, setActiveChat] = useState({});
+  const [chats, setChats] = useState([]);
+  const { user, getCookie } = useAuth();
 
   useEffect(() => {
-    fetch('/api/chats')
-      .then(resp => {
-        if (resp.ok) {
-          resp.json().then(data => setChats(data['all_chats']))
-        } else {
-          resp.json().then(e => alert(e.error))
-        }
-      })
-  }, [])
+    fetch("/api/chats").then((resp) => {
+      if (resp.ok) {
+        resp.json().then((data) => setChats(data["all_chats"]));
+      } else {
+        resp.json().then((e) => alert(e.error));
+      }
+    });
+  }, []);
 
   useEffect(() => {
-    if (activeChat.hasOwnProperty('id')) {
+    if (activeChat.hasOwnProperty("id")) {
       fetch(`/api/chats/${activeChat.id}`)
-        .then(resp => {
+        .then((resp) => {
           if (resp.ok) {
-            resp.json().then(data => setMessages(data.messages))
+            resp.json().then((data) => setMessages(data.messages));
           } else {
-            resp.json().then(e => alert(e.error))
+            resp.json().then((e) => alert(e.error));
           }
-        }).catch(e => console.table(e))
+        })
+        .catch((e) => console.table(e));
 
-        const newSocket = io('http://10.0.0.200:5050');
-        setSocket(newSocket);
+      const newSocket = io("http://10.0.0.200:5050");
+      setSocket(newSocket);
 
-        newSocket.on('connect', () => {
-          console.log('Connected to server');
-          newSocket.emit('join', { room: `chat_${activeChat.id}` });
-        });
+      newSocket.on("connect", () => {
+        console.log("Connected to server");
+        newSocket.emit("join", { room: `chat_${activeChat.id}` });
+      });
 
-    
-        newSocket.on('server_message', (message: ServerMessage) => {
-          console.log("NEW MESSAGE:")
-          console.log(message)
-          const newMessage: Message = {
-            id: message.id,
-            sender: message.sender_id,
-            text: message.content,
-          }
-          setMessages((prevMessages) => [...prevMessages, newMessage]);
-        });
-    
-        return () => {
-          if (newSocket) {
-            newSocket.disconnect();
-          }
+      newSocket.on("server_message", (message: ServerMessage) => {
+        console.log("NEW MESSAGE:");
+        console.log(message);
+        const newMessage: Message = {
+          id: message.id,
+          sender: message.sender_id,
+          text: message.content,
         };
-    }
-  }, [activeChat])
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+      });
 
-  console.log(messages)
+      return () => {
+        if (newSocket) {
+          newSocket.disconnect();
+        }
+      };
+    }
+  }, [activeChat]);
+
+  console.log(messages);
 
   const handleMessageSend = () => {
     if (socket) {
@@ -86,13 +85,16 @@ export default function ChatBox() {
         const newMessage = {
           chat_id: activeChat.id,
           sender_id: user?.id,
-          receiver_id: activeChat.user1_id === user?.id ? activeChat.user2_id : activeChat.user1_id,
+          receiver_id:
+            activeChat.user1_id === user?.id
+              ? activeChat.user2_id
+              : activeChat.user1_id,
           content: inputText,
         };
-        socket.emit('client_message', newMessage);
-        setInputText('');
+        socket.emit("client_message", newMessage);
+        setInputText("");
       } else {
-        alert("Please choose a chat first, or create one")
+        alert("Please choose a chat first, or create one");
       }
     }
   };
@@ -107,24 +109,24 @@ export default function ChatBox() {
 
   const startChat = () => {
     if (selectedUser) {
-      fetch('/api/chats', {
+      fetch("/api/chats", {
         method: "POST",
         headers: {
-          "Content-Type": 'application/json',
-          'X-CSRF-TOKEN': getCookie('csrf_access_token')
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": getCookie("csrf_access_token"),
         },
-        body: JSON.stringify({ user1_id: user?.id, user2_name: selectedUser })
+        body: JSON.stringify({ user1_id: user?.id, user2_name: selectedUser }),
       })
-        .then(resp => {
+        .then((resp) => {
           if (resp.ok) {
-            resp.json().then(chat => setActiveChat({id:chat.id}))
+            resp.json().then((chat) => setActiveChat({ id: chat.id }));
+          } else {
+            resp.json().then((e) => alert(e.error));
           }
-          else {
-            resp.json().then(e => alert(e.error))
-          }
-        }).catch(e => alert(e))
+        })
+        .catch((e) => alert(e));
     } else {
-      alert("No user selected")
+      alert("No user selected");
     }
     closeModal();
   };
@@ -179,7 +181,6 @@ export default function ChatBox() {
                   </nav>
                 ))}
               </div>
-
             </div>
           </div>
           {/* <div className="flex-1 overflow-y-auto">
@@ -216,20 +217,41 @@ export default function ChatBox() {
               </div>
             </div>
             <div className="flex-1 overflow-y-auto p-4">
-              {messages.length ? messages.map((message) => {
-                const isMe = message.sender == user?.id || message.sender?.id == user?.id 
-                return(
-                <div key={message.id} className={`flex items-end gap-2 mb-4`} style={{flexDirection:isMe ? 'row' : 'row-reverse'}}>
-                  <Avatar
-                    className="h-6 w-6"
-                    alt={message.sender}
-                    src={isMe ? "https://www.onthisday.com/images/people/homer-simpson.jpg?w=360" : "https://www.gyfted.me/_next/image?url=%2Fimg%2Fcharacters%2Fned-flanders.png&w=640&q=75"}
-                  />
-                  <div className={`bg-gray-100 dark:bg-gray-800 rounded-lg p-2 ${isMe ? 'self-end' : 'self-start'}`}>
-                    <p className="text-sm">{message.content || message.text}</p>
-                  </div>
-                </div>
-              )}) : <p>No messages yet</p>}
+              {messages.length ? (
+                messages.map((message) => {
+                  const isMe =
+                    message.sender == user?.id ||
+                    message.sender?.id == user?.id;
+                  return (
+                    <div
+                      key={message.id}
+                      className={`flex items-end gap-2 mb-4`}
+                      style={{ flexDirection: isMe ? "row" : "row-reverse" }}
+                    >
+                      <Avatar
+                        className="h-6 w-6"
+                        alt={message.sender}
+                        src={
+                          isMe
+                            ? "https://www.onthisday.com/images/people/homer-simpson.jpg?w=360"
+                            : "https://www.gyfted.me/_next/image?url=%2Fimg%2Fcharacters%2Fned-flanders.png&w=640&q=75"
+                        }
+                      />
+                      <div
+                        className={`bg-gray-100 dark:bg-gray-800 rounded-lg p-2 ${
+                          isMe ? "self-end" : "self-start"
+                        }`}
+                      >
+                        <p className="text-sm">
+                          {message.content || message.text}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <p>No messages yet</p>
+              )}
             </div>
             <div className="border-t border-gray-200 dark:border-gray-800 p-4">
               <div className="flex items-center gap-2">
@@ -250,19 +272,14 @@ export default function ChatBox() {
                     />
                   </div>
                   <footer>
-                    <Button onClick={startChat}>
-                      Start Chat
-                    </Button>
-                    <Button onClick={closeModal}>
-                      Cancel
-                    </Button>
+                    <Button onClick={startChat}>Start Chat</Button>
+                    <Button onClick={closeModal}>Cancel</Button>
                   </footer>
                 </Modal>
               </div>
             </div>
           </div>
         </div>
-
       </Card>
     </>
   );
