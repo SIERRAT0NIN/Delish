@@ -20,7 +20,7 @@ const LoginSchema = Yup.object().shape({
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const {login} = useAuth()
+  const { login } = useAuth();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
@@ -31,14 +31,14 @@ const Login: React.FC = () => {
     values: LoginValues,
     { setSubmitting, resetForm }: FormikHelpers<LoginValues>
   ) => {
-    login(values).then(resp =>{
-      if(resp){
-        resetForm()
-        navigate('/')
-      }else{
-        alert('Signup failed')
+    login(values).then((resp) => {
+      if (resp) {
+        resetForm();
+        navigate("/");
+      } else {
+        alert("Login failed");
       }
-    })
+    });
     setSubmitting(false);
   };
 

@@ -141,7 +141,7 @@ class Login(Resource):
 
 
 # Add the Login resource to the API
-api.add_resource(Login, "/api/login")
+api.add_resource(Login, "/login")
 
 
 class RefreshToken(Resource):
