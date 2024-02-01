@@ -5,7 +5,8 @@ import sqlalchemy
 from sqlalchemy import or_
 from flask_socketio import SocketIO, join_room, leave_room
 from datetime import datetime, timedelta
-from models import db, User, Message, Chat
+from models import User, Message, Chat
+from app_config import db
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_jwt_extended import (
@@ -140,7 +141,7 @@ class Login(Resource):
 
 
 # Add the Login resource to the API
-api.add_resource(Login, "/login")
+api.add_resource(Login, "/api/login")
 
 
 class RefreshToken(Resource):
