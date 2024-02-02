@@ -45,7 +45,7 @@ export default function LandingPage() {
               Sign Up Now
             </Link>
           )}
-          <Cake3D />
+          {/* <Cake3D /> */}
         </section>
         <section className="px-6 py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-center">

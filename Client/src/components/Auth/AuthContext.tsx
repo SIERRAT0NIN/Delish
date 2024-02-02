@@ -1,4 +1,10 @@
-import React, { createContext, useState, useContext, ReactNode, useEffect } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useEffect,
+} from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
@@ -22,7 +28,9 @@ interface AuthContextProps {
   user: object | null;
 }
 
-export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+export const AuthContext = createContext<AuthContextProps | undefined>(
+  undefined
+);
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -42,11 +50,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
   const [loadingLogout, setLoadingLogout] = useState(false);
 
   useEffect(() => {
-    if(!loadingLogout){
+    if (!loadingLogout) {
       refreshUser();
     }
   }, []);
@@ -56,55 +66,57 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const parts = value.split(`; ${name}=`);
 
     if (parts.length === 2) {
-      return parts.pop()?.split(';').shift() || '';
+      return parts.pop()?.split(";").shift() || "";
     }
 
-    return '';
+    return "";
   };
 
   const refreshUser = (): Promise<boolean> => {
-    return fetch('/api/user', {
-      credentials: 'include'
-    }).then(res => {
-      if (res.ok) {
-        return res.json().then(data => {
-          if(!loadingLogout){
-            setUser(data);
-            return true;
-          }
-          
-        }) as Promise<boolean>;
-      } else {
-        if (res.status === 401) {
-          return fetch('/api/refresh', {
-            headers: {
-              'X-CSRF-TOKEN': getCookie('csrf_refresh_token')
+    return fetch("/api/user", {
+      credentials: "include",
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json().then((data) => {
+            if (!loadingLogout) {
+              setUser(data);
+              return true;
             }
-          }).then(res => {
-            if (res.ok) {
-              return res.json().then(data => {
-                if(!loadingLogout){
-                  setUser(data);
-                  return true;
-                }
-              }) as Promise<boolean>;
-            } else {
-              setUser(null)
-              return false;
-            }
-          })
-            .catch(e => {
-              console.error(e);
-              return false;
-            }) as Promise<boolean>;
+          }) as Promise<boolean>;
         } else {
-          return false;
+          if (res.status === 401) {
+            return fetch("/api/refresh", {
+              headers: {
+                "X-CSRF-TOKEN": getCookie("csrf_refresh_token"),
+              },
+            })
+              .then((res) => {
+                if (res.ok) {
+                  return res.json().then((data) => {
+                    if (!loadingLogout) {
+                      setUser(data);
+                      return true;
+                    }
+                  }) as Promise<boolean>;
+                } else {
+                  setUser(null);
+                  return false;
+                }
+              })
+              .catch((e) => {
+                console.error(e);
+                return false;
+              }) as Promise<boolean>;
+          } else {
+            return false;
+          }
         }
-      }
-    }).catch(e => {
-      console.error(e);
-      return false;
-    }) as Promise<boolean>;
+      })
+      .catch((e) => {
+        console.error(e);
+        return false;
+      }) as Promise<boolean>;
   };
 
   const login = (values: LoginValues): Promise<void | boolean> => {
@@ -125,14 +137,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return response.json();
       })
       .then((data) => {
-        setUser(data)
+        setUser(data);
         setSnackbarMessage(data.message || "Login successful");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
         return true;
       })
       .catch((error) => {
-        setSnackbarMessage((error as Error).message || "Failed to login. Please try again.");
+        setSnackbarMessage(
+          (error as Error).message || "Failed to login. Please try again."
+        );
         setSnackbarSeverity("error");
         setSnackbarOpen(true);
         return false;
@@ -141,10 +155,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = (): Promise<boolean> => {
     setLoadingLogout(true);
-    return fetch('/api/user/logout', {
-      method: 'DELETE'
+    return fetch("/api/user/logout", {
+      method: "DELETE",
     })
-      .then(resp => {
+      .then((resp) => {
         if (resp.ok) {
           setUser(null);
           return true;
@@ -202,9 +216,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ signup, login, logout, refreshUser, user, getCookie }}>
-        <div>Loading...</div>
-        {children}
+    <AuthContext.Provider
+      value={{ signup, login, logout, refreshUser, user, getCookie }}
+    >
+      {children}
     </AuthContext.Provider>
   );
 };
