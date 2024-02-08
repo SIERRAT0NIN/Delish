@@ -3,31 +3,44 @@ import { Button, Card, Tooltip } from "@nextui-org/react";
 import NavBar from "./NavBar";
 
 export default function Explore() {
-  const toolTip = "Check out post from other users!";
-  const [images, setImages] = useState([]);
-
-  const fetchPostImage = async (postId) => {
-    try {
-      const response = await fetch(
-        `http://127.0.0.1:5000/post/${postId}/image`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
-      setImages((prevImages) => [...prevImages, data.image_url]);
-    } catch (error) {
-      console.error(
-        "There has been a problem with your fetch operation:",
-        error
-      );
-    }
-  };
-
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   useEffect(() => {
-    const postIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    postIds.forEach(fetchPostImage);
+    const fetchPosts = async () => {
+      setIsLoading(true);
+      const token = localStorage.getItem("token"); // Assuming the JWT token is stored in localStorage
+      console.log("token", token);
+      if (!token) {
+        setIsLoading(false);
+        setError("You need to be logged in to view this page");
+        return;
+      }
+      try {
+        const response = await fetch("http://127.0.0.1:5050/posts", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        setPosts(data);
+        setIsLoading(false);
+      } catch (error) {
+        setError("An error occurred. Please try again later.");
+        setIsLoading(false);
+      }
+    };
+    fetchPosts();
   }, []);
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+  console.log("posts", posts);
   return (
     <div className="lg:container mx-auto px-4 lg:px-8">
       <NavBar />
@@ -38,548 +51,33 @@ export default function Explore() {
           </h1>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
+          {posts.map(
+            (
+              post // Map over the posts array
+            ) => (
+              <div key={post.id} className="relative group">
+                {" "}
+                // Use the post id for the key prop
+                <img
+                  alt="Post"
+                  className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
+                  src={post.image_url || "https://via.placeholder.com/200"} // Use post.image_url for the image source
+                />
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                  <div className="flex flex-col items-center space-y-2">
+                    <Button color="danger" variant="ghost">
+                      <HeartIcon className="w-6 h-6" />
+                      <span className="sr-only">Like</span>
+                    </Button>
+                    <Button color="danger" variant="ghost">
+                      <MessageCircleIcon className="w-6 h-6" />
+                      <span className="sr-only">Comment</span>
+                    </Button>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-                <Button color="danger" variant="ghost">
-                  <MessageCircleIcon className="w-6 h-6" />
-                  <span className="sr-only">Comment</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="relative group">
-            <img
-              alt="Image"
-              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-              height="300"
-              src="https://cdn.britannica.com/36/123536-050-95CB0C6E/Variety-fruits-vegetables.jpg"
-              width="300"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="flex flex-col items-center space-y-2">
-                <Button color="danger" variant="ghost">
-                  <HeartIcon className="w-6 h-6" />
-                  <span className="sr-only">Like</span>
-                </Button>
-              </div>
-            </div>
-          </div>
+            )
+          )}
         </div>
       </Card>
     </div>

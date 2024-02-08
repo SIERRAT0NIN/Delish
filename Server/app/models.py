@@ -62,6 +62,17 @@ class Post(db.Model, SerializerMixin):
         backref=db.backref("posts", lazy=True),
     )
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "content": self.content,
+            "ingredients": self.ingredients,
+            "image_url": self.image_url,
+            "created_at": self.created_at.isoformat(),  # Format datetime as a string
+            # Include any other fields you want in the response
+        }
+
     def __repr__(self):
         return f"<Post {self.id}>"
 
@@ -179,19 +190,23 @@ class Chat(db.Model, SerializerMixin):
     messages = db.relationship("Message", back_populates="chat")
 
     user1 = db.relationship(
-        "User", back_populates="chats_as_user1", foreign_keys=[user1_id], 
-        overlaps="all_chats"
+        "User",
+        back_populates="chats_as_user1",
+        foreign_keys=[user1_id],
+        overlaps="all_chats",
     )
 
     user2 = db.relationship(
-        "User", back_populates="chats_as_user2", foreign_keys=[user2_id],
-        overlaps="all_chats"
+        "User",
+        back_populates="chats_as_user2",
+        foreign_keys=[user2_id],
+        overlaps="all_chats",
     )
 
-    #Tomfoolery
+    # Tomfoolery
     users = db.relationship(
         "User",
         back_populates="all_chats",
         primaryjoin="or_(User.id == Chat.user1_id, User.id == Chat.user2_id)",
-        overlaps="chats_as_user1,chats_as_user2,users,user1,user2"
+        overlaps="chats_as_user1,chats_as_user2,users,user1,user2",
     )

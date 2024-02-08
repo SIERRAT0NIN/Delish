@@ -29,7 +29,7 @@ const SignUp: React.FC = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
     "success"
   );
-  const {signup} = useAuth()
+  const { signup } = useAuth();
   const navigate = useNavigate();
   const initialValues: FormValues = {
     username: "",
@@ -41,14 +41,14 @@ const SignUp: React.FC = () => {
     values: FormValues,
     { setSubmitting, resetForm }: FormikHelpers<FormValues>
   ) => {
-    signup(values).then(resp =>{
-      if(resp){
-        resetForm()
-        navigate('/')
-      }else{
-        alert('Signup failed')
+    signup(values).then((resp) => {
+      if (resp) {
+        resetForm();
+        navigate("/");
+      } else {
+        alert("Signup failed");
       }
-    })
+    });
     setSubmitting(false);
   };
 

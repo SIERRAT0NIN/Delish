@@ -11,18 +11,19 @@ import {
   Image,
   Button,
 } from "@nextui-org/react";
-import NightmodeBtn from "../Misc/NightmodeBtn";
 import CreatePostModal from "./CreatePostModal";
 import { useAuth } from "../Auth/AuthContext";
 import Logo3D from "./Logo3D";
 import LogoIcon from "./LogoIcon3D";
 
+import NightmodeBtn from "../Misc/NightmodeBtn";
 export default function NavBar() {
   const { user } = useAuth(); // Check for token
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const menuItems = [
     { label: "Login", href: "/login" },
+    { label: "Home Page", href: "/home" },
     { label: "Create a new post", href: "/new-post" },
     { label: "Profile", href: "/profile" },
     { label: "Explore Recipes", href: "/explore_recipes" },
@@ -32,10 +33,11 @@ export default function NavBar() {
     { label: "My Settings", href: "/settings" },
     { label: "Help & Feedback", href: "/help" },
     { label: "Log Out", href: "/logout" },
+    <NightmodeBtn />,
   ];
 
   return (
-    <div className="container">
+    <div className="container  ">
       <Navbar
         className="nav-bar content-stretch p-2 shadow-lg "
         isBordered
@@ -61,15 +63,10 @@ export default function NavBar() {
 
         <NavbarContent className="hidden sm:flex gap-4" justify="center">
           <NavbarBrand>
-            {/* <Image
-              className="mr-10  cursor-pointer"
-              src="https://i.imgur.com/qc6msvk.png"
-              width={"69"}
-            ></Image> */}
-            <LogoIcon />
-
             <button className="font-bold dancing-script">
-              <a href="/"> </a>
+              <a href="/">
+                <LogoIcon />
+              </a>
             </button>
           </NavbarBrand>
 
@@ -100,33 +97,26 @@ export default function NavBar() {
                   Messages
                 </Link>
               </NavbarItem>
-              <NavbarItem>
-                {/* <Button
-                color="foreground"
-                href="chat "
-                color="success"
-                variant="shadow"
-                className="text-white"
-              >
-                Create Post
-              </Button> */}
-                <CreatePostModal />
-              </NavbarItem>
-              <Button
-                className="justify-self-end"
-                as={Link}
-                color="danger"
-                href="logout"
-                variant="ghost"
-              >
-                Logout
-              </Button>
+              <div className="hidden md:flex flex">
+                <NavbarItem>
+                  <CreatePostModal />
+                </NavbarItem>
+                <Button
+                  className="justify-self-end"
+                  as={Link}
+                  color="danger"
+                  href="logout"
+                  variant="ghost"
+                >
+                  Logout
+                </Button>
+              </div>
             </NavbarContent>
           )}
+          <div className="hidden md:inline-block">{<NightmodeBtn />}</div>
         </NavbarContent>
 
         <NavbarContent justify="center">
-          {<NightmodeBtn />}
           {!user && (
             <NavbarContent justify="end">
               <NavbarItem className="hidden lg:flex ">

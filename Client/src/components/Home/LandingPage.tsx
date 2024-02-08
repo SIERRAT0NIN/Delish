@@ -20,12 +20,12 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen lg:container lg:mx-auto rounded ">
       <header className="flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-800">
-        <Link href="#">
+        <Link href="/">
           <span className="sr-only">Delish</span>
         </Link>
         <NavBar />
       </header>
-      <main className="flex-1 rounded bg-glass border border-glass shadow-lg backdrop-filter-blur ">
+      <main className="flex-1 rounded bg-glass border border-glass shadow-lg glass">
         <section className="flex flex-col items-center justify-center py-12 md:py-24 lg:py-32 ">
           <h1 className="text-3xl  font-bold text-black tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
             Welcome to

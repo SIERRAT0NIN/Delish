@@ -204,6 +204,7 @@ export default function ChatBox() {
               </nav>
             </div>
           </div> */}
+
           <div className="col-span-3 flex flex-col">
             <div className="flex items-center gap-3 p-4 border-b border-gray-200 dark:border-gray-800">
               <Avatar
