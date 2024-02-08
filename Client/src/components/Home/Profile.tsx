@@ -5,8 +5,50 @@
 import { Avatar, Card, Button, Image } from "@nextui-org/react";
 import RecipeModal from "./RecipeModal";
 import NavBar from "./NavBar";
+import { useEffect, useState } from "react";
 
 export default function Component() {
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setIsLoading(true);
+      const token = localStorage.getItem("token"); // Assuming the JWT token is stored in localStorage
+      console.log("token", token);
+      if (!token) {
+        console.error("No token found");
+      }
+      try {
+        const response = await fetch("http://127.0.0.1:5050/user/posts", {
+          method: "GET",
+          credentials: "include", // This tells the browser to include cookies with the request
+
+          headers: {
+            Authorization: `Bearer ${token}`, // Assuming the token is a bearer token
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Could not fetch posts.");
+        }
+
+        const data = await response.json();
+        setPosts(data);
+      } catch (error) {
+        console.error(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+  console.log("posts", posts);
   return (
     <div className="w-full">
       <div className=" mx-auto px-4 py-6 md:px-6 lg:py-16 md:py-12 ">

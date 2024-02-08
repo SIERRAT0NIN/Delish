@@ -42,7 +42,7 @@ export default function Explore() {
   }
   console.log("posts", posts);
   return (
-    <div className="lg:container mx-auto px-4 lg:px-8">
+    <div className="lg:container mx-auto px-4 lg:px-8 pattern">
       <NavBar />
       <Card className="p-1 mt-5 sm:p-10  sm:m-10">
         <div className="">
@@ -56,7 +56,6 @@ export default function Explore() {
               post // Map over the posts array
             ) => (
               <div key={post.id} className="relative group">
-                {" "}
                 // Use the post id for the key prop
                 <img
                   alt="Post"

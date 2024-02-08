@@ -62,13 +62,13 @@ export default function NavBar() {
         </NavbarContent>
 
         <NavbarContent className="hidden sm:flex gap-4" justify="center">
-          <NavbarBrand>
+          {/* <NavbarBrand>
             <button className="font-bold dancing-script">
               <a href="/">
                 <LogoIcon />
               </a>
             </button>
-          </NavbarBrand>
+          </NavbarBrand> */}
 
           {user && (
             <NavbarContent justify="end">
