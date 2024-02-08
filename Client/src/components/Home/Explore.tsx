@@ -42,7 +42,7 @@ export default function Explore() {
   }
   console.log("posts", posts);
   return (
-    <div className="lg:container mx-auto px-4 lg:px-8">
+    <div className="lg:container mx-auto px-4 lg:px-8 pattern">
       <NavBar />
       <Card className="p-1 mt-5 sm:p-10  sm:m-10">
         <div className="">
