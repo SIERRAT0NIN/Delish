@@ -54,6 +54,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     "success"
   );
   const [loadingLogout, setLoadingLogout] = useState(false);
+  const { refreshToken, setRefreshToken } = useState();
 
   useEffect(() => {
     if (!loadingLogout) {
@@ -86,10 +87,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }) as Promise<boolean>;
         } else {
           if (res.status === 401) {
-            return fetch("/api/refresh", {
+            fetch("/api/refresh", {
+              method: "POST",
               headers: {
-                "X-CSRF-TOKEN": getCookie("csrf_refresh_token"),
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${refreshToken}`,
+                "X-CSRF-TOKEN": getCookie("csrf_refresh_token"), // Assuming CSRF protection is required
               },
+              credentials: "include", // If your endpoint requires cookies to be sent
             })
               .then((res) => {
                 if (res.ok) {
@@ -141,6 +146,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setSnackbarMessage(data.message || "Login successful");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
+        localStorage.setItem("token", data.access_token);
+        localStorage.setItem("refreshToken", data.refresh_token);
         return true;
       })
       .catch((error) => {
@@ -196,14 +203,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setSnackbarMessage("Failed to sign up. Please try again.");
           setSnackbarSeverity("error");
           setSnackbarOpen(true);
+          console.log(data);
+          localStorage.setItem("token", data.accessToken); // Assuming the token is named accessToken in the response
+          localStorage.setItem("refreshToken", data.refreshToken);
           return false;
         }
 
-        console.log("Success:", data);
         setUser(data);
         setSnackbarMessage(data.message || "User created successfully");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
+
+        localStorage.setItem("token", data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
+        setRefreshToken(data.refreshToken);
         return true;
       })
       .catch((error) => {

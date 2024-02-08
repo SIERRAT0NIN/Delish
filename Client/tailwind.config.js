@@ -25,5 +25,8 @@ export default {
     },
   },
   darkMode: "class",
-  plugins: [nextui(), require("tailwindcss-filters")],
+  plugins: [nextui(), require("tailwindcss-filters"), require("daisyui")],
+  daisyui: {
+    themes: false,
+  },
 };

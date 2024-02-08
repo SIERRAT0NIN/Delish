@@ -54,9 +54,10 @@ export default function CreatePostModal() {
               <ModalBody>
                 <div className="flex align-center">
                   <input
-                    className="bg-orange-300 rounded-lg p-3"
                     type="file"
+                    className="file-input  file-input-md file-input-bordered file-input-default w-full max-w-xs"
                     onChange={handleFileChange}
+                    placeholder="Upload a photo"
                   />
                 </div>
                 <div className="flex">
