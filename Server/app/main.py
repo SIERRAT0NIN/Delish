@@ -422,7 +422,7 @@ class Posts(Resource):
 
 
 # Ensure to add the resource to the API after the class definition
-api.add_resource(Posts, "/user/posts")
+api.add_resource(Posts, "/posts")
 
 
 class UserPosts(Resource):
@@ -468,7 +468,7 @@ class UserPosts(Resource):
 
 
 # Ensure to add the resource to the API after the class definition
-api.add_resource(UserPosts, "/posts")
+api.add_resource(UserPosts, "/user/posts")
 
 
 class Logout(Resource):
