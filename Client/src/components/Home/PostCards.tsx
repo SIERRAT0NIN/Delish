@@ -101,12 +101,13 @@ export default function PostCards() {
                 src={post.image_url || "https://via.placeholder.com/300"} // Fallback for missing images
               />
               <div className="flex justify-center gap-2 mt-2">
-                <Button variant="ghost" color="danger" className="m-2">
-                  <HeartIcon className="w-4 h-4" />
+                <Button color="danger" variant="ghost">
+                  <HeartIcon className="w-6 h-6" />
                   <span className="sr-only">Like</span>
                 </Button>
-                <Button variant="ghost" color="danger">
-                  <MessageCircleIcon className="w-4 h-4" />
+                <Button color="danger" variant="ghost">
+                  <MessageCircleIcon className="w-6 h-6" />
+                  <span className="sr-only">Comment</span>
                 </Button>
               </div>
             </div>
