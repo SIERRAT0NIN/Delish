@@ -1,10 +1,15 @@
 import { Link } from "@nextui-org/react";
 import NavBar from "./NavBar";
+import LogoIcon from "./LogoIcon3D";
 
 export default function Developers() {
   return (
     <>
       <NavBar />
+      <div className="  absolute">
+        <LogoIcon />
+      </div>
+
       <div className="rounded-lg mt-10">
         <div className="bg-gray-100 dark:bg-gray-800 rounded-t-lg">
           <footer className="container mx-auto py-6 px-4 md:px-6 flex flex-col items-center justify-center space-y-4 text-center ">

@@ -379,12 +379,58 @@ api.add_resource(ChatID, "/chats/<int:id>")
 # api.add_resource(UserPosts, "/posts")
 
 
-class UserPosts(Resource):
+class Posts(Resource):
     @jwt_required()
     def get(self):
         # user_id = get_jwt_identity()
         # Using .first_or_404() to simplify and directly handle user not found scenario.
         posts = Post.query.all()
+        if not posts:
+            return jsonify([])
+        return jsonify([post.to_dict() for post in posts])
+
+    @jwt_required()
+    def post(self):
+        user_id = get_jwt_identity()
+        user = User.query.filter_by(id=user_id).first_or_404(
+            description="User not found."
+        )
+        data = request.get_json()
+
+        content = data.get("content")
+        ingredients = data.get("ingredients")
+        image_url = data.get(
+            "image_url", None
+        )  # Using None as default if key doesn't exist
+
+        if not content or not ingredients:
+            return {"error": "Missing data for content or ingredients"}, 400
+
+        try:
+            new_post = Post(
+                user_id=user.id,
+                content=content,
+                ingredients=ingredients,
+                image_url=image_url,
+            )
+            db.session.add(new_post)
+            db.session.commit()
+            return new_post.to_dict(), 201  # 201 Created
+        except IntegrityError as e:
+            db.session.rollback()
+            return {"error": "Failed to create new post.", "details": str(e)}, 500
+
+
+# Ensure to add the resource to the API after the class definition
+api.add_resource(Posts, "/user/posts")
+
+
+class UserPosts(Resource):
+    @jwt_required()
+    def get(self):
+        user_id = get_jwt_identity()
+        # Using .first_or_404() to simplify and directly handle user not found scenario.
+        posts = Post.query.filter_by(user_id=user_id).all()
         if not posts:
             return jsonify([])
         return jsonify([post.to_dict() for post in posts])

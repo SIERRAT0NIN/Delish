@@ -56,7 +56,6 @@ export default function Explore() {
               post // Map over the posts array
             ) => (
               <div key={post.id} className="relative group">
-                {" "}
                 // Use the post id for the key prop
                 <img
                   alt="Post"
