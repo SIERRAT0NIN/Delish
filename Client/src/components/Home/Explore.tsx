@@ -44,44 +44,43 @@ export default function Explore() {
   }
   console.log("posts", posts);
   return (
-    <div className="lg:container mx-auto px-4 lg:px-8 pattern">
-      <Card className="p-1 mt-5 sm:p-10  sm:m-10">
-        <h1 className="mb-5 text-center text-base sm:text-lg bg-gradient-to-r from-purple-500 to-pink-300 text-white py-3 sm:py-5 rounded ">
-          Explore
-        </h1>
-        <div className="mb-5">
-          <Followers />
-        </div>
-        <div className=""></div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {posts.map(
-            (
-              post // Map over the posts array
-            ) => (
-              <div key={post.id} className="relative group">
-                <img
-                  alt="Post"
-                  className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-                  src={post.image_url || "https://via.placeholder.com/200"} // Use post.image_url for the image source
-                />
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                  <div className="flex flex-col items-center space-y-2">
-                    <Button color="danger" variant="ghost">
-                      <HeartIcon className="w-6 h-6" />
-                      <span className="sr-only">Like</span>
-                    </Button>
-                    <Button color="danger" variant="ghost">
-                      <MessageCircleIcon className="w-6 h-6" />
-                      <span className="sr-only">Comment</span>
-                    </Button>
-                  </div>
+    <Card className="mt-5 mb-10">
+      <h1 className="flex justify-center text-lg bg-gradient-to-r from-pink-500 to-yellow-500 text-white p-5 rounded ">
+        Explore
+      </h1>
+      <div className="mb-5">
+        <Followers />
+      </div>
+      <div className=""></div>
+      <div className="grid grid-cols-1 p-3 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {posts.map(
+          (
+            post // Map over the posts array
+          ) => (
+            <div key={post.id} className="relative group">
+              <img
+                alt="Post"
+                className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
+                src={post.image_url || "https://via.placeholder.com/200"}
+              />
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                <div className="flex flex-col items-center space-y-2">
+                  <Button color="danger" variant="ghost">
+                    <HeartIcon className="w-6 h-6" />
+                    <span className="sr-only">Like</span>
+                  </Button>
+                  <Button color="danger" variant="ghost">
+                    <MessageCircleIcon className="w-6 h-6" />
+                    <span className="sr-only">Comment</span>
+                  </Button>
                 </div>
               </div>
-            )
-          )}
-        </div>
-      </Card>
-    </div>
+            </div>
+          )
+        )}
+      </div>
+    </Card>
+    // </div>
   );
 }
 

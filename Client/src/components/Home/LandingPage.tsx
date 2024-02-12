@@ -11,16 +11,16 @@ import NavBar from "./NavBar";
 import UserInfoCard from "./UserInfoCard";
 import NotificationCenter from "./NotificationCenter";
 import { useAuth } from "../Auth/AuthContext";
-import Cake3D from "./Cake3D";
-import Logo3D from "./Logo3D";
+import Cake3D from "../3D-Models/Cake3D";
+import Logo3D from "../3D-Models/Logo3D";
 import Footer from "./Footer";
 
 export default function LandingPage() {
   const { user } = useAuth();
 
   return (
-    <div className="flex flex-col min-h-screen lg:container lg:mx-auto rounded ">
-      <header className="flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-800">
+    <div className="flex flex-col min-h-screen lg:container lg:mx-auto rounded mt-5 mb-10">
+      <header className="flex items-center justify-between px-6 py-4  rounded-lg">
         <Link href="/">
           <span className="sr-only">Delish</span>
         </Link>

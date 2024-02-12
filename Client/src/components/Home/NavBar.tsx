@@ -8,13 +8,15 @@ import {
   NavbarContent,
   NavbarItem,
   Link,
-  Image,
   Button,
+  Badge,
+  useDisclosure,
 } from "@nextui-org/react";
 import CreatePostModal from "./CreatePostModal";
 import { useAuth } from "../Auth/AuthContext";
 
 import NightmodeBtn from "../Misc/NightmodeBtn";
+import NotificationCenter from "./NotificationCenter";
 export default function NavBar() {
   const { user } = useAuth(); // Check for token
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,6 +35,11 @@ export default function NavBar() {
     { label: "Log Out", href: "/logout" },
     <NightmodeBtn />,
   ];
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const handleUserClick = () => {
+    onOpen(true);
+  };
 
   return (
     <div className="container  ">
@@ -48,7 +55,7 @@ export default function NavBar() {
           />
         </NavbarContent>
 
-        <NavbarContent className="sm:hidden pr-3">
+        <NavbarContent className="sm:hidden  pr-3">
           <NavbarBrand>
             <p className="font-bold dancing-script">Delish</p>
           </NavbarBrand>
@@ -76,15 +83,9 @@ export default function NavBar() {
                   Explore
                 </Link>
               </NavbarItem>
-
               <NavbarItem>
                 <Link color="foreground" href="chat">
                   Messages
-                </Link>
-              </NavbarItem>
-              <NavbarItem>
-                <Link color="foreground" href="followers">
-                  Followers
                 </Link>
               </NavbarItem>
               <div className="hidden md:flex flex p-5 ">
@@ -96,13 +97,29 @@ export default function NavBar() {
                   as={Link}
                   color="danger"
                   href="logout"
-                  variant="ghost"
+                  variant="shadow"
                 >
                   Logout
                 </Button>
               </div>
             </NavbarContent>
           )}
+          <Badge content="5" color="default">
+            <Button isIconOnly onPress={handleUserClick}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.25 9a6.75 6.75 0 0 1 13.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 0 1-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 1 1-7.48 0 24.585 24.585 0 0 1-4.831-1.244.75.75 0 0 1-.298-1.205A8.217 8.217 0 0 0 5.25 9.75V9Zm4.502 8.9a2.25 2.25 0 1 0 4.496 0 25.057 25.057 0 0 1-4.496 0Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </Button>
+          </Badge>
           <div className="hidden md:inline-block">{<NightmodeBtn />}</div>
         </NavbarContent>
 
@@ -125,9 +142,10 @@ export default function NavBar() {
             </NavbarContent>
           )}
         </NavbarContent>
-        <div className="nav ">
+
+        <div className="nav">
           <NavbarMenu>
-            <div className="mt-7 pt-10">
+            <div className="mt-7 pt-10 z-10">
               {menuItems.map((item, index) => (
                 <NavbarMenuItem className="mb-2" key={`${item}-${index}`}>
                   <Link
@@ -150,6 +168,7 @@ export default function NavBar() {
           </NavbarMenu>
         </div>
       </Navbar>
+      <NotificationCenter isOpen={isOpen} onOpenChange={onOpenChange} />
     </div>
   );
 }

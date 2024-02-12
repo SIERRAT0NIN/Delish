@@ -6,7 +6,7 @@ import { Link } from "@nextui-org/react";
 
 export default function Component() {
   return (
-    <section className="w-full h-screen flex flex-col items-center justify-center bg-gray-900 text-white">
+    <section className="w-full h-screen flex flex-col items-center justify-center bg-gray-900 text-white rounded-lg mt-3 mb-3">
       <div className="space-y-4 text-center">
         <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
           Oops! Something went wrong
