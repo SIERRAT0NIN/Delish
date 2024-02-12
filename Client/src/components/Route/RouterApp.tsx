@@ -19,9 +19,11 @@ import Explore from "../Home/Explore";
 import Logout from "../Auth/Logout";
 import Developers from "../Home/Developers";
 import { useAuth } from "../Auth/AuthContext";
+import NotificationCenter from "../Home/NotificationCenter";
+import Followers from "../Home/Followers";
 
 function RouterApp() {
-  const {user} = useAuth()
+  const { user } = useAuth();
 
   return (
     <Routes>
@@ -37,7 +39,8 @@ function RouterApp() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/explore_recipes" element={<Explore />} />
           <Route path="/developers" element={<Developers />} />
-          <Route path="/three" element={<HomeThreeJS />} />
+          <Route path="/followers" element={<Followers />} />
+          {/* <Route path="/notifications" element={<NotificationCenter />} /> */}
           <Route path="/*" element={<Error />} />
           <Route path="/logout" element={<Logout />} />
         </>

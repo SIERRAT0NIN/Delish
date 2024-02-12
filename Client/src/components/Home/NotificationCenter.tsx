@@ -1,3 +1,5 @@
+import React from "react";
+
 import { Button, Card, CardHeader, CardBody } from "@nextui-org/react";
 
 export default function NotificationCenter() {

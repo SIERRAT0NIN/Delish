@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, Tooltip } from "@nextui-org/react";
 import NavBar from "./NavBar";
+import Followers from "./Followers";
 
 export default function Explore() {
   const [posts, setPosts] = useState([]);
@@ -45,18 +46,19 @@ export default function Explore() {
     <div className="lg:container mx-auto px-4 lg:px-8 pattern">
       <NavBar />
       <Card className="p-1 mt-5 sm:p-10  sm:m-10">
-        <div className="">
-          <h1 className="mb-5 text-center text-base sm:text-lg bg-gradient-to-r from-purple-500 to-pink-300 text-white py-3 sm:py-5 rounded ">
-            Explore
-          </h1>
+        <h1 className="mb-5 text-center text-base sm:text-lg bg-gradient-to-r from-purple-500 to-pink-300 text-white py-3 sm:py-5 rounded ">
+          Explore
+        </h1>
+        <div className="mb-5">
+          <Followers />
         </div>
+        <div className=""></div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {posts.map(
             (
               post // Map over the posts array
             ) => (
               <div key={post.id} className="relative group">
-                // Use the post id for the key prop
                 <img
                   alt="Post"
                   className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
