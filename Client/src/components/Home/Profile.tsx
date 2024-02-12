@@ -52,9 +52,7 @@ export default function Component() {
   return (
     <div className="w-full">
       <div className=" mx-auto px-4 py-6 md:px-6 lg:py-16 md:py-12 ">
-        <div className="mb-10">
-          <NavBar />
-        </div>
+        <div className="mb-10"></div>
         <Card>
           <div className="text-lg bg-gradient-to-r from-violet-200 to-green-500 text-white p-5 rounded m-5 text-center">
             Profile

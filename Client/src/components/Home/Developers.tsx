@@ -5,7 +5,6 @@ import LogoIcon from "./LogoIcon3D";
 export default function Developers() {
   return (
     <>
-      <NavBar />
       <div className="  absolute">
         <LogoIcon />
       </div>

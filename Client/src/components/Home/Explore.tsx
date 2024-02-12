@@ -44,7 +44,6 @@ export default function Explore() {
   console.log("posts", posts);
   return (
     <div className="lg:container mx-auto px-4 lg:px-8 pattern">
-      <NavBar />
       <Card className="p-1 mt-5 sm:p-10  sm:m-10">
         <h1 className="mb-5 text-center text-base sm:text-lg bg-gradient-to-r from-purple-500 to-pink-300 text-white py-3 sm:py-5 rounded ">
           Explore
