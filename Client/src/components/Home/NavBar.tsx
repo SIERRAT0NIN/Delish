@@ -13,8 +13,6 @@ import {
 } from "@nextui-org/react";
 import CreatePostModal from "./CreatePostModal";
 import { useAuth } from "../Auth/AuthContext";
-import Logo3D from "./Logo3D";
-import LogoIcon from "./LogoIcon3D";
 
 import NightmodeBtn from "../Misc/NightmodeBtn";
 export default function NavBar() {
@@ -44,32 +42,19 @@ export default function NavBar() {
         isMenuOpen={isMenuOpen}
         onMenuOpenChange={setIsMenuOpen}
       >
-        {/* <Image src="Client/src/images/FoodieLogo.png" /> */}
-        {/* <div className="w-100px">
-          <Logo3D />
-        </div> */}
-
         <NavbarContent className="sm:hidden" justify="start">
           <NavbarMenuToggle
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           />
         </NavbarContent>
 
-        <NavbarContent className="sm:hidden pr-3" justify="center">
+        <NavbarContent className="sm:hidden pr-3">
           <NavbarBrand>
             <p className="font-bold dancing-script">Delish</p>
           </NavbarBrand>
         </NavbarContent>
 
         <NavbarContent className="hidden sm:flex gap-4" justify="center">
-          {/* <NavbarBrand>
-            <button className="font-bold dancing-script">
-              <a href="/">
-                <LogoIcon />
-              </a>
-            </button>
-          </NavbarBrand> */}
-
           {user && (
             <NavbarContent justify="end">
               <NavbarItem>
@@ -88,7 +73,7 @@ export default function NavBar() {
                   color="foreground"
                   aria-current="page"
                 >
-                  Explore Recipes
+                  Explore
                 </Link>
               </NavbarItem>
 
@@ -97,12 +82,17 @@ export default function NavBar() {
                   Messages
                 </Link>
               </NavbarItem>
-              <div className="hidden md:flex flex">
+              <NavbarItem>
+                <Link color="foreground" href="followers">
+                  Followers
+                </Link>
+              </NavbarItem>
+              <div className="hidden md:flex flex p-5 ">
                 <NavbarItem>
                   <CreatePostModal />
                 </NavbarItem>
                 <Button
-                  className="justify-self-end"
+                  className="justify-self-end ml-4"
                   as={Link}
                   color="danger"
                   href="logout"

@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy  # cSpell:ignore SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.sql import func
 from app_config import db
+# from .app_config import db
 
 
 class Profile(db.Model, SerializerMixin):
@@ -87,7 +88,12 @@ class Tag(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f"<Tag {self.name}>"
-
+    
+    
+# followers = db.Table('followers',
+#     db.Column('follower_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+#     db.Column('followed_id', db.Integer, db.ForeignKey('users.id'), primary_key=True)
+# )
 
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"
@@ -145,9 +151,34 @@ class User(db.Model, SerializerMixin):
         "Chat",
         back_populates="users",
         primaryjoin="or_(User.id == Chat.user1_id, User.id == Chat.user2_id)",
+        # primary_join="or_(User.id == Chat.user1_id, User.id == Chat.user2_id)",
         overlaps="chats_as_user1,chats_as_user2",
+        
+        
     )
-
+    
+    def to_dict(self, only=None):
+            # Define a mapping of all possible fields to include
+            all_fields = {
+                'id': self.id,
+                'username': self.username,
+                'email': self.email,
+                # Add other fields as needed
+            }
+            if only is None:
+                return all_fields
+            else:
+                # Filter the fields based on the 'only' parameter
+                return {key: value for key, value in all_fields.items() if key in only}
+    
+    # followed = db.relationship(
+    # 'User', secondary=followers,
+    # primaryjoin=(followers.c.follower_id == id),
+    # secondaryjoin=(followers.c.followed_id == id),
+    # backref=db.backref('followers', lazy='dynamic'),
+    # lazy='dynamic'
+# ) 
+    
     def __repr__(self):
         return f"<User {self.username}>"
 

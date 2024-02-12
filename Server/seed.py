@@ -1,6 +1,7 @@
-from app import create_app, db
-from app.models import User, Profile, Post, Comment, Tag
+from app import create_app
+from app.models import *
 from faker import Faker
+from app.app_config import db
 
 
 # Function to add sample data to the database

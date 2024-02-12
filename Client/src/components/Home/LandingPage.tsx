@@ -13,6 +13,7 @@ import NotificationCenter from "./NotificationCenter";
 import { useAuth } from "../Auth/AuthContext";
 import Cake3D from "./Cake3D";
 import Logo3D from "./Logo3D";
+import Footer from "./Footer";
 
 export default function LandingPage() {
   const { user } = useAuth();
@@ -23,7 +24,6 @@ export default function LandingPage() {
         <Link href="/">
           <span className="sr-only">Delish</span>
         </Link>
-        <NavBar />
       </header>
       <main className="flex-1 rounded bg-glass border border-glass shadow-lg glass">
         <section className="flex flex-col items-center justify-center py-12 md:py-24 lg:py-32 ">
@@ -116,12 +116,6 @@ export default function LandingPage() {
             </Button>
           </a>
         </section>
-        <footer className="flex items-center justify-center py-6 bg-white dark:bg-gray-800 ">
-          <p className="text-gray-500 dark:text-gray-400 ">
-            © 2024 <span className="dancing-script">Delish.</span>
-            All rights reserved.
-          </p>
-        </footer>
       </main>
 
       {/* <NotificationCenter /> */}

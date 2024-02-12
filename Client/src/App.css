@@ -2,14 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 body {
-  /* background-image: url("https://i.imgur.com/yCHmnqC.png"); //Blurred Blob
-   */
-  /* background-image: url("https://i.imgur.com/hpr6CFh.png"); //Colored dots */
-  /* background-image: url("https://i.imgur.com/Lb2bJzo.png"); Green/White top */
-  /* background-image: url("https://i.imgur.com/Lb2bJzo.png"); Black/Blue top */
+  /* background-image: url("https://i.imgur.com/yCHmnqC.png"); */
+
+  /* background-image: url("https://i.imgur.com/hpr6CFh.png");
+  background-image: url("https://i.imgur.com/OSay2e9.png");
+  background-image: url("https://i.imgur.com/Lb2bJzo.png");
   background-image: url("https://i.imgur.com/wdXP814.png");
-  /* background-image: url("https://i.imgur.com/OSay2e9.png"); Black/red two lava sides */
-  /* background-image: url("https://i.imgur.com/OSay2e9.png"); */
+  background-image: url("https://i.imgur.com/OSay2e9.png");
+  background-image: url("https://i.imgur.com/Lb2bJzo.png");
+  */
+  background-image: linear-gradient(white, black);
 
   background-size: cover; /* Cover the entire page */
   background-repeat: no-repeat; /* Do not repeat the image */

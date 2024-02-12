@@ -7,6 +7,7 @@ from flask_socketio import SocketIO, join_room, leave_room
 from datetime import datetime, timedelta
 from models import User, Message, Chat, Post
 from app_config import db
+# from .app_config import db
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_jwt_extended import (
@@ -56,6 +57,7 @@ cors = CORS(
         r"/user": {"origins": "http://localhost:5173"},
         r"/refresh": {"origins": "http://localhost:5173"},
         r"/posts": {"origins": "http://localhost:5173"},
+        r"/search_users": {"origins": "*"},
     },
 )
 CORS(
@@ -324,59 +326,6 @@ class ChatID(Resource):
 # Add the resource to your API
 api.add_resource(ChatID, "/chats/<int:id>")
 
-# class UserPosts(Resource):
-#     @jwt_required()
-#     def get(self):
-#         user = User.query.filter_by(email=get_jwt_identity()).first()
-#         return user.to_dict(only=("id", "username", "email", "posts"))
-
-#     @jwt_required()
-#     def post(self):
-#         user = User.query.filter_by(email=get_jwt_identity()).first()
-#         data = request.get_json()
-#         post = data.get("post")
-
-
-#         if post:
-#             user.posts.append(post)
-#             db.session.commit()
-#             return user.to_dict(only=("id", "username", "email", "posts"))
-#         else:
-#             return {"error": "Invalid data"}, 400
-# api.add_resource(UserPosts, "/user/posts")
-# class UserPosts(Resource):
-#     @jwt_required()
-#     def get(self):
-#         user_id = get_jwt_identity()
-#         user = User.query.filter_by(id=user_id).first_or_404()
-#         posts = Post.query.filter_by(user_id=user_id).all()
-#         return [post.to_dict() for post in posts]
-
-#     @jwt_required()
-#     def post(self):
-#         user_id = get_jwt_identity()
-#         user = User.query.filter_by(id=user_id).first_or_404()
-#         data = request.get_json()
-
-#         content = data.get("content")
-#         ingredients = data.get("ingredients")
-#         image_url = data.get("image_url")  # This field is optional
-
-#         if content and ingredients:
-#             new_post = Post(
-#                 user_id=user.id,
-#                 content=content,
-#                 ingredients=ingredients,
-#                 image_url=image_url,
-#             )
-#             db.session.add(new_post)
-#             db.session.commit()
-#             return new_post.to_dict()  # Assuming to_dict() is properly implemented
-#         else:
-#             return {"error": "Missing data for content or ingredients"}, 400
-
-
-# api.add_resource(UserPosts, "/posts")
 
 
 class Posts(Resource):
@@ -541,6 +490,17 @@ def handle_message(_message):
 @socketio.on("connect_error")
 def error(err):
     print(err)
+    
+    
+class SearchUsers(Resource):
+    def get(self):
+        query = request.args.get('query')
+        if query:
+            users = User.query.filter(User.username.ilike(f'%{query}%')).all()
+            return [user.to_dict() for user in users]  # Correctly call to_dict for each user
+        return []
+
+api.add_resource(SearchUsers, '/search_users')
 
 
 if __name__ == "__main__":

@@ -20,6 +20,7 @@
     "@splinetool/react-spline": "^2.2.6",
     "@splinetool/runtime": "^1.0.38",
     "animejs": "^3.2.2",
+    "axios": "^1.6.7",
     "formik": "^2.4.5",
     "install": "^0.13.0",
     "npm": "^10.3.0",

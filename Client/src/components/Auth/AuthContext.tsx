@@ -213,7 +213,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setSnackbarMessage(data.message || "User created successfully");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
-
         localStorage.setItem("token", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
         setRefreshToken(data.refreshToken);
