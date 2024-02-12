@@ -133,7 +133,6 @@ export default function ChatBox() {
 
   return (
     <>
-      <NavBar />
       <Card className="mt-10 p-10">
         <h1 className="flex justify-center text-lg bg-gradient-to-r from-pink-500 to-yellow-500 text-white p-5 rounded m-2">
           Direct Messages

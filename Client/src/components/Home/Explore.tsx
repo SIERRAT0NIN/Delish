@@ -7,6 +7,7 @@ export default function Explore() {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
   useEffect(() => {
     const fetchPosts = async () => {
       setIsLoading(true);

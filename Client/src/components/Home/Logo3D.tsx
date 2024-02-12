@@ -5,7 +5,7 @@ export default function Logo3D() {
     <div className="">
       <Spline
         className="hidden lg:inline-block"
-        scene="https://prod.spline.design/buEs3ycSi485Fo3K/scene.splinecode"
+        scene="https://prod.spline.design/eW5Svf18iy7UJxR2/scene.splinecode"
       />
     </div>
   );
