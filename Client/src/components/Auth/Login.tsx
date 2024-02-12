@@ -44,7 +44,6 @@ const Login: React.FC = () => {
 
   return (
     <div>
-      <NavBar />
       <div className="form-card mx-auto max-w-md space-y-6">
         <Card className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
           <h1 className="pt-3">Login</h1>

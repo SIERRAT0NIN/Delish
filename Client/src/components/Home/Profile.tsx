@@ -51,95 +51,92 @@ export default function Component() {
   console.log("posts", posts);
   return (
     <div className="w-full">
-      <div className=" mx-auto px-4 py-6 md:px-6 lg:py-16 md:py-12 ">
-        <div className="mb-10"></div>
-        <Card>
-          <div className="text-lg bg-gradient-to-r from-violet-200 to-green-500 text-white p-5 rounded m-5 text-center">
-            Profile
+      <Card className="mt-5 mb-10">
+        <div className="text-lg bg-gradient-to-r from-violet-200 to-green-500 text-white p-5 rounded  text-center">
+          Profile
+        </div>
+        <div className="flex flex-col items-center space-y-6 profile-card">
+          <div className="justify-center contents">
+            <Avatar
+              src="https://w7.pngwing.com/pngs/480/557/png-transparent-bart-simpsons-illustration-homer-simpson-lisa-simpson-marge-simpson-fox-satire-homer-television-face-animals.png"
+              alt="User's name"
+              size="lg"
+              className="place-content-stretch"
+            />
+            <h1 className="text-2xl font-bold">@Alberto.Sierra</h1>
+            <p className="justify-center text-sm text-gray-500 dark:text-gray-400 line-clamp-4">
+              This is a short bio about the user. It's a brief introduction that
+              is limited to 150 characters.
+            </p>
+            <div className="flex space-x-4">
+              <div className="flex items-center space-x-2">
+                <UserIcon className="w-5 h-5" />
+                <span>3 Posts</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <UserIcon className="w-5 h-5" />
+                <span>1.2k followers</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <UsersIcon className="w-5 h-5" />
+                <span>500 following</span>
+              </div>
+            </div>
           </div>
-          <div className="flex flex-col items-center space-y-6 profile-card">
-            <div className="justify-center contents">
-              <Avatar
-                src="https://w7.pngwing.com/pngs/480/557/png-transparent-bart-simpsons-illustration-homer-simpson-lisa-simpson-marge-simpson-fox-satire-homer-television-face-animals.png"
-                alt="User's name"
-                size="lg"
-                className="place-content-stretch"
+
+          <div className="grid grid-cols-3 gap-4 mt-6">
+            <div>
+              <Image
+                alt="Image caption"
+                className="aspect-square object-cover rounded-[12px]"
+                height={300}
+                src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?q=80&w=2912&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                width={300}
               />
-              <h1 className="text-2xl font-bold">@Alberto.Sierra</h1>
-              <p className="justify-center text-sm text-gray-500 dark:text-gray-400 line-clamp-4">
-                This is a short bio about the user. It's a brief introduction
-                that is limited to 150 characters.
-              </p>
-              <div className="flex space-x-4">
-                <div className="flex items-center space-x-2">
-                  <UserIcon className="w-5 h-5" />
-                  <span>3 Posts</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <UserIcon className="w-5 h-5" />
-                  <span>1.2k followers</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <UsersIcon className="w-5 h-5" />
-                  <span>500 following</span>
-                </div>
+              <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                Image caption
+              </div>
+              <div className="flex items-center space-x-2 mt-1">
+                <HeartIcon className="w-5 h-5" />
+                <span>120 likes</span>
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4 mt-6">
-              <div>
-                <Image
-                  alt="Image caption"
-                  className="aspect-square object-cover rounded-[12px]"
-                  height={300}
-                  src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?q=80&w=2912&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  width={300}
-                />
-                <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                  Image caption
-                </div>
-                <div className="flex items-center space-x-2 mt-1">
-                  <HeartIcon className="w-5 h-5" />
-                  <span>120 likes</span>
-                </div>
+            <div>
+              <Image
+                alt="Image caption"
+                className="aspect-square object-cover rounded-[12px]"
+                height={300}
+                src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                width={300}
+              />
+              <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                Image caption
               </div>
-
-              <div>
-                <Image
-                  alt="Image caption"
-                  className="aspect-square object-cover rounded-[12px]"
-                  height={300}
-                  src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  width={300}
-                />
-                <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                  Image caption
-                </div>
-                <div className="flex items-center space-x-2 mt-1">
-                  <HeartIcon className="w-5 h-5" />
-                  <span>85 likes</span>
-                </div>
+              <div className="flex items-center space-x-2 mt-1">
+                <HeartIcon className="w-5 h-5" />
+                <span>85 likes</span>
               </div>
-              <div>
-                <Image
-                  alt="Image caption"
-                  className="aspect-square object-cover rounded-[12px]"
-                  height={300}
-                  src="https://plus.unsplash.com/premium_photo-1675252369719-dd52bc69c3df?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  width={300}
-                />
-                <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                  Image caption
-                </div>
-                <div className="flex items-center space-x-2 mt-1">
-                  <HeartIcon className="w-5 h-5" />
-                  <span>200 likes</span>
-                </div>
+            </div>
+            <div>
+              <Image
+                alt="Image caption"
+                className="aspect-square object-cover rounded-[12px]"
+                height={300}
+                src="https://plus.unsplash.com/premium_photo-1675252369719-dd52bc69c3df?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                width={300}
+              />
+              <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                Image caption
+              </div>
+              <div className="flex items-center space-x-2 mt-1">
+                <HeartIcon className="w-5 h-5" />
+                <span>200 likes</span>
               </div>
             </div>
           </div>
-        </Card>
-      </div>
+        </div>
+      </Card>
     </div>
   );
 }

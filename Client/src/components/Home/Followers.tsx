@@ -1,12 +1,23 @@
 import React, { useState } from "react";
-import axios from "axios"; // You might need to install axios with `npm install axios`
-import { Card, CardBody, CardHeader, Input } from "@nextui-org/react";
+import axios from "axios";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Input,
+  useDisclosure,
+  user,
+} from "@nextui-org/react";
+import UserProfileModal from "./UserProfileModal";
 
 const Followers = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  //   const [modalOpen, setModalOpen] = useState(false); // Use this for modal visibility
+  const [selectedUser, setSelectedUser] = useState(null);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const fetchUsers = async (query) => {
     setLoading(true);
@@ -29,12 +40,18 @@ const Followers = () => {
       setLoading(false);
     }
   };
+
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
     if (e.target.value.length > 2) {
-      // Consider searching after the user has typed at least 3 characters
       fetchUsers(e.target.value);
     }
+  };
+
+  const handleUserClick = (user) => {
+    console.log("Opening modal for user:", user);
+    setSelectedUser(user);
+    onOpen(true);
   };
 
   return (
@@ -47,21 +64,31 @@ const Followers = () => {
             value={searchTerm}
             onChange={handleSearch}
           />
-          <CardBody>
-            {Array.isArray(users) &&
-              users.map((user) => (
-                <div key={user.id}>
-                  <p>
-                    <span className="font-bold">Username:</span> {user.username}
-                  </p>
-                  <p>
-                    <span className="font-semibold">Email:</span> {user.email}
-                  </p>
-                </div>
-              ))}
-          </CardBody>
+          {Array.isArray(users) &&
+            users.map((user) => (
+              <div
+                key={user.id}
+                onClick={() => handleUserClick(user)}
+                style={{ cursor: "pointer" }}
+              >
+                <p>
+                  <span className="font-bold">Username:</span> {user.username}
+                </p>
+                <p>
+                  <span className="font-semibold">Email:</span> {user.email}
+                </p>
+              </div>
+            ))}
         </CardBody>
       </Card>
+
+      <UserProfileModal
+        isOpen={isOpen}
+        // onClose={() => isOpen(false)}
+        user={selectedUser}
+        onOpen={onOpen}
+        onOpenChange={onOpenChange}
+      />
     </div>
   );
 };

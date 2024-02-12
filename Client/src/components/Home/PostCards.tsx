@@ -90,15 +90,15 @@ export default function PostCards() {
     <div className="flex flex-col justify-center items-center min-h-screen px-4 py-10">
       {posts ? (
         posts.map((post) => (
-          <Card className="p-8 m-5 pattern">
+          <Card className="p-8 m-5">
             <CardBody
               key={post.id}
-              className="bg-glass border border-glass shadow-lg backdrop-filter backdrop-blur-lg flex flex-col md:flex-row w-full max-w-4xl my-4 p-5 gap-4"
+              className="shadow-lg flex flex-col md:flex-row w-full max-w-4xl my-4 p-5 gap-4"
             >
               <div className="w-full md:w-2/5 flex flex-col items-center p-2">
-                <img
+                <Image
                   alt="Delicious meal"
-                  className="aspect-square max-w-full rounded-lg"
+                  className="rounded-lg w-full h-64 object-cover"
                   src={post.image_url || "https://via.placeholder.com/300"} // Fallback for missing images
                 />
                 <div className="flex justify-center gap-2 mt-2">

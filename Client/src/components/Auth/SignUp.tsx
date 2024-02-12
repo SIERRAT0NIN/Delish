@@ -61,7 +61,6 @@ const SignUp: React.FC = () => {
   // };
   return (
     <>
-      <NavBar />
       <div className="form-card mx-auto max-w-md space-y-6">
         <Card className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 p-5">
           <h1 className="pt-3">Sign Up!</h1>
