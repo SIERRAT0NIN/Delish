@@ -1,8 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy  # cSpell:ignore SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.sql import func
-from app_config import db
-# from .app_config import db
+# from app_config import db
+from .app_config import db
 
 
 class Profile(db.Model, SerializerMixin):

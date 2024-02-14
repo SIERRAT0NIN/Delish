@@ -15,7 +15,12 @@ import {
 export default function NotificationCenter({ isOpen, onOpenChange }) {
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} className="">
+      <Modal
+        backdrop="opaque"
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        className=""
+      >
         <ModalContent>
           {(onClose) => (
             <>
