@@ -1,8 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy  # cSpell:ignore SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.sql import func
-# from app_config import db
-from .app_config import db
+from app_config import db
+# from .app_config import db
 
 
 class Profile(db.Model, SerializerMixin):
@@ -32,6 +32,9 @@ class Comment(db.Model, SerializerMixin):
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
 
+
+    post = db.relationship('Post', back_populates='comments')
+    user = db.relationship('User', backref='user_comments')
     def __repr__(self):
         return f"<Comment {self.id}>"
 
@@ -42,6 +45,11 @@ post_tags = db.Table(
     db.Column("tag_id", db.Integer, db.ForeignKey("tags.id"), primary_key=True),
     extend_existing=True,
 )
+
+
+likes = db.Table('likes',
+                 db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+                 db.Column('post_id', db.Integer, db.ForeignKey('posts.id'), primary_key=True))
 
 
 class Post(db.Model, SerializerMixin):
@@ -55,6 +63,10 @@ class Post(db.Model, SerializerMixin):
     image_url = db.Column(db.String(255))
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     comments = db.relationship("Comment", backref="post", lazy="dynamic")
+    
+    likers = db.relationship('User', secondary=likes, backref=db.backref('liked_posts', lazy='dynamic'))
+    comments = db.relationship('Comment', back_populates='post', lazy='dynamic')
+
 
     tags = db.relationship(
         "Tag",
@@ -90,9 +102,14 @@ class Tag(db.Model, SerializerMixin):
         return f"<Tag {self.name}>"
     
     
-# followers = db.Table('followers',
-#     db.Column('follower_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
-#     db.Column('followed_id', db.Integer, db.ForeignKey('users.id'), primary_key=True)
+followers = db.Table('followers',
+    db.Column('follower_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+    db.Column('followed_id', db.Integer, db.ForeignKey('users.id'), primary_key=True)
+)
+
+# likes = db.Table('likes',
+#     db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+#     db.Column('post_id', db.Integer, db.ForeignKey('posts.id'), primary_key=True)
 # )
 
 class User(db.Model, SerializerMixin):
@@ -106,6 +123,36 @@ class User(db.Model, SerializerMixin):
     posts = db.relationship(
         "Post", backref="author", lazy="dynamic", cascade="all, delete, delete-orphan"
     )
+    followed = db.relationship(
+        'User', secondary=followers,
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.followed_id == id),
+        backref=db.backref('followers', lazy='dynamic'),
+        lazy='dynamic'
+    )
+    
+    def like_post(self, post):
+        if not self.has_liked_post(post):
+            self.liked_posts.append(post)
+
+    def unlike_post(self, post):
+        if self.has_liked_post(post):
+            self.liked_posts.remove(post)
+
+    def has_liked_post(self, post):
+        return self.liked_posts.filter(likes.c.post_id == post.id).count() > 0
+    
+    def follow(self, user):
+        if not self.is_following(user):
+            self.followed.append(user)
+
+    def unfollow(self, user):
+        if self.is_following(user):
+            self.followed.remove(user)
+
+    def is_following(self, user):
+        return self.followed.filter(
+            followers.c.followed_id == user.id).count() > 0
     comments = db.relationship(
         "Comment",
         backref="commenter",
@@ -171,14 +218,7 @@ class User(db.Model, SerializerMixin):
                 # Filter the fields based on the 'only' parameter
                 return {key: value for key, value in all_fields.items() if key in only}
     
-    # followed = db.relationship(
-    # 'User', secondary=followers,
-    # primaryjoin=(followers.c.follower_id == id),
-    # secondaryjoin=(followers.c.followed_id == id),
-    # backref=db.backref('followers', lazy='dynamic'),
-    # lazy='dynamic'
-# ) 
-    
+ 
     def __repr__(self):
         return f"<User {self.username}>"
 
