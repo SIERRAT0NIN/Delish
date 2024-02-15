@@ -1,11 +1,12 @@
 from flask import Flask, request, make_response, jsonify
-from flask_restful import Api, Resource
+from flask_restful import Api, Resource, reqparse
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlalchemy
 from sqlalchemy import or_
 from flask_socketio import SocketIO, join_room, leave_room
 from datetime import datetime, timedelta
-from models import User, Message, Chat, Post
+# from models import User, Message, Chat, Post, Profile
+from models import *
 from app_config import db
 # from .app_config import db
 from flask_cors import CORS
@@ -344,6 +345,14 @@ class Posts(Resource):
         user = User.query.filter_by(id=user_id).first_or_404(
             description="User not found."
         )
+
+    # # Accessing the profile picture
+    # if user and user.profile:
+    #     profile_picture_url = user.profile.profile_picture
+    #     print(f"Profile picture URL: {profile_picture_url}")
+    # else:
+    #     print("User not found or user does not have a profile.")
+
         data = request.get_json()
 
         content = data.get("content")
@@ -497,10 +506,122 @@ class SearchUsers(Resource):
         query = request.args.get('query')
         if query:
             users = User.query.filter(User.username.ilike(f'%{query}%')).all()
-            return [user.to_dict() for user in users]  # Correctly call to_dict for each user
+            # profile = Profile.query.filter(Profile.user_id.in_([user.id for user in users])).all()
+            # return [user.to_dict() for user in users]  # Correctly call to_dict for each user
+                        # Accessing the profile picture
+            if user and user.profile:
+                profile_picture_url = user.profile.profile_picture
+                print(f"Profile picture URL: {profile_picture_url}")
+            else:
+                print("User not found or user does not have a profile.")
         return []
 
 api.add_resource(SearchUsers, '/search_users')
+
+class LikePost(Resource):
+    @jwt_required()
+    def post(self, post_id):
+        current_user_email = get_jwt_identity()
+        current_user = User.query.filter_by(email=current_user_email).first()
+
+        if not current_user:
+            return {'message': 'User not found'}, 404
+
+        post = Post.query.get_or_404(post_id)
+
+        # Assuming you have a method like_post in the User model
+        try:
+            current_user.like_post(post)
+            db.session.commit()
+            return {'message': 'Post liked successfully'}, 200
+        except Exception as e:
+            db.session.rollback()
+            return {'message': 'An error occurred while liking the post', 'error': str(e)}, 500
+
+api.add_resource(LikePost, '/like/<int:post_id>')
+
+
+class DeleteUser(Resource):
+    @jwt_required()
+    def delete(self):
+        current_user_email = get_jwt_identity()
+        user = User.query.filter_by(email=current_user_email).first()
+
+        if not user:
+            return {'message': 'User not found'}, 404
+
+        try:
+            db.session.delete(user)
+            db.session.commit()
+            return {'message': 'User deleted successfully'}, 200
+        except Exception as e:
+            db.session.rollback()
+            return {'message': 'Failed to delete user', 'error': str(e)}, 500
+        
+api.add_resource(DeleteUser, '/delete_user')
+
+class CommentOnPost(Resource):
+    @jwt_required()
+    def post(self, post_id):
+        # Parser to ensure we have a comment body
+        parser = reqparse.RequestParser()
+        parser.add_argument('content', required=True, help="Content cannot be blank")
+        args = parser.parse_args()
+
+        # Retrieve the current user's identity and fetch the user object
+        current_user_email = get_jwt_identity()
+        current_user = User.query.filter_by(email=current_user_email).first()
+
+        if not current_user:
+            return {'message': 'User not found'}, 404
+
+        # Fetch the post by ID
+        post = Post.query.get_or_404(post_id)
+
+        # Create the comment
+        comment = Comment(content=args['content'], post_id=post.id, user_id=current_user.id)
+
+        try:
+            db.session.add(comment)
+            db.session.commit()
+            return {'message': 'Comment added successfully', 'comment_id': comment.id}, 201
+        except Exception as e:
+            db.session.rollback()
+            return {'message': 'An error occurred while adding the comment', 'error': str(e)}, 500
+
+# Add the resource to the API
+api.add_resource(CommentOnPost, '/posts/<int:post_id>/comment')
+
+class CreatePost(Resource):
+    @jwt_required()
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('content', required=True, help="Content cannot be blank")
+        # If you have other fields like title, add them here
+        # parser.add_argument('title', required=True, help="Title cannot be blank")
+        args = parser.parse_args()
+
+        # Retrieve the current user's identity and fetch the user object
+        current_user_email = get_jwt_identity()
+        current_user = User.query.filter_by(email=current_user_email).first()
+
+        if not current_user:
+            return {'message': 'User not found'}, 404
+
+        # Create the post
+        new_post = Post(user_id=current_user.id, content=args['content'])
+        # If using title: new_post = Post(user_id=current_user.id, content=args['content'], title=args['title'])
+
+        try:
+            db.session.add(new_post)
+            db.session.commit()
+            return {'message': 'Post created successfully', 'post_id': new_post.id}, 201
+        except Exception as e:
+            db.session.rollback()
+            return {'message': 'An error occurred while creating the post', 'error': str(e)}, 500
+
+# Add the resource to the API
+api.add_resource(CreatePost, '/posts')
 
 
 if __name__ == "__main__":
