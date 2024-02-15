@@ -64,18 +64,21 @@ const Followers = () => {
             value={searchTerm}
             onChange={handleSearch}
           />
+          {loading && <p>Loading...</p>}
+
           {Array.isArray(users) &&
             users.map((user) => (
               <div
                 key={user.id}
                 onClick={() => handleUserClick(user)}
                 style={{ cursor: "pointer" }}
+                className="p-2 border-b-2 border-gray-200 hover:bg-gray-100 transition-colors duration-200 ease-in-out hover:shadow-md hover:border-gray-300 rounded-md mt-2 w-full"
               >
                 <p>
                   <span className="font-bold">Username:</span> {user.username}
                 </p>
                 <p>
-                  <span className="font-semibold">Email:</span> {user.email}
+                  <span className="font-bold">Email:</span> {user.email}
                 </p>
               </div>
             ))}

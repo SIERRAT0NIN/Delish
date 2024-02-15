@@ -506,9 +506,9 @@ class SearchUsers(Resource):
         query = request.args.get('query')
         if query:
             users = User.query.filter(User.username.ilike(f'%{query}%')).all()
-            # profile = Profile.query.filter(Profile.user_id.in_([user.id for user in users])).all()
-            # return [user.to_dict() for user in users]  # Correctly call to_dict for each user
-                        # Accessing the profile picture
+            profile = Profile.query.filter(Profile.user_id.in_([user.id for user in users])).all()
+            return [user.to_dict() for user in users]  
+  
             if user and user.profile:
                 profile_picture_url = user.profile.profile_picture
                 print(f"Profile picture URL: {profile_picture_url}")
@@ -529,7 +529,7 @@ class LikePost(Resource):
 
         post = Post.query.get_or_404(post_id)
 
-        # Assuming you have a method like_post in the User model
+
         try:
             current_user.like_post(post)
             db.session.commit()
@@ -563,22 +563,22 @@ api.add_resource(DeleteUser, '/delete_user')
 class CommentOnPost(Resource):
     @jwt_required()
     def post(self, post_id):
-        # Parser to ensure we have a comment body
+
         parser = reqparse.RequestParser()
         parser.add_argument('content', required=True, help="Content cannot be blank")
         args = parser.parse_args()
 
-        # Retrieve the current user's identity and fetch the user object
+
         current_user_email = get_jwt_identity()
         current_user = User.query.filter_by(email=current_user_email).first()
 
         if not current_user:
             return {'message': 'User not found'}, 404
 
-        # Fetch the post by ID
+
         post = Post.query.get_or_404(post_id)
 
-        # Create the comment
+
         comment = Comment(content=args['content'], post_id=post.id, user_id=current_user.id)
 
         try:
@@ -589,7 +589,7 @@ class CommentOnPost(Resource):
             db.session.rollback()
             return {'message': 'An error occurred while adding the comment', 'error': str(e)}, 500
 
-# Add the resource to the API
+
 api.add_resource(CommentOnPost, '/posts/<int:post_id>/comment')
 
 class CreatePost(Resource):
@@ -597,11 +597,10 @@ class CreatePost(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('content', required=True, help="Content cannot be blank")
-        # If you have other fields like title, add them here
-        # parser.add_argument('title', required=True, help="Title cannot be blank")
+        
         args = parser.parse_args()
 
-        # Retrieve the current user's identity and fetch the user object
+
         current_user_email = get_jwt_identity()
         current_user = User.query.filter_by(email=current_user_email).first()
 
@@ -610,7 +609,7 @@ class CreatePost(Resource):
 
         # Create the post
         new_post = Post(user_id=current_user.id, content=args['content'])
-        # If using title: new_post = Post(user_id=current_user.id, content=args['content'], title=args['title'])
+
 
         try:
             db.session.add(new_post)
@@ -620,7 +619,7 @@ class CreatePost(Resource):
             db.session.rollback()
             return {'message': 'An error occurred while creating the post', 'error': str(e)}, 500
 
-# Add the resource to the API
+
 api.add_resource(CreatePost, '/posts')
 
 
