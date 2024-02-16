@@ -152,6 +152,7 @@ export default function PostCards() {
                   {post.content}
                 </Chip>
               </div>
+              <h3>Comments</h3>
             </div>
           </div>
         ))

@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Tooltip } from "@nextui-org/react";
-import NavBar from "./NavBar";
+import { Button, Card, Image, Tooltip, useDisclosure } from "@nextui-org/react";
 import Followers from "./Followers";
 import { useSnackbar } from "notistack";
+import ExploreImgModal from "./ExploreImgModal";
 
 export default function Explore() {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
+
   useEffect(() => {
     const fetchPosts = async () => {
       setIsLoading(true);
       const token = localStorage.getItem("token");
-      console.log("token", token);
+
       if (!token) {
         setIsLoading(false);
         setError("You need to be logged in to view this page");
@@ -43,7 +46,6 @@ export default function Explore() {
   if (error) {
     return <p>Error: {error}</p>;
   }
-  console.log("posts", posts);
 
   const likeClick = () => {
     console.log("Like button clicked");
@@ -53,7 +55,9 @@ export default function Explore() {
     console.log("Comment button clicked");
     enqueueSnackbar("Commented", { variant: "success" });
   };
-
+  const imgClick = () => {
+    onOpenChange(true); // Open the modal
+  };
   return (
     <Card className="mt-5 mb-10">
       <h1 className="flex justify-center text-lg bg-gradient-to-r from-pink-500 to-yellow-500 text-white p-5 rounded ">
@@ -62,18 +66,20 @@ export default function Explore() {
       <div className="mb-5">
         <Followers />
       </div>
-      <div className=""></div>
+
       <div className="grid grid-cols-1 p-3 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {posts.map(
           (
             post // Map over the posts array
           ) => (
             <div key={post.id} className="relative group">
-              <img
+              <Image
                 alt="Post"
                 className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
                 src={post.image_url || "https://via.placeholder.com/200"}
+                onClick={imgClick}
               />
+
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
                 <div className="flex flex-col items-center space-y-2">
                   <Button onClick={likeClick} color="danger" variant="ghost">
@@ -89,6 +95,11 @@ export default function Explore() {
             </div>
           )
         )}
+        <ExploreImgModal
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
+          posts={posts}
+        />
       </div>
     </Card>
     // </div>
