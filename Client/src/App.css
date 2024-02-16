@@ -11,7 +11,13 @@ body {
   background-image: url("https://i.imgur.com/OSay2e9.png");
   background-image: url("https://i.imgur.com/Lb2bJzo.png");
   */
-  background-image: linear-gradient(black, white);
+  background-image: linear-gradient(
+    white,
+    pink,
+    rgb(254, 214, 139),
+    pink,
+    white
+  );
 
   background-size: cover; /* Cover the entire page */
   background-repeat: no-repeat; /* Do not repeat the image */
