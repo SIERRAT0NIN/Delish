@@ -10,11 +10,13 @@ import {
   CardHeader,
   CardFooter,
 } from "@nextui-org/react";
+import { useSnackbar } from "notistack";
 
 export default function PostCards() {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { enqueueSnackbar } = useSnackbar();
   function HeartIcon(props) {
     return (
       <svg
@@ -86,66 +88,73 @@ export default function PostCards() {
     fetchPosts();
   }, []);
   console.log("posts", posts);
+  const likeClick = () => {
+    console.log("Like button clicked");
+    enqueueSnackbar("Liked", { variant: "success", className: "" });
+  };
+  const commentClick = () => {
+    console.log("Comment button clicked");
+    enqueueSnackbar("Commented", { variant: "success" });
+  };
+
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen px-4 py-10">
+    <div className="flex flex-col justify-center items-center px-4 py-3 ">
       {posts ? (
         posts.map((post) => (
-          <Card className="p-8 m-5">
-            <CardBody
-              key={post.id}
-              className="shadow-lg flex flex-col md:flex-row w-full max-w-4xl my-4 p-5 gap-4"
-            >
-              <div className="w-full md:w-2/5 flex flex-col items-center p-2">
+          <div className="shadow-lg flex m-5 mt-12 p-5 rounded-lg w-full xl:w-4/5">
+            <div className="w-full xl:w-1/2">
+              <div className="">
                 <Image
                   alt="Delicious meal"
-                  className="rounded-lg w-full h-64 object-cover"
+                  className="rounded-lg object-cover"
                   src={post.image_url || "https://via.placeholder.com/300"} // Fallback for missing images
+                  width={600}
+                  height={600}
                 />
                 <div className="flex justify-center gap-2 mt-2">
-                  <Button color="danger" variant="ghost">
+                  <Button color="danger" variant="ghost" onClick={likeClick}>
                     <HeartIcon className="w-6 h-6" />
                     <span className="sr-only">Like</span>
                   </Button>
-                  <Button color="danger" variant="ghost">
+                  <Button color="danger" variant="ghost" onClick={commentClick}>
                     <MessageCircleIcon className="w-6 h-6" />
                     <span className="sr-only">Comment</span>
                   </Button>
                 </div>
               </div>
-              <div className="w-full md:w-3/5 p-3">
-                <p className="text-sm mb-2">@{post.user_id}</p>
-                <h2 className="text-lg font-extrabold mb-2">Recipe:</h2>
-                <p>{post.content}</p>
-                <h3 className="text-lg font-extrabold mt-4 mb-2">
-                  Ingredients:
-                </h3>
-                <div className="flex flex-wrap">
-                  {/* {post.ingredients.map((ingredient, index) => ( */}
-                  <Chip
-                    key={post.id}
-                    color="primary"
-                    variant="dot"
-                    className="m-2"
-                  >
-                    {post.ingredients}
-                  </Chip>
-                  {/* ))} */}
-                </div>
-                <h4 className="font-bold mt-4">Tags</h4>
-                <div className="flex flex-wrap">
-                  {/* {post.content.map((content, index) => ( */}
-                  <Chip
-                    key={post.id}
-                    color="primary"
-                    variant="dot"
-                    className="m-2"
-                  >
-                    {post.content}
-                  </Chip>
-                </div>
+            </div>
+            <div className="w-full md:w-3/5 p-3">
+              <p className="text-sm mb-2">@{post.user_id}</p>
+              <h2 className="text-lg font-extrabold mb-2">Recipe:</h2>
+              <p>{post.content}</p>
+              <h3 className="text-lg font-extrabold mt-4 mb-2">Ingredients:</h3>
+              <div className="flex flex-wrap">
+                {/* {post.ingredients.map((ingredient, index) => ( */}
+                <Chip
+                  key={post.id}
+                  color="primary"
+                  variant="dot"
+                  className="m-2"
+                >
+                  {post.ingredients}
+                </Chip>
+                {/* ))} */}
               </div>
-            </CardBody>
-          </Card>
+              <h4 className="font-bold mt-4">Tags</h4>
+              <div className="flex flex-wrap">
+                {/* {post.content.map((content, index) => ( */}
+                <Chip
+                  key={post.id}
+                  color="primary"
+                  variant="dot"
+                  className="m-2"
+                >
+                  {post.content}
+                </Chip>
+              </div>
+              <h3>Comments</h3>
+            </div>
+          </div>
         ))
       ) : (
         <p>Loading posts...</p>

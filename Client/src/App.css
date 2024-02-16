@@ -24,7 +24,8 @@ body {
   background-attachment: fixed; /* Fixed background (doesn't scroll) */
   background-position: center center; /* Center the image */
 }
-
+.home-card {
+}
 .pattern {
   /* background-image: url("https://i.imgur.com/hpr6CFh.png"); */
   background-size: cover;
