@@ -2,16 +2,17 @@ import React, { useEffect, useState } from "react";
 import { Button, Card, Tooltip } from "@nextui-org/react";
 import NavBar from "./NavBar";
 import Followers from "./Followers";
+import { useSnackbar } from "notistack";
 
 export default function Explore() {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     const fetchPosts = async () => {
       setIsLoading(true);
-      const token = localStorage.getItem("token"); // Assuming the JWT token is stored in localStorage
+      const token = localStorage.getItem("token");
       console.log("token", token);
       if (!token) {
         setIsLoading(false);
@@ -43,6 +44,16 @@ export default function Explore() {
     return <p>Error: {error}</p>;
   }
   console.log("posts", posts);
+
+  const likeClick = () => {
+    console.log("Like button clicked");
+    enqueueSnackbar("Liked", { variant: "success", className: "" });
+  };
+  const commentClick = () => {
+    console.log("Comment button clicked");
+    enqueueSnackbar("Commented", { variant: "success" });
+  };
+
   return (
     <Card className="mt-5 mb-10">
       <h1 className="flex justify-center text-lg bg-gradient-to-r from-pink-500 to-yellow-500 text-white p-5 rounded ">
@@ -65,11 +76,11 @@ export default function Explore() {
               />
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
                 <div className="flex flex-col items-center space-y-2">
-                  <Button color="danger" variant="ghost">
+                  <Button onClick={likeClick} color="danger" variant="ghost">
                     <HeartIcon className="w-6 h-6" />
                     <span className="sr-only">Like</span>
                   </Button>
-                  <Button color="danger" variant="ghost">
+                  <Button color="danger" variant="ghost" onClick={commentClick}>
                     <MessageCircleIcon className="w-6 h-6" />
                     <span className="sr-only">Comment</span>
                   </Button>

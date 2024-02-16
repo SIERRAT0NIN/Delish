@@ -3,6 +3,7 @@ import { Card, Input, Button } from "@nextui-org/react";
 import NavBar from "../Home/NavBar";
 import { Formik, Form, Field, FormikHelpers } from "formik";
 import * as Yup from "yup";
+import { useSnackbar } from "notistack";
 
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
@@ -23,6 +24,7 @@ const SignUpSchema = Yup.object().shape({
 });
 
 const SignUp: React.FC = () => {
+  const { enqueueSnackbar } = useSnackbar();
   // const [open, setOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -45,7 +47,9 @@ const SignUp: React.FC = () => {
       if (resp) {
         resetForm();
         navigate("/");
+        enqueueSnackbar("Signed up successfully", { variant: "success" });
       } else {
+        enqueueSnackbar("Signup failed", { variant: "error" });
         alert("Signup failed");
       }
     });

@@ -7,6 +7,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
+import { useSnackbar } from "notistack";
 
 interface LoginValues {
   email: string;
@@ -19,6 +20,7 @@ const LoginSchema = Yup.object().shape({
 });
 
 const Login: React.FC = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const { login } = useAuth();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -34,8 +36,10 @@ const Login: React.FC = () => {
     login(values).then((resp) => {
       if (resp) {
         resetForm();
+        enqueueSnackbar("Logged in successfully", { variant: "success" });
         navigate("/");
       } else {
+        enqueueSnackbar("Login failed", { variant: "error" });
         alert("Login failed");
       }
     });

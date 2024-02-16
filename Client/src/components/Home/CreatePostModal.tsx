@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   ModalContent,
@@ -12,35 +12,58 @@ import {
   Chip,
 } from "@nextui-org/react";
 import { useAuth } from "../Auth/AuthContext";
+import { Alert, Snackbar } from "@mui/material";
+import { useSnackbar } from "notistack";
 
 export default function CreatePostModal() {
+  const { enqueueSnackbar } = useSnackbar();
+
+  const [file, setFile] = useState(null);
   const { getCookie } = useAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [file, setFile] = useState(null);
-
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
-
   const [ingredients, setIngredients] = useState([]);
   const [tags, setTags] = useState([]);
   const [input, setInput] = useState("");
   const [inputTag, setInputTag] = useState("");
-  const [content, setContent] = useState("content");
-  const [image_url, setImageUrl] = useState("image_url");
+  const [content, setContent] = useState("");
+  const [image_url, setImageUrl] = useState(
+    "https://plus.unsplash.com/premium_photo-1663858367001-89e5c92d1e0e?q=80&w=1915&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+  );
   const handleInputChange = (e) => setInput(e.target.value);
   const handleInputTagChange = (e) => setInputTag(e.target.value);
+  const [successSnackbar, setSuccessSnackbar] = useState(false);
 
   const addIngredient = () => {
     if (!input.trim()) return; // Prevent adding empty strings
     setIngredients([...ingredients, input]);
-    setInput(""); // Clear input field
+    setInput("");
   };
+
   const addTag = () => {
     if (!inputTag.trim()) return; // Prevent adding empty strings
     setTags([...tags, inputTag]);
-    setInputTag(""); // Clear input field
+    setInputTag("");
   };
+  // const handleFileChange = (e) => {
+  //   setFile(e.target.files[0]);
+  // };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/posts");
+        const data = await response.json();
+        // Update ingredients, tags, or other data if needed
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        enqueueSnackbar("Error fetching data:", { variant: "error" });
+      }
+    };
+
+    const interval = setInterval(fetchData, 5000); // Fetch data every 5 seconds
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, []);
 
   const handleSubmit = () => {
     fetch("/api/posts", {
@@ -56,7 +79,8 @@ export default function CreatePostModal() {
         image_url: image_url,
       }),
     });
-
+    setSuccessSnackbar(true);
+    enqueueSnackbar("Successfully created a post!", { variant: "success" });
     onClose();
   };
   const handleOpen = () => {
