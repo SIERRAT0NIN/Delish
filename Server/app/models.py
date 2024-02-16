@@ -32,9 +32,10 @@ class Comment(db.Model, SerializerMixin):
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
 
+    post = db.relationship("Post", back_populates='comments')
 
-    post = db.relationship('Post', back_populates='comments')
-    user = db.relationship('User', backref='user_comments')
+    commenter = db.relationship('User', back_populates='comments')
+    user = db.relationship('User', back_populates='user_comments',overlaps="commenter")
     def __repr__(self):
         return f"<Comment {self.id}>"
 
@@ -62,11 +63,11 @@ class Post(db.Model, SerializerMixin):
     ingredients = db.Column(db.Text, nullable=False)
     image_url = db.Column(db.String(255))
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
-    comments = db.relationship("Comment", backref="post", lazy="dynamic")
+    comments = db.relationship("Comment", back_populates='post', lazy="dynamic")
     
     likers = db.relationship('User', secondary=likes, backref=db.backref('liked_posts', lazy='dynamic'))
     comments = db.relationship('Comment', back_populates='post', lazy='dynamic')
-
+    
 
     tags = db.relationship(
         "Tag",
@@ -153,12 +154,8 @@ class User(db.Model, SerializerMixin):
     def is_following(self, user):
         return self.followed.filter(
             followers.c.followed_id == user.id).count() > 0
-    comments = db.relationship(
-        "Comment",
-        backref="commenter",
-        lazy="dynamic",
-        cascade="all, delete, delete-orphan",
-    )
+    comments = db.relationship('Comment', back_populates='commenter', overlaps="user")
+    user_comments = db.relationship('Comment', back_populates='user', overlaps="commenter,comments")
     profile = db.relationship(
         "Profile",
         back_populates="user",

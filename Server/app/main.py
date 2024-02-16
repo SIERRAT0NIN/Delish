@@ -130,8 +130,9 @@ class Login(Resource):
             return {"message": "Email and password are required"}, 400
 
         user = User.query.filter_by(email=email).first()
-        print(user)
+        
         if user and check_password_hash(user.password_hash, password):
+            print(email)
             access_token = create_access_token(identity=email)
 
             refresh_token = create_refresh_token(identity=email)
@@ -377,6 +378,35 @@ class Posts(Resource):
         except IntegrityError as e:
             db.session.rollback()
             return {"error": "Failed to create new post.", "details": str(e)}, 500
+    @jwt_required()
+    def post(self):
+
+        parser = reqparse.RequestParser()
+        parser.add_argument('content', required=True, help="Content cannot be blank")
+        
+        args = request.json
+
+
+        current_user_email = get_jwt_identity()
+        current_user = User.query.filter_by(email=current_user_email).first()
+        print(current_user_email)
+        print(1)
+        
+        if not current_user:
+            return {'message': 'User not found'}, 404
+        all_ingredients = ''.join(args['ingredients'])
+        # Create the post
+        new_post = Post(user_id=current_user.id, content=args['content'], ingredients=all_ingredients, image_url=args['image_url'])
+
+
+        try:
+            db.session.add(new_post)
+            db.session.commit()
+            return {'message': 'Post created successfully', 'post_id': new_post.id}, 201
+        except Exception as e:
+            db.session.rollback()
+            return {'message': 'An error occurred while creating the post', 'error': str(e)}, 500
+
 
 
 # Ensure to add the resource to the API after the class definition
@@ -592,35 +622,39 @@ class CommentOnPost(Resource):
 
 api.add_resource(CommentOnPost, '/posts/<int:post_id>/comment')
 
-class CreatePost(Resource):
-    @jwt_required()
-    def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('content', required=True, help="Content cannot be blank")
+# class CreatePost(Resource):
+#     @jwt_required()
+    
+#     def post(self):
+
+#         parser = reqparse.RequestParser()
+#         parser.add_argument('content', required=True, help="Content cannot be blank")
         
-        args = parser.parse_args()
+#         args = parser.parse_args()
 
 
-        current_user_email = get_jwt_identity()
-        current_user = User.query.filter_by(email=current_user_email).first()
+#         current_user_email = get_jwt_identity()
+#         current_user = User.query.filter_by(email=current_user_email).first()
+#         print(current_user_email)
+#         print(1)
+        
+#         if not current_user:
+#             return {'message': 'User not found'}, 404
 
-        if not current_user:
-            return {'message': 'User not found'}, 404
-
-        # Create the post
-        new_post = Post(user_id=current_user.id, content=args['content'])
-
-
-        try:
-            db.session.add(new_post)
-            db.session.commit()
-            return {'message': 'Post created successfully', 'post_id': new_post.id}, 201
-        except Exception as e:
-            db.session.rollback()
-            return {'message': 'An error occurred while creating the post', 'error': str(e)}, 500
+#         # Create the post
+#         new_post = Post(user_id=current_user.id, content=args['content'], ingredients=args['ingredients'], image_url=args['image_url'])
 
 
-api.add_resource(CreatePost, '/posts')
+#         try:
+#             db.session.add(new_post)
+#             db.session.commit()
+#             return {'message': 'Post created successfully', 'post_id': new_post.id}, 201
+#         except Exception as e:
+#             db.session.rollback()
+#             return {'message': 'An error occurred while creating the post', 'error': str(e)}, 500
+
+
+# api.add_resource(CreatePost, '/posts')
 
 
 if __name__ == "__main__":

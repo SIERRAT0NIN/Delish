@@ -19,7 +19,6 @@ export default function PostModal() {
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setOpen}>
-    
         <Transition.Child
           as={Fragment}
           enter="ease-in-out duration-500"
@@ -30,12 +29,11 @@ export default function PostModal() {
           leaveTo="opacity-0"
         >
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-          
         </Transition.Child>
         <div>
-      <input type="file" onChange={handleFileChange} />
-      <button onClick={handleSubmit}>Submit</button>
-    </div>
+          <input type="file" onChange={handleFileChange} />
+          <button onClick={handleSubmit}>Submit</button>
+        </div>
         <div className="fixed inset-0 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
             <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
@@ -89,18 +87,3 @@ export default function PostModal() {
     </Transition.Root>
   );
 }
-
-
-import React, { useState } from "react";
-
-const addIngredients = () => {
-
-
-
-
-  return (
-   
-  );
-};
-
-export default addIngredients;
