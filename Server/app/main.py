@@ -590,15 +590,12 @@ class DeleteUser(Resource):
             return {'message': 'Failed to delete user', 'error': str(e)}, 500
         
 api.add_resource(DeleteUser, '/delete_user')
-
 class CommentOnPost(Resource):
     @jwt_required()
     def post(self, post_id):
-
         parser = reqparse.RequestParser()
         parser.add_argument('content', required=True, help="Content cannot be blank")
         args = parser.parse_args()
-
 
         current_user_email = get_jwt_identity()
         current_user = User.query.filter_by(email=current_user_email).first()
@@ -606,9 +603,7 @@ class CommentOnPost(Resource):
         if not current_user:
             return {'message': 'User not found'}, 404
 
-
         post = Post.query.get_or_404(post_id)
-
 
         comment = Comment(content=args['content'], post_id=post.id, user_id=current_user.id)
 
@@ -620,6 +615,22 @@ class CommentOnPost(Resource):
             db.session.rollback()
             return {'message': 'An error occurred while adding the comment', 'error': str(e)}, 500
 
+    @jwt_required()
+    def get(self, post_id):
+        post = Post.query.get_or_404(post_id)
+        comments = Comment.query.filter_by(post_id=post.id).all()
+        
+        if comments:
+            comments_data = [{
+                'id': comment.id,
+                'user_id': comment.user_id,
+                'post_id': comment.post_id,
+                'content': comment.content,
+                'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Formatting the datetime
+            } for comment in comments]
+            return {'comments': comments_data}, 200
+        else:
+            return {'message': 'No comments found for this post'}, 404
 
 api.add_resource(CommentOnPost, '/posts/<int:post_id>/comment')
 

@@ -19,6 +19,8 @@ export default function PostCards() {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [comments, setComments] = useState([]);
+
   const { enqueueSnackbar } = useSnackbar();
   function HeartIcon(props) {
     return (
