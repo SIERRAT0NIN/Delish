@@ -9,8 +9,10 @@ import {
   useDisclosure,
   Image,
 } from "@nextui-org/react";
+import { Chip } from "@mui/material";
 
-const ExploreImgModal = ({ isOpen, onOpenChange, posts }) => {
+const ExploreImgModal = ({ isOpen, onOpenChange, selectedPost }) => {
+  console.log("Selected post:", selectedPost);
   return (
     <>
       <Modal
@@ -23,8 +25,10 @@ const ExploreImgModal = ({ isOpen, onOpenChange, posts }) => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                <h3 className="text-lg font-bold">Post Title</h3>
-                <p className="text-sm text-gray-500">Posted by: User</p>
+                <h3 className="text-lg font-bold">{selectedPost.content}</h3>
+                <p className="text-sm text-gray-500">
+                  Posted by: {selectedPost.user_id}
+                </p>
                 <Button
                   className="justify-center"
                   variant="shadow"
@@ -35,13 +39,11 @@ const ExploreImgModal = ({ isOpen, onOpenChange, posts }) => {
               </ModalHeader>
               <ModalBody>
                 <div className="flex justify-center">
-                  <Image
-                    src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?q=80&w=2912&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="Post"
-                    className="w-full"
-                    isBlurred
-                  />
+                  {selectedPost && (
+                    <Image src={selectedPost.image_url} alt="Selected Post" />
+                  )}
                 </div>
+                <p>{selectedPost.ingredients}</p>
               </ModalBody>
               <ModalFooter className="flex items-center justify-center ">
                 <div className="flex gap-2 mt-2">

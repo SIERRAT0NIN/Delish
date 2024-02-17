@@ -17,8 +17,9 @@ const UserProfileModal = ({ isOpen, onClose, user, onOpenChange }) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [selectedPost, setSelectedPost] = useState(null);
   const { getCookie } = useAuth();
+
   const checkIfFollowing = async () => {
     setIsLoading(true);
     try {
@@ -61,37 +62,11 @@ const UserProfileModal = ({ isOpen, onClose, user, onOpenChange }) => {
       setIsLoading(false);
     }
   };
-
-  // const handleFollowUnfollow = async (action) => {
-  //   setIsLoading(true);
-  //   try {
-  //     const response = await fetch(`/api/users/${user.id}/follow`, {
-  //       method: action === "follow" ? "POST" : "DELETE",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         "X-CSRF-TOKEN": getCookie("csrf_access_token"),
-  //       },
-  //     });
-  //     if (response.ok) {
-  //       setIsFollowing(action === "follow");
-  //       toast.success(
-  //         `User ${action === "follow" ? "" : "un"}followed successfully.`
-  //       );
-  //     } else {
-  //       throw new Error(`Failed to ${action} user.`);
-  //     }
-  //   } catch (error) {
-  //     console.error(`Failed to ${action} user`, error);
-  //     toast.error(`Could not ${action} the user.`);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-  // useEffect(() => {
-  //   if (user) {
-  //     checkIfFollowing();
-  //   }
-  // }, [user]);
+  useEffect(() => {
+    if (user) {
+      checkIfFollowing();
+    }
+  }, [user]);
   const handleFollowUnfollow = async (action) => {
     setIsLoading(true);
     try {
