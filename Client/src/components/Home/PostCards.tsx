@@ -12,8 +12,10 @@ import {
   CardFooter,
 } from "@nextui-org/react";
 import { useSnackbar } from "notistack";
+import { useAuth } from "../Auth/AuthContext";
 
 export default function PostCards() {
+  const { user, getCookie } = useAuth();
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -55,20 +57,51 @@ export default function PostCards() {
     );
   }
 
+  const handleLike = async (postId) => {
+    const token = localStorage.getItem("token"); // Assuming the JWT token is stored in localStorage
+    if (!token) {
+      console.error("No token found");
+      enqueueSnackbar("Please login to like posts", { variant: "warning" });
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/like/${postId}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`, // Assuming the token is a bearer token
+          "X-CSRF-TOKEN": getCookie("csrf_access_token"), // Assuming you're storing the CSRF token in a cookie
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Could not like the post.");
+      }
+
+      const data = await response.json();
+      console.log(data.message); // Or handle this message in a user-friendly way
+      enqueueSnackbar("Post liked successfully", { variant: "success" });
+    } catch (error) {
+      console.error(error.message);
+      enqueueSnackbar("An error occurred while liking the post", {
+        variant: "error",
+      });
+    }
+  };
   useEffect(() => {
     const fetchPosts = async () => {
       setIsLoading(true);
-      CircularProgress;
       const token = localStorage.getItem("token"); // Assuming the JWT token is stored in localStorage
-      console.log("token", token);
+
       if (!token) {
         console.error("No token found");
+        setIsLoading(false); // Ensure loading is set to false even if there's no token
+        return;
       }
       try {
-        const response = await fetch("http://127.0.0.1:5050/posts", {
+        const response = await fetch("/api/posts", {
+          // Ensure the URL is correct
           method: "GET",
-          credentials: "include", // This tells the browser to include cookies with the request
-
           headers: {
             Authorization: `Bearer ${token}`, // Assuming the token is a bearer token
           },
@@ -82,18 +115,15 @@ export default function PostCards() {
         setPosts(data);
       } catch (error) {
         console.error(error.message);
+        enqueueSnackbar(error.message, { variant: "error" });
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchPosts();
-  }, []);
-  console.log("posts", posts);
-  const likeClick = () => {
-    console.log("Like button clicked");
-    enqueueSnackbar("Liked", { variant: "success", className: "" });
-  };
+  }, [enqueueSnackbar]); // Add enqueueSnackbar to the dependency array
+
   const commentClick = () => {
     console.log("Comment button clicked");
     enqueueSnackbar("Commented", { variant: "success" });
@@ -102,7 +132,7 @@ export default function PostCards() {
   return (
     <div className="flex flex-col justify-center items-center px-4 py-3 ">
       {posts ? (
-        posts.map((post) => (
+        posts.map((post: any) => (
           <div className="shadow-lg flex m-5 mt-12 p-5 rounded-lg w-full xl:w-4/5">
             <div className="w-full xl:w-1/2">
               <div className="">
@@ -114,7 +144,11 @@ export default function PostCards() {
                   height={600}
                 />
                 <div className="flex justify-center gap-2 mt-2">
-                  <Button color="danger" variant="ghost" onClick={likeClick}>
+                  <Button
+                    color="danger"
+                    variant="ghost"
+                    onClick={() => handleLike(post.id)}
+                  >
                     <HeartIcon className="w-6 h-6" />
                     <span className="sr-only">Like</span>
                   </Button>
@@ -126,7 +160,7 @@ export default function PostCards() {
               </div>
             </div>
             <div className="w-full md:w-3/5 p-3">
-              <p className="text-sm mb-2">@{post.user_id}</p>
+              <p className="text-sm mb-2">@{user.username}</p>
               <h2 className="text-lg font-extrabold mb-2">Recipe:</h2>
               <p>{post.content}</p>
               <h3 className="text-lg font-extrabold mt-4 mb-2">Ingredients:</h3>

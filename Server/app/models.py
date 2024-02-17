@@ -64,8 +64,9 @@ class Post(db.Model, SerializerMixin):
     image_url = db.Column(db.String(255))
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     comments = db.relationship("Comment", back_populates='post', lazy="dynamic")
-    
-    likers = db.relationship('User', secondary=likes, backref=db.backref('liked_posts', lazy='dynamic'))
+    likers = db.relationship('User', secondary=likes, lazy='dynamic', back_populates='liked_posts')
+
+    # likers = db.relationship('User', secondary=likes, backref=db.backref('liked_posts', lazy='dynamic'))
     comments = db.relationship('Comment', back_populates='post', lazy='dynamic')
     
 
@@ -131,17 +132,22 @@ class User(db.Model, SerializerMixin):
         backref=db.backref('followers', lazy='dynamic'),
         lazy='dynamic'
     )
-    
+    # liked_posts = db.relationship('Post', secondary=likes, 
+    #                             backref=db.backref('likers', lazy='dynamic'))
+    liked_posts = db.relationship('Post', secondary=likes, lazy='dynamic', back_populates='likers')
+
     def like_post(self, post):
         if not self.has_liked_post(post):
             self.liked_posts.append(post)
+            db.session.commit()
 
     def unlike_post(self, post):
         if self.has_liked_post(post):
             self.liked_posts.remove(post)
+            db.session.commit()
 
     def has_liked_post(self, post):
-        return self.liked_posts.filter(likes.c.post_id == post.id).count() > 0
+        return post in self.liked_posts
     
     def follow(self, user):
         if not self.is_following(user):

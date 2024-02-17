@@ -419,6 +419,7 @@ class UserPosts(Resource):
         user_id = get_jwt_identity()
         # Using .first_or_404() to simplify and directly handle user not found scenario.
         posts = Post.query.filter_by(user_id=user_id).all()
+        
         if not posts:
             return jsonify([])
         return jsonify([post.to_dict() for post in posts])

@@ -1,7 +1,3 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/It5XEMx4dPJ
- */
 import {
   Avatar,
   Card,
@@ -12,11 +8,10 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@nextui-org/react";
-import RecipeModal from "./RecipeModal";
-import NavBar from "./NavBar";
+
 import { useEffect, useState } from "react";
 import { useAuth } from "../Auth/AuthContext";
-import axios from "axios";
+
 import DeleteUser from "./DeleteUser";
 import FollowersInfo from "./FollowersInfo";
 
@@ -30,7 +25,6 @@ export default function Component() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  console.log("User", user);
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -39,6 +33,8 @@ export default function Component() {
           headers: {
             "Content-Type": "application/json",
             "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+            // Include authorization header if your API requires authentication
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
 
@@ -66,6 +62,8 @@ export default function Component() {
         headers: {
           "Content-Type": "application/json",
           "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+          // Include authorization header if your API requires authentication
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       // Optionally, you can handle success response here
@@ -76,38 +74,43 @@ export default function Component() {
     }
   };
 
-  useEffect(() => {
-    const fetchUserPosts = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetch("/user/posts", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": getCookie("csrf_access_token"),
-          },
-        });
+  const fetchUserPosts = async () => {
+    setIsLoading(true); // Assuming you have a loading state to manage UI feedback
+    try {
+      const response = await fetch("/user/posts", {
+        method: "GET", // GET is used for fetching data
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch user posts");
-        }
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": getCookie("csrf_access_token"), // If CSRF protection is needed
+          // Include authorization header if your API requires authentication
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
-        const data = await response.json();
-        setPosts(data);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setIsLoading(false);
+      if (!response.ok) {
+        throw new Error("Failed to fetch user posts");
       }
-    };
 
+      const data = await response.json(); // Parse response body as JSON
+
+      setPosts(data); // Assuming you have a state to hold the posts
+    } catch (error) {
+      setError(error.message); // Assuming you manage errors in state
+    } finally {
+      setIsLoading(false); // Reset loading state regardless of outcome
+    }
+  };
+
+  useEffect(() => {
     fetchUserPosts();
-  }, [getCookie]);
+  }, []); // Dependency array left empty to run once on component mount
 
   if (isLoading) {
     return <p>Loading...</p>;
   }
-  console.log("posts", posts);
+  console.log("Posts", posts);
+
   return (
     <div className="w-full">
       <Card className="mt-5 mb-10">
@@ -172,29 +175,34 @@ export default function Component() {
           </div>
 
           <div className="grid grid-cols-3 gap-4 mt-6">
-            <div>
-              <Image
-                alt="Image caption"
-                className="aspect-square object-cover rounded-[12px]"
-                height={300}
-                src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?q=80&w=2912&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                width={300}
-              />
-              <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                Image caption
-              </div>
-              <div className="flex items-center space-x-2 mt-1">
-                <HeartIcon className="w-5 h-5" />
-                <span>120 likes</span>
-              </div>
-            </div>
+            {posts.length > 0 ? (
+              posts.map((post) => (
+                <div key={post.id}>
+                  <Image
+                    alt="Image caption"
+                    className="aspect-square object-cover rounded-[12px]"
+                    height={300}
+                    src={post.image_url}
+                    width={300}
+                  />
+                  <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                    {post.content}
+                  </div>
+                  {/* You can add more post details here, such as likes, comments, etc. */}
+                </div>
+              ))
+            ) : (
+              <div>No posts found</div>
+            )}
 
             <div>
               <Image
                 alt="Image caption"
                 className="aspect-square object-cover rounded-[12px]"
                 height={300}
-                src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                src={
+                  "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                }
                 width={300}
               />
               <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
