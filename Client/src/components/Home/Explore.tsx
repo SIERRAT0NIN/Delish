@@ -4,13 +4,14 @@ import Followers from "./Followers";
 import { useSnackbar } from "notistack";
 import ExploreImgModal from "./ExploreImgModal";
 import { CircularProgress } from "@nextui-org/react";
+
 export default function Explore() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
+  const [selectedPost, setSelectedPost] = useState(null);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -55,7 +56,9 @@ export default function Explore() {
     console.log("Comment button clicked");
     enqueueSnackbar("Commented", { variant: "success" });
   };
-  const imgClick = () => {
+  const imgClick = (post) => {
+    setSelectedPost(post); // Set the selected post
+
     onOpenChange(true); // Open the modal
   };
   return (
@@ -76,8 +79,8 @@ export default function Explore() {
               <Image
                 alt="Post"
                 className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-                src={post.image_url || "https://via.placeholder.com/200"}
-                onClick={imgClick}
+                src={post.image_url || "https://i.imgur.com/xIMZq7l.png"}
+                onClick={() => imgClick(post)}
               />
 
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
@@ -95,12 +98,12 @@ export default function Explore() {
             </div>
           )
         )}
-        <ExploreImgModal
-          isOpen={isOpen}
-          onOpenChange={onOpenChange}
-          posts={posts}
-        />
       </div>
+      <ExploreImgModal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        selectedPost={selectedPost} // Pass selectedPost as a prop
+      />
     </Card>
     // </div>
   );

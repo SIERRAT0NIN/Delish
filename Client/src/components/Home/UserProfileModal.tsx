@@ -17,8 +17,9 @@ const UserProfileModal = ({ isOpen, onClose, user, onOpenChange }) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [selectedPost, setSelectedPost] = useState(null);
   const { getCookie } = useAuth();
+
   const checkIfFollowing = async () => {
     setIsLoading(true);
     try {
@@ -87,11 +88,11 @@ const UserProfileModal = ({ isOpen, onClose, user, onOpenChange }) => {
   //     setIsLoading(false);
   //   }
   // };
-  // useEffect(() => {
-  //   if (user) {
-  //     checkIfFollowing();
-  //   }
-  // }, [user]);
+  useEffect(() => {
+    if (user) {
+      checkIfFollowing();
+    }
+  }, [user]);
   const handleFollowUnfollow = async (action) => {
     setIsLoading(true);
     try {
