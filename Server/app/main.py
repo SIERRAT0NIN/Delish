@@ -672,9 +672,44 @@ class Follow(Resource):
         except Exception as e:
             db.session.rollback()
             return {"error": "Unable to unfollow user", "details": str(e)}, 500
+    @jwt_required()
+    def get(self, user_id):
+        current_user_id = get_jwt_identity()
+        
+        # Ensure a user can only see their own follow stats or make this publicly available
+        # depending on your application's requirements
+        if str(current_user_id) != str(user_id):
+            return {"error": "Access denied"}, 403
 
+        user = User.query.get_or_404(user_id)
+        
+        # Assuming 'followers' and 'followed' are the relationship attributes
+        # You might need to adjust these based on your actual model attributes
+        followers_count = user.followers.count()
+        followed_count = user.followed.count()
+        
+        return jsonify({
+            "followers_count": followers_count,
+            "followed_count": followed_count
+        })
 # Add the resource to the API
 api.add_resource(Follow, '/users/<int:user_id>/follow')
+class UserFollowInfo(Resource):
+    @jwt_required()
+    def get(self, user_id):
+        # Removing the identity check to make follow info publicly accessible
+        user = User.query.get_or_404(user_id)
+        
+        followers_count = user.followers.count()
+        followed_count = user.followed.count()
+        
+        return jsonify({
+            "followers_count": followers_count,
+            "followed_count": followed_count
+        })
+
+# Add the resource to the API
+api.add_resource(UserFollowInfo, '/users/<int:user_id>/follow-info')
 
 if __name__ == "__main__":
     socketio.run(app, debug=True, host="0.0.0.0", port=5050)

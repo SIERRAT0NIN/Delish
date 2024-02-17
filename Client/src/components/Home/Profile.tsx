@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../Auth/AuthContext";
 import axios from "axios";
 import DeleteUser from "./DeleteUser";
+import FollowersInfo from "./FollowersInfo";
 
 export default function Component() {
   const [posts, setPosts] = useState([]);
@@ -25,9 +26,11 @@ export default function Component() {
   const [error, setError] = useState(null);
   const [warning, setWarning] = useState(false);
 
-  const { getCookie } = useAuth();
+  const { getCookie, user } = useAuth();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  console.log("User", user);
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -152,23 +155,18 @@ export default function Component() {
               size="lg"
               className="place-content-stretch"
             />
-            <h1 className="text-2xl font-bold">@Alberto.Sierra</h1>
+            <h1 className="text-2xl font-bold">@{user.username}</h1>
             <p className="justify-center text-sm text-gray-500 dark:text-gray-400 line-clamp-4">
               This is a short bio about the user. It's a brief introduction that
               is limited to 150 characters.
             </p>
             <div className="flex space-x-4">
               <div className="flex items-center space-x-2">
-                <UserIcon className="w-5 h-5" />
                 <span>3 Posts</span>
               </div>
               <div className="flex items-center space-x-2">
                 <UserIcon className="w-5 h-5" />
-                <span>1.2k followers</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <UsersIcon className="w-5 h-5" />
-                <span>500 following</span>
+                <FollowersInfo userId={user.id} />
               </div>
             </div>
           </div>
