@@ -25,6 +25,13 @@ const ExploreImgModal = ({ isOpen, onOpenChange, posts }) => {
               <ModalHeader className="flex flex-col gap-1">
                 <h3 className="text-lg font-bold">Post Title</h3>
                 <p className="text-sm text-gray-500">Posted by: User</p>
+                <Button
+                  className="justify-center"
+                  variant="shadow"
+                  color="primary"
+                >
+                  Follow
+                </Button>
               </ModalHeader>
               <ModalBody>
                 <div className="flex justify-center">
