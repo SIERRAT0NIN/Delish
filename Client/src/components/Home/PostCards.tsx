@@ -8,6 +8,7 @@ import {
   Image,
   Chip,
   CardHeader,
+  CircularProgress,
   CardFooter,
 } from "@nextui-org/react";
 import { useSnackbar } from "notistack";
@@ -57,6 +58,7 @@ export default function PostCards() {
   useEffect(() => {
     const fetchPosts = async () => {
       setIsLoading(true);
+      CircularProgress;
       const token = localStorage.getItem("token"); // Assuming the JWT token is stored in localStorage
       console.log("token", token);
       if (!token) {

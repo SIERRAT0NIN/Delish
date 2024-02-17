@@ -622,40 +622,59 @@ class CommentOnPost(Resource):
 
 api.add_resource(CommentOnPost, '/posts/<int:post_id>/comment')
 
-# class CreatePost(Resource):
-#     @jwt_required()
-    
-#     def post(self):
+class ProfileResource(Resource):
+    def get(self, profile_id):
+        profile = Profile.query.get_or_404(profile_id)
+        return jsonify(profile.to_dict())
 
-#         parser = reqparse.RequestParser()
-#         parser.add_argument('content', required=True, help="Content cannot be blank")
+api.add_resource(ProfileResource, '/profiles/<int:profile_id>')
+
+ 
+
+class Follow(Resource):
+    @jwt_required()
+ 
+
+    def post(self, user_id):
+        current_user_id = get_jwt_identity()
         
-#         args = parser.parse_args()
+        follower = User.query.filter_by(email=current_user_id).first()
+        if follower.id == user_id:
+            return {"error": "You cannot follow yourself"}, 400
 
+        user_to_follow = User.query.get_or_404(user_id)
+        if follower.is_following(user_to_follow):
+            return {"message": "Already following"}, 409
 
-#         current_user_email = get_jwt_identity()
-#         current_user = User.query.filter_by(email=current_user_email).first()
-#         print(current_user_email)
-#         print(1)
+        try:
+            follower.follow(user_to_follow)
+            db.session.commit()
+            return {"message": f"Now following {user_to_follow.username}"}, 201
+        except Exception as e:
+            db.session.rollback()
+            return {"error": "Unable to follow user", "details": str(e)}, 500
+    @jwt_required()
+    def delete(self, user_id):
+        current_user_id = get_jwt_identity()
+        follower = User.query.filter_by(email=current_user_id).first()
         
-#         if not current_user:
-#             return {'message': 'User not found'}, 404
+        if follower.id == int(user_id):
+            return {"error": "You cannot unfollow yourself"}, 400
 
-#         # Create the post
-#         new_post = Post(user_id=current_user.id, content=args['content'], ingredients=args['ingredients'], image_url=args['image_url'])
+        user_to_unfollow = User.query.get_or_404(user_id)
+        if not follower.is_following(user_to_unfollow):
+            return {"message": "Not following this user"}, 404
 
+        try:
+            follower.unfollow(user_to_unfollow)
+            db.session.commit()
+            return {"message": f"Unfollowed {user_to_unfollow.username}"}, 200
+        except Exception as e:
+            db.session.rollback()
+            return {"error": "Unable to unfollow user", "details": str(e)}, 500
 
-#         try:
-#             db.session.add(new_post)
-#             db.session.commit()
-#             return {'message': 'Post created successfully', 'post_id': new_post.id}, 201
-#         except Exception as e:
-#             db.session.rollback()
-#             return {'message': 'An error occurred while creating the post', 'error': str(e)}, 500
-
-
-# api.add_resource(CreatePost, '/posts')
-
+# Add the resource to the API
+api.add_resource(Follow, '/users/<int:user_id>/follow')
 
 if __name__ == "__main__":
     socketio.run(app, debug=True, host="0.0.0.0", port=5050)

@@ -26,9 +26,45 @@ export default function Component() {
   const [warning, setWarning] = useState(false);
 
   const { getCookie } = useAuth();
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch("/profiles/1", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch profile data");
+        }
+
+        const data = await response.json(); // Parse response body as JSON
+        setProfile(data); // Set profile data in state
+        console.log("Profile", data);
+        setLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [getCookie]);
+
   const deleteUser = async () => {
     try {
-      await axios.delete("/delete_user");
+      const response = await fetch("/user/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+        },
+      });
       // Optionally, you can handle success response here
       console.log("User deleted successfully");
     } catch (error) {
@@ -41,7 +77,7 @@ export default function Component() {
     const fetchUserPosts = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("http://127.0.0.1:5050/user/posts", {
+        const response = await fetch("/user/posts", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

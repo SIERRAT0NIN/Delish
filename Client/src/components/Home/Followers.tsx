@@ -57,10 +57,9 @@ const Followers = () => {
   return (
     <div>
       <Card>
-        <CardHeader>Search for users!</CardHeader>
         <CardBody>
           <Input
-            placeholder="Search for followers"
+            placeholder="Search for users!"
             value={searchTerm}
             onChange={handleSearch}
           />

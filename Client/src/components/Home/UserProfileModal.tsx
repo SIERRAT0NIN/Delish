@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   Button,
@@ -9,9 +9,118 @@ import {
   Avatar,
   Image,
 } from "@nextui-org/react";
+import { useAuth } from "../Auth/AuthContext";
+import { toast } from "react-toastify";
 
 // Adjusted component to accept props
 const UserProfileModal = ({ isOpen, onClose, user, onOpenChange }) => {
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { getCookie } = useAuth();
+  const checkIfFollowing = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/users/${user.id}/followers`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setIsFollowing(data.isFollowing);
+      } else {
+        throw new Error("Failed to fetch follow status.");
+      }
+    } catch (error) {
+      console.error("Failed to check follow state", error);
+      toast.error("Could not verify follow status.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handleFollow = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/users/${user.id}/follow`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+        },
+      });
+      if (response.ok) {
+        setIsFollowing(true);
+      }
+    } catch (error) {
+      console.error("Failed to follow user", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // const handleFollowUnfollow = async (action) => {
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await fetch(`/api/users/${user.id}/follow`, {
+  //       method: action === "follow" ? "POST" : "DELETE",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+  //       },
+  //     });
+  //     if (response.ok) {
+  //       setIsFollowing(action === "follow");
+  //       toast.success(
+  //         `User ${action === "follow" ? "" : "un"}followed successfully.`
+  //       );
+  //     } else {
+  //       throw new Error(`Failed to ${action} user.`);
+  //     }
+  //   } catch (error) {
+  //     console.error(`Failed to ${action} user`, error);
+  //     toast.error(`Could not ${action} the user.`);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+  // useEffect(() => {
+  //   if (user) {
+  //     checkIfFollowing();
+  //   }
+  // }, [user]);
+  const handleFollowUnfollow = async (action) => {
+    setIsLoading(true);
+    try {
+      const method = action === "follow" ? "POST" : "DELETE"; // Determine method based on action
+      const response = await fetch(`/api/users/${user.id}/follow`, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+        },
+      });
+      if (response.ok) {
+        setIsFollowing(action === "follow");
+        toast.success(
+          `User ${action === "follow" ? "" : "un"}followed successfully.`
+        );
+      } else {
+        // Handle non-OK response
+        const errorData = await response.json();
+        toast.error(`Error: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error(`Failed to ${action} user`, error);
+      toast.error(`Could not ${action} the user.`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalHeader>
@@ -36,9 +145,20 @@ const UserProfileModal = ({ isOpen, onClose, user, onOpenChange }) => {
                     />
                   </div>
                   <h2 className="flex justify-center">@{user.username}</h2>
-                  <Button color="primary" onPress={onClose}>
-                    Follow
+                  <Button
+                    color={isFollowing ? "default" : "primary"}
+                    onClick={() =>
+                      handleFollowUnfollow(isFollowing ? "unfollow" : "follow")
+                    }
+                    disabled={isLoading}
+                  >
+                    {isLoading
+                      ? "Processing..."
+                      : isFollowing
+                      ? "Unfollow"
+                      : "Follow"}
                   </Button>
+
                   <div>
                     <Image
                       alt="Image caption"

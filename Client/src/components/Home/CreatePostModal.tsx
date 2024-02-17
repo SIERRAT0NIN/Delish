@@ -355,7 +355,7 @@ export default function CreatePostModal() {
                   placeholder="Upload a photo url"
                 />
               </div>
-              <div className="flex">
+              <div className="">
                 <Textarea
                   label="Recipe"
                   id="content"

@@ -3,7 +3,7 @@ import { Button, Card, Image, Tooltip, useDisclosure } from "@nextui-org/react";
 import Followers from "./Followers";
 import { useSnackbar } from "notistack";
 import ExploreImgModal from "./ExploreImgModal";
-
+import { CircularProgress } from "@nextui-org/react";
 export default function Explore() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -40,7 +40,7 @@ export default function Explore() {
   }, []);
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    <CircularProgress aria-label="Loading..." />;
   }
 
   if (error) {
