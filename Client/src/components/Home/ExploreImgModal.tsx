@@ -11,7 +11,13 @@ import {
 } from "@nextui-org/react";
 import { Chip } from "@mui/material";
 
-const ExploreImgModal = ({ isOpen, onOpenChange, selectedPost }) => {
+const ExploreImgModal = ({
+  isOpen,
+  onOpenChange,
+  selectedPost,
+  likeClick,
+  commentClick,
+}) => {
   console.log("Selected post:", selectedPost);
   return (
     <>
@@ -47,11 +53,11 @@ const ExploreImgModal = ({ isOpen, onOpenChange, selectedPost }) => {
               </ModalBody>
               <ModalFooter className="flex items-center justify-center ">
                 <div className="flex gap-2 mt-2">
-                  <Button color="danger" variant="ghost">
+                  <Button color="danger" variant="ghost" onPress={likeClick}>
                     <HeartIcon className="w-6 h-6 " />
                     <span className="sr-only">Like</span>
                   </Button>
-                  <Button color="danger" variant="ghost">
+                  <Button color="danger" variant="ghost" onPress={commentClick}>
                     <MessageCircleIcon className="w-6 h-6" />
                     <span className="sr-only">Comment</span>
                   </Button>
