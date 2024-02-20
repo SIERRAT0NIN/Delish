@@ -549,6 +549,68 @@ class SearchUsers(Resource):
 
 api.add_resource(SearchUsers, '/search_users')
 
+# class LikePost(Resource):
+#     @jwt_required()
+#     def post(self, post_id):
+#         current_user_email = get_jwt_identity()
+#         current_user = User.query.filter_by(email=current_user_email).first()
+
+#         if not current_user:
+#             return {'message': 'User not found'}, 404
+
+#         post = Post.query.get_or_404(post_id)
+
+
+#         try:
+#             current_user.like_post(post)
+#             db.session.commit()
+#             return {'message': 'Post liked successfully'}, 200
+#         except Exception as e:
+#             db.session.rollback()
+#             return {'message': 'An error occurred while liking the post', 'error': str(e)}, 500
+
+# api.add_resource(LikePost, '/like/<int:post_id>')
+
+# class LikePost(Resource):
+#     @jwt_required()
+#     def post(self, post_id):
+#         current_user_email = get_jwt_identity()
+#         current_user = User.query.filter_by(email=current_user_email).first()
+
+#         if not current_user:
+#             return {'message': 'User not found'}, 404
+
+#         post = Post.query.get_or_404(post_id)
+
+#         # Check if the post is already liked by the current user
+#         if current_user.has_liked_post(post):
+#             return {'message': 'Post already liked by this user'}, 400
+#         try:
+#             current_user.like_post(post)
+#             db.session.commit()
+#             return {'message': 'Post liked successfully'}, 200
+#         except Exception as e:
+#             db.session.rollback()
+#             return {'message': 'An error occurred while liking the post', 'error': str(e)}, 500
+        
+#     @jwt_required()
+#     def delete(self, post_id):
+#         current_user_email = get_jwt_identity()
+#         current_user = User.query.filter_by(email=current_user_email).first()
+
+#         if not current_user:
+#             return {'message': 'User not found'}, 404
+
+#         post = Post.query.get_or_404(post_id)
+
+#         try:
+#             # Directly attempt to unlike the post without checking if it's currently liked
+#             current_user.unlike_post(post)  # Assumes you have an unlike_post method
+#             db.session.commit()
+#             return {'message': 'Post unliked successfully'}, 200
+#         except Exception as e:
+#             db.session.rollback()
+#             return {'message': 'An error occurred while unliking the post', 'error': str(e)}, 500
 class LikePost(Resource):
     @jwt_required()
     def post(self, post_id):
@@ -560,17 +622,50 @@ class LikePost(Resource):
 
         post = Post.query.get_or_404(post_id)
 
+        # Toggle like state
+        if current_user.has_liked_post(post):
+            try:
+                # If the post is already liked, unlike it
+                current_user.unlike_post(post)
+                db.session.commit()
+                return {'message': 'Post unliked successfully'}, 200
+            except Exception as e:
+                db.session.rollback()
+                return {'message': 'An error occurred while unliking the post', 'error': str(e)}, 500
+        else:
+            try:
+                # If the post is not liked, like it
+                current_user.like_post(post)
+                db.session.commit()
+                return {'message': 'Post liked successfully'}, 200
+            except Exception as e:
+                db.session.rollback()
+                return {'message': 'An error occurred while liking the post', 'error': str(e)}, 500
+    @jwt_required()
+    def delete(self, post_id):
+        # Unlike post logic
+        current_user_email = get_jwt_identity()
+        current_user = User.query.filter_by(email=current_user_email).first()
+
+        if not current_user:
+            return {'message': 'User not found'}, 404
+
+        post = Post.query.get_or_404(post_id)
+
+        if not current_user.has_liked_post(post):
+            return {'message': 'Post not liked by this user'}, 400
 
         try:
-            current_user.like_post(post)
+            current_user.unlike_post(post)
             db.session.commit()
-            return {'message': 'Post liked successfully'}, 200
+            return {'message': 'Post unliked successfully'}, 200
         except Exception as e:
             db.session.rollback()
-            return {'message': 'An error occurred while liking the post', 'error': str(e)}, 500
+            return {'message': 'An error occurred while unliking the post', 'error': str(e)}, 500
+
+
 
 api.add_resource(LikePost, '/like/<int:post_id>')
-
 
 class DeleteUser(Resource):
     @jwt_required()
