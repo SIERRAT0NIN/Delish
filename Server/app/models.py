@@ -82,7 +82,7 @@ class Post(db.Model, SerializerMixin):
             "id": self.id,
             "user_id": self.user_id,
             "content": self.content,
-            "ingredients": self.ingredients,
+            "ingredients": self.ingredients.split(','),  # Assuming ingredients are comma-separated
             "image_url": self.image_url,
             "created_at": self.created_at.isoformat(),  # Format datetime as a string
             # Include any other fields you want in the response
@@ -136,10 +136,16 @@ class User(db.Model, SerializerMixin):
     #                             backref=db.backref('likers', lazy='dynamic'))
     liked_posts = db.relationship('Post', secondary=likes, lazy='dynamic', back_populates='likers')
 
+    # def like_post(self, post):
+    #     if not self.has_liked_post(post):
+    #         self.liked_posts.append(post)
+    #         db.session.commit()
     def like_post(self, post):
         if not self.has_liked_post(post):
             self.liked_posts.append(post)
-            db.session.commit()
+        else:
+            self.liked_posts.remove(post)
+        db.session.commit()
 
     def unlike_post(self, post):
         if self.has_liked_post(post):

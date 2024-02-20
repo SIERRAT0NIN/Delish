@@ -89,7 +89,11 @@ export default function Explore() {
                     <HeartIcon className="w-6 h-6" />
                     <span className="sr-only">Like</span>
                   </Button>
-                  <Button color="danger" variant="ghost" onClick={commentClick}>
+                  <Button
+                    color="danger"
+                    variant="ghost"
+                    onClick={() => imgClick(post)}
+                  >
                     <MessageCircleIcon className="w-6 h-6" />
                     <span className="sr-only">Comment</span>
                   </Button>
