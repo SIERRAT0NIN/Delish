@@ -84,7 +84,7 @@ export default function Explore() {
               />
 
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                <div className="flex flex-col items-center space-y-2">
+                <div className="flex flex-col items-center space-y-2 z-10">
                   <Button onClick={likeClick} color="danger" variant="ghost">
                     <HeartIcon className="w-6 h-6" />
                     <span className="sr-only">Like</span>
@@ -103,6 +103,8 @@ export default function Explore() {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         selectedPost={selectedPost} // Pass selectedPost as a prop
+        likeClick={likeClick}
+        commentClick={commentClick}
       />
     </Card>
     // </div>
