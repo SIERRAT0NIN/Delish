@@ -1,8 +1,10 @@
 import { Card } from "@nextui-org/react";
-import NavBar from "./NavBar";
+import React, { useContext } from "react";
 import PostCards from "./PostCards";
+import { BackendDataContext } from "../Auth/BackendDataContext";
 
 export default function Home() {
+  const { posts } = useContext(BackendDataContext);
   return (
     <div>
       <div>
@@ -10,8 +12,7 @@ export default function Home() {
           <h1 className="text-lg bg-gradient-to-r from-cyan-500 to-blue-500 text-white p-5 rounded  text-center">
             Home
           </h1>
-
-          <PostCards />
+          <PostCards posts={posts} key={posts.id} />
         </Card>
       </div>
     </div>

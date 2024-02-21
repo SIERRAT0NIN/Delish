@@ -21,6 +21,7 @@ import Developers from "../Home/Developers";
 import { useAuth } from "../Auth/AuthContext";
 import NotificationCenter from "../Home/NotificationCenter";
 import Followers from "../Home/Followers";
+import CommunityNight from "../CommunityNight/CommunityNight";
 
 function RouterApp() {
   const { user } = useAuth();
@@ -40,6 +41,7 @@ function RouterApp() {
           <Route path="/explore_recipes" element={<Explore />} />
           <Route path="/developers" element={<Developers />} />
           <Route path="/followers" element={<Followers />} />
+          <Route path="/community" element={<CommunityNight />} />
           {/* <Route path="/notifications" element={<NotificationCenter />} /> */}
           <Route path="/*" element={<Error />} />
           <Route path="/logout" element={<Logout />} />

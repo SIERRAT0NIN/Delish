@@ -39,9 +39,8 @@ export default function Explore() {
     };
     fetchPosts();
   }, []);
-
   if (isLoading) {
-    <CircularProgress aria-label="Loading..." />;
+    return <CircularProgress aria-label="Loading..." />;
   }
 
   if (error) {

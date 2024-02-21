@@ -818,5 +818,35 @@ class UserFollowInfo(Resource):
 # Add the resource to the API
 api.add_resource(UserFollowInfo, '/users/<int:user_id>/follow-info')
 
+class CreateComment(Resource):
+    def post(self):
+        data = request.get_json(force=True)
+        new_comment = Comment(
+            user_id=data['user_id'],
+            post_id=data['post_id'],
+            content=data['content'],
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+        return {"message": "Comment created successfully!", "comment": str(new_comment)}, 201
+
+api.add_resource(CreateComment, '/comments')
+
+class CommentsForPost(Resource):
+    def get(self, post_id):
+        comments = Comment.query.filter_by(post_id=post_id).all()
+        comments_data = [{
+            'id': comment.id, 
+            'user_id': comment.user_id,
+            'post_id': comment.post_id,
+            'content': comment.content, 
+            'created_at': comment.created_at.isoformat()
+        } for comment in comments]
+        return comments_data, 200
+
+
+api.add_resource(CommentsForPost, '/posts/<int:post_id>/comments')
+
+
 if __name__ == "__main__":
     socketio.run(app, debug=True, host="0.0.0.0", port=5050)
