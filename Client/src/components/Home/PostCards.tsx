@@ -16,6 +16,7 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
+  select,
 } from "@nextui-org/react";
 
 import { useSnackbar } from "notistack";
@@ -33,8 +34,13 @@ export default function PostCards({ posts }) {
     commentClick,
     isLikedByUser,
     commentsByPostId,
+    selectedPost,
+    setSelectedPost,
   } = useContext(BackendDataContext);
-
+  const openCommentModal = (postId) => {
+    setSelectedPost(postId); // Set the ID of the selected post in context
+    onOpenChange(true); // Open the modal
+  };
   return (
     <div className="flex flex-col justify-center items-center px-4 py-3">
       {posts ? (
@@ -75,7 +81,11 @@ export default function PostCards({ posts }) {
 
                     <span className="sr-only">Like</span>
                   </Button>
-                  <Button color="danger" variant="ghost" onPress={onOpen}>
+                  <Button
+                    color="danger"
+                    variant="ghost"
+                    onClick={() => openCommentModal(post.id)}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"

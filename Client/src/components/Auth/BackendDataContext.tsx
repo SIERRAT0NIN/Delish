@@ -11,6 +11,9 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
   const { user, getCookie } = useAuth();
   const [posts, setPosts] = useState<never[]>([]); // Add type annotation for the state variable
   const { enqueueSnackbar } = useSnackbar();
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [commentsByPostId, setCommentsByPostId] = useState({});
+  const [refreshTrigger, setRefreshTrigger] = useState(0); // Initial state as 0
 
   const handleLike = async (post: any) => {
     // Add type annotation for the 'post' parameter
@@ -134,7 +137,6 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
       return [];
     }
   };
-  const [commentsByPostId, setCommentsByPostId] = useState({});
 
   useEffect(() => {
     posts.forEach((post) => {
@@ -145,7 +147,7 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
         }));
       });
     });
-  }, [posts]);
+  }, [posts, refreshTrigger]);
 
   console.log("commentsByPostId", commentsByPostId);
 
@@ -167,6 +169,10 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
         commentClick,
         isLikedByUser,
         commentsByPostId,
+        selectedPost,
+        setSelectedPost,
+        refreshTrigger,
+        setRefreshTrigger,
       }}
     >
       {children}
