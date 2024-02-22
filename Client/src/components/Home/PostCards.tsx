@@ -23,6 +23,7 @@ import { useSnackbar } from "notistack";
 import { useAuth } from "../Auth/AuthContext";
 import { BackendDataContext } from "../Auth/BackendDataContext";
 import CommentModal from "./CommentModal";
+import { FoodImgCarousel } from "./FoodImgCarousel";
 
 export default function PostCards() {
   const { user, getCookie } = useAuth();
@@ -80,13 +81,14 @@ export default function PostCards() {
           >
             <div className="w-full xl:w-1/2">
               <div className="">
-                <Image
+                {/* <Image
                   alt="Delicious meal"
                   className="rounded-lg object-cover"
                   src={post.image_url || "https://via.placeholder.com/300"} // Fallback for missing images
                   width={600}
                   height={600}
-                />
+                /> */}
+                <FoodImgCarousel post={post} />
                 <div className="flex justify-center gap-2 mt-2">
                   <Button
                     color="danger"

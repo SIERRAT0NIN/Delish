@@ -115,8 +115,10 @@ export default function CommunityNight() {
           </div>
         </Card>
         <Card className="flex p-3 m-3">
-          <CardHeader className=" ">What to participate?</CardHeader>
-          <Button color="warning">Click here!</Button>
+          <CardHeader className="">What to participate?</CardHeader>
+          <Button className="text-white " color="warning">
+            Click here!
+          </Button>
         </Card>
       </div>
     </div>

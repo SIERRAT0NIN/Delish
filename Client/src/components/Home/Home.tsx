@@ -9,7 +9,7 @@ export default function Home() {
     <div>
       <div>
         <Card className="mt-5 mb-10 home-card">
-          <h1 className="text-lg bg-gradient-to-r from-cyan-500 to-blue-500 text-white p-5 rounded  text-center">
+          <h1 className="text-lg bg-gradient-to-r from-pink-500 to-yellow-500 text-white p-5 rounded   text-center">
             Home
           </h1>
           <PostCards posts={posts} key={posts.id} />
