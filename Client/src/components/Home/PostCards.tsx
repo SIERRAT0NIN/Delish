@@ -1,179 +1,83 @@
-import React, { useEffect, useState } from "react";
 import UserInfoCard from "./UserInfoCard";
-
+import { useContext } from "react";
 import {
   Button,
   Card,
   CardBody,
-  Image,
   Chip,
   CardHeader,
   CircularProgress,
   CardFooter,
+  Image,
+  Textarea,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+  select,
 } from "@nextui-org/react";
+
 import { useSnackbar } from "notistack";
 import { useAuth } from "../Auth/AuthContext";
+import { BackendDataContext } from "../Auth/BackendDataContext";
+import CommentModal from "./CommentModal";
 
 export default function PostCards() {
   const { user, getCookie } = useAuth();
-  const [posts, setPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [comments, setComments] = useState([]);
-
   const { enqueueSnackbar } = useSnackbar();
-  function HeartIcon(props) {
-    return (
-      <svg
-        {...props}
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-      </svg>
-    );
-  }
-  function MessageCircleIcon(props) {
-    return (
-      <svg
-        {...props}
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z" />
-      </svg>
-    );
-  }
-  const isLikedByUser = (post: any) => {
-    return post.likes.some((like: any) => like.user_id === user.id);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const {
+    handleLike,
+    fetchCommentsForPost,
+    commentClick,
+    isLikedByUser,
+    commentsByPostId,
+    selectedPost,
+    setSelectedPost,
+    refreshTrigger,
+    setRefreshTrigger,
+    posts,
+  } = useContext(BackendDataContext);
+
+  const openCommentModal = (postId) => {
+    setSelectedPost(postId); // Set the ID of the selected post in context
+    onOpenChange(true); // Open the modal
   };
 
-  const handleLike = async (post) => {
-    const token = localStorage.getItem("token"); // Assuming the JWT token is stored in localStorage
-    if (!token) {
-      console.error("No token found");
-      enqueueSnackbar("Please login to like or unlike posts", {
-        variant: "warning",
-      });
-      return;
-    }
-
-    // Determine whether to like or unlike the post
-    const method = post.isLikedByUser ? "DELETE" : "POST";
-    const url = `/api/like/${post.id}`;
-
+  const deleteComment = async (commentId) => {
     try {
-      const response = await fetch(url, {
-        method: method,
+      const token = localStorage.getItem("token");
+      const response = await fetch(`/api/comments/${commentId}`, {
+        method: "DELETE",
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
-          "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+          Authorization: `Bearer ${token}`,
+          "X-CSRF-Token": getCookie("csrf_access_token"),
         },
       });
-
       if (!response.ok) {
-        throw new Error("Failed to update the like status of the post.");
+        throw new Error("Could not delete comment");
       }
-
-      // Update local state to reflect the new like status
-      const updatedPosts = posts.map((p) => {
-        if (p.id === post.id) {
-          return {
-            ...p,
-            isLikedByUser: !p.isLikedByUser,
-            // Optionally adjust the like count if you're tracking that
-            // likeCount: p.isLikedByUser ? p.likeCount - 1 : p.likeCount + 1,
-          };
-        }
-        return p;
-      });
-
-      setPosts(updatedPosts);
-
-      enqueueSnackbar(
-        post.isLikedByUser
-          ? "Post unliked successfully"
-          : "Post liked successfully",
-        { variant: "success" }
-      );
+      const data = await response.json();
+      setRefreshTrigger((prev) => prev + 1);
+      enqueueSnackbar("Comment deleted", { variant: "success" });
     } catch (error) {
-      console.error("Error liking/unliking the post:", error);
-      enqueueSnackbar("An error occurred while updating the post", {
-        variant: "error",
-      });
+      console.error("Delete comment error:", error);
+      enqueueSnackbar("Failed to delete comment", { variant: "error" });
     }
-  };
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      setIsLoading(true);
-      const token = localStorage.getItem("token"); // Assuming the JWT token is stored in localStorage
-
-      if (!token) {
-        console.error("No token found");
-        setIsLoading(false); // Ensure loading is set to false even if there's no token
-        return;
-      }
-      try {
-        const response = await fetch("/api/posts", {
-          // Ensure the URL is correct
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`, // Assuming the token is a bearer token
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Could not fetch posts.");
-        }
-
-        let data = await response.json();
-
-        // Assuming each post has a 'likes' array containing objects with a 'user_id' key
-        data = data.map((post) => ({
-          ...post,
-          isLikedByUser: post.likes
-            ? post.likes.some((like) => like.user_id === user.id)
-            : false,
-        }));
-
-        setPosts(data);
-      } catch (error) {
-        console.error(error.message);
-        enqueueSnackbar(error.message, { variant: "error" });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, [enqueueSnackbar, user.id]);
-
-  const commentClick = () => {
-    console.log("Comment button clicked");
-    enqueueSnackbar("Commented", { variant: "success" });
   };
 
   return (
-    <div className="flex flex-col justify-center items-center px-4 py-3 ">
+    <div className="flex flex-col justify-center items-center px-4 py-3">
       {posts ? (
         posts.map((post: any) => (
-          <div className="shadow-lg flex m-5 mt-12 p-5 rounded-lg w-full xl:w-4/5">
+          <div
+            key={post.id}
+            className="shadow-lg flex m-5 mt-12 p-5 rounded-lg w-full xl:w-4/5"
+          >
             <div className="w-full xl:w-1/2">
               <div className="">
                 <Image
@@ -189,24 +93,56 @@ export default function PostCards() {
                     variant={post.isLikedByUser ? "solid" : "ghost"} // Change button variant based on like status
                     onClick={() => handleLike(post)}
                   >
-                    <HeartIcon className="w-6 h-6" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m10.598-9.75H14.25M5.904 18.5c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.96a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.333.654 3.375Z"
+                      />
+                    </svg>
+
                     <span className="sr-only">Like</span>
                   </Button>
-                  <Button color="danger" variant="ghost" onClick={commentClick}>
-                    <MessageCircleIcon className="w-6 h-6" />
+                  <Button
+                    color="danger"
+                    variant="ghost"
+                    onClick={() => openCommentModal(post.id)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"
+                      />
+                    </svg>
+
                     <span className="sr-only">Comment</span>
                   </Button>
                 </div>
               </div>
             </div>
             <div className="w-full md:w-3/5 p-3">
-              <p className="text-sm mb-2">@{user.username}</p>
+              <p className="text-sm mb-2">@{post.user_id}</p>
               <h2 className="text-lg font-extrabold mb-2">Recipe:</h2>
               <p>{post.content}</p>
               <h3 className="text-lg font-extrabold mt-4 mb-2">Ingredients:</h3>
               {post.ingredients.map((ingredient, index) => (
                 <Chip
-                  key={`${post.id}-${ingredient}-${index}`} // Adjusted key to be more unique
+                  key={`${post.id}-${ingredient}-${index}`}
                   color="primary"
                   variant="dot"
                   className="m-2"
@@ -216,7 +152,6 @@ export default function PostCards() {
               ))}
               <h4 className="font-bold mt-4">Tags</h4>
               <div className="flex flex-wrap">
-                {/* {post.content.map((content, index) => ( */}
                 <Chip
                   key={post.id}
                   color="primary"
@@ -227,12 +162,51 @@ export default function PostCards() {
                 </Chip>
               </div>
               <h3>Comments</h3>
+              {commentsByPostId[post.id] &&
+              commentsByPostId[post.id].length > 0 ? (
+                commentsByPostId[post.id].map((comment) => (
+                  <div
+                    key={comment.id}
+                    className=" bg-zinc-100 p-3 rounded-sm justify-right flex "
+                  >
+                    <div className="justify-left flex">
+                      <p className="font-bold">@Alberto:</p>
+                      <p className="text-black ml-1">{comment.content}</p>
+                    </div>
+
+                    {/* DELETE BUTTON */}
+                    <Button
+                      isIconOnly
+                      className="delete-icon ml-5"
+                      onPress={() => deleteComment(comment.id)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6 hover:block cursor-pointer hover:text-red-500 transition-all duration-300 ease-in-out hover:rotate-180 transform hover:scale-125 "
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                        />
+                      </svg>
+                    </Button>
+                  </div>
+                ))
+              ) : (
+                <p>No comments yet</p>
+              )}
             </div>
           </div>
         ))
       ) : (
-        <p>Loading posts...</p>
+        <CircularProgress />
       )}
+      <CommentModal isOpen={isOpen} onOpenChange={onOpenChange} />
     </div>
   );
 }

@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Button, Card, Image, Tooltip, useDisclosure } from "@nextui-org/react";
 import Followers from "./Followers";
 import { useSnackbar } from "notistack";
 import ExploreImgModal from "./ExploreImgModal";
 import { CircularProgress } from "@nextui-org/react";
+import { BackendDataContext } from "../Auth/BackendDataContext";
 
 export default function Explore() {
+  const { posts, setPosts, selectedPost, setSelectedPost } =
+    useContext(BackendDataContext);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [posts, setPosts] = useState([]);
+  // const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
-  const [selectedPost, setSelectedPost] = useState(null);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -39,9 +41,8 @@ export default function Explore() {
     };
     fetchPosts();
   }, []);
-
   if (isLoading) {
-    <CircularProgress aria-label="Loading..." />;
+    return <CircularProgress aria-label="Loading..." />;
   }
 
   if (error) {

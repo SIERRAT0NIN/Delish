@@ -30,9 +30,17 @@ def seed_database():
                 ingredients="This is a list of ingredients",
                 image_url='https://images.unsplash.com/photo-1501959915551-4e8d30928317?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
             )
+            comment = Comment(
+                user=user,
+                post=post,
+                content=f"This is a comment content {i}"
+            )
+            tags= Tag(
+                name=f"Tag {i}"
+            )
             # Note: Ensure Tag and Comment objects are correctly related to the User and Post objects as needed
 
-            db.session.add_all([user, profile, post])
+            db.session.add_all([user, profile, post, comment,tags])
             # Add tags and comments as needed
 
         db.session.commit()
