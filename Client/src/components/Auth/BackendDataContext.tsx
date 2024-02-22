@@ -164,6 +164,7 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
       value={{
         handleLike,
         posts,
+        setPosts,
         fetchCommentsForPost,
         enqueueSnackbar,
         commentClick,

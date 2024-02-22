@@ -7,9 +7,11 @@ import {
   Avatar,
   Button,
 } from "@nextui-org/react";
+import { useAuth } from "../Auth/AuthContext";
 
 export default function UserInfoCard() {
   const [isFollowed, setIsFollowed] = useState(false);
+  const { user } = useAuth();
 
   return (
     <Card className="max-w-[100%] bg-glass border border-glass shadow-sm backdrop-filter-blur justify-center">

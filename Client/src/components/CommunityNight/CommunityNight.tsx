@@ -98,19 +98,21 @@ export default function CommunityNight() {
       <div>
         <Card className="p-3 m-3 max-h-[300px]">
           <h1 className="font-bold">Leader</h1>
-          <h1>Alberto</h1>
+          <h1 className="m-2 border-gray-200 hover:bg-blue-900 hover:text-white transition-colors duration-200 ease-in-out hover:shadow-md hover:border-gray-300 hover:text-black rounded-md mt-2 w-full cursor-pointer	">
+            Alberto
+          </h1>
         </Card>
         <Card className="p-3 m-3 max-h-[300px]">
           <h1 className="font-bold">Participating Users</h1>
-          <Chip color="success" variant="dot" className="m-2">
+          <div className="m-2 border-gray-200 hover:bg-blue-900 hover:text-white transition-colors duration-200 ease-in-out hover:shadow-md hover:border-gray-300 hover:text-black rounded-md mt-2 w-full cursor-pointer	">
             @Yola
-          </Chip>
-          <Chip color="success" variant="dot" className="m-2">
+          </div>
+          <div className="m-2 border-gray-200 hover:bg-blue-900 hover:text-white transition-colors duration-200 ease-in-out hover:shadow-md hover:border-gray-300 hover:text-black rounded-md mt-2 w-full cursor-pointer	">
             @BryanG
-          </Chip>
-          <Chip color="danger" variant="dot" className="m-2">
+          </div>
+          <div className="m-2 border-gray-200 hover:bg-blue-900 hover:text-white transition-colors duration-200 ease-in-out hover:shadow-md hover:border-gray-300 hover:text-black rounded-md mt-2 w-full cursor-pointer	">
             @Antonio
-          </Chip>
+          </div>
         </Card>
         <Card className="flex p-3 m-3">
           <CardHeader className=" ">What to participate?</CardHeader>

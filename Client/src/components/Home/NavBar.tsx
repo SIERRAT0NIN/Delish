@@ -88,6 +88,11 @@ export default function NavBar() {
                   Messages
                 </Link>
               </NavbarItem>
+              <NavbarItem>
+                <Link color="foreground" href="community">
+                  Community
+                </Link>
+              </NavbarItem>
               <div className="hidden md:flex flex p-5 ">
                 <NavbarItem>
                   <CreatePostModal />

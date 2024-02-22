@@ -23,8 +23,9 @@ import { useSnackbar } from "notistack";
 import { useAuth } from "../Auth/AuthContext";
 import { BackendDataContext } from "../Auth/BackendDataContext";
 import CommentModal from "./CommentModal";
-export default function PostCards({ posts }) {
-  const { user } = useAuth();
+
+export default function PostCards() {
+  const { user, getCookie } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -36,11 +37,39 @@ export default function PostCards({ posts }) {
     commentsByPostId,
     selectedPost,
     setSelectedPost,
+    refreshTrigger,
+    setRefreshTrigger,
+    posts,
   } = useContext(BackendDataContext);
+
   const openCommentModal = (postId) => {
     setSelectedPost(postId); // Set the ID of the selected post in context
     onOpenChange(true); // Open the modal
   };
+
+  const deleteComment = async (commentId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`/api/comments/${commentId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          "X-CSRF-Token": getCookie("csrf_access_token"),
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Could not delete comment");
+      }
+      const data = await response.json();
+      setRefreshTrigger((prev) => prev + 1);
+      enqueueSnackbar("Comment deleted", { variant: "success" });
+    } catch (error) {
+      console.error("Delete comment error:", error);
+      enqueueSnackbar("Failed to delete comment", { variant: "error" });
+    }
+  };
+
   return (
     <div className="flex flex-col justify-center items-center px-4 py-3">
       {posts ? (
@@ -113,7 +142,7 @@ export default function PostCards({ posts }) {
               <h3 className="text-lg font-extrabold mt-4 mb-2">Ingredients:</h3>
               {post.ingredients.map((ingredient, index) => (
                 <Chip
-                  key={`${post.id}-${ingredient}-${index}`} // Adjusted key to be more unique
+                  key={`${post.id}-${ingredient}-${index}`}
                   color="primary"
                   variant="dot"
                   className="m-2"
@@ -123,7 +152,6 @@ export default function PostCards({ posts }) {
               ))}
               <h4 className="font-bold mt-4">Tags</h4>
               <div className="flex flex-wrap">
-                {/* {post.content.map((content, index) => ( */}
                 <Chip
                   key={post.id}
                   color="primary"
@@ -137,15 +165,40 @@ export default function PostCards({ posts }) {
               {commentsByPostId[post.id] &&
               commentsByPostId[post.id].length > 0 ? (
                 commentsByPostId[post.id].map((comment) => (
-                  <div key={comment.id}>
-                    {" "}
-                    {/* Use comment.id for a unique key */}
-                    <p>{comment.content}</p> {/* Render comment content */}
-                    {/* Render other comment details as needed */}
+                  <div
+                    key={comment.id}
+                    className=" bg-zinc-100 p-3 rounded-sm justify-right flex "
+                  >
+                    <div className="justify-left flex">
+                      <p className="font-bold">@Alberto:</p>
+                      <p className="text-black ml-1">{comment.content}</p>
+                    </div>
+
+                    {/* DELETE BUTTON */}
+                    <Button
+                      isIconOnly
+                      className="delete-icon ml-5"
+                      onPress={() => deleteComment(comment.id)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6 hover:block cursor-pointer hover:text-red-500 transition-all duration-300 ease-in-out hover:rotate-180 transform hover:scale-125 "
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                        />
+                      </svg>
+                    </Button>
                   </div>
                 ))
               ) : (
-                <p>No comments yet</p> // Message when there are no comments
+                <p>No comments yet</p>
               )}
             </div>
           </div>

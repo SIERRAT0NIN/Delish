@@ -27,7 +27,7 @@ body {
 .home-card {
 }
 .pattern {
-  /* background-image: url("https://i.imgur.com/hpr6CFh.png"); */
+  background-image: url("https://i.imgur.com/hpr6CFh.png");
   background-size: cover;
   background-repeat: no-repeat; /* Do not repeat the image */
   background-attachment: scroll;
@@ -88,4 +88,12 @@ body {
   font-optical-sizing: auto;
   font-style: normal;
   font-size: 2em;
+}
+/* Add to your CSS file */
+.delete-icon {
+  visibility: hidden; /* Hide button by default */
+}
+
+.bg-zinc-100:hover .delete-icon {
+  visibility: visible; /* Show button on hover */
 }

@@ -832,6 +832,14 @@ class CreateComment(Resource):
 
 api.add_resource(CreateComment, '/comments')
 
+class DeleteComment(Resource):
+    def delete(self, comment_id):
+        comment = Comment.query.get_or_404(comment_id)
+        db.session.delete(comment)
+        db.session.commit()
+        return {"message": "Comment deleted successfully!"}, 200
+api.add_resource(DeleteComment, '/comments/<int:comment_id>')
+
 class CommentsForPost(Resource):
     def get(self, post_id):
         comments = Comment.query.filter_by(post_id=post_id).all()
