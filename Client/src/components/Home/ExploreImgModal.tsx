@@ -17,8 +17,11 @@ const ExploreImgModal = ({
   selectedPost,
   likeClick,
   commentClick,
+  commentsByPostId,
 }) => {
   console.log("Selected post:", selectedPost);
+  const comments = selectedPost ? commentsByPostId[selectedPost.id] || [] : [];
+  console.log("Comments:", comments);
   return (
     <>
       <Modal
@@ -50,6 +53,24 @@ const ExploreImgModal = ({
                   )}
                 </div>
                 <p>{selectedPost.ingredients}</p>
+                <div className="mt-4">
+                  <h4 className="text-md font-semibold mb-2">Comments</h4>
+                  {comments.length > 0 ? (
+                    comments.map((comment) => (
+                      <div key={comment.id} className="mb-2">
+                        <div className="flex items-center justify-between">
+                          <p className="font-medium">{comment.user}</p>
+                          <span className="text-sm text-gray-500">
+                            {comment.date}
+                          </span>
+                        </div>
+                        <p>{comment.content}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No comments yet.</p>
+                  )}
+                </div>
               </ModalBody>
               <ModalFooter className="flex items-center justify-center ">
                 <div className="flex gap-2 mt-2">

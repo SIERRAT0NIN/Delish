@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./AuthContext";
 import { useSnackbar } from "notistack";
+import axios from "axios";
 
 export const BackendDataContext = createContext({}); // Provide an argument for createContext()
 
@@ -14,6 +15,36 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
   const [selectedPost, setSelectedPost] = useState(null);
   const [commentsByPostId, setCommentsByPostId] = useState({});
   const [refreshTrigger, setRefreshTrigger] = useState(0); // Initial state as 0
+  const [profileData, setProfileData] = useState(null);
+  const [profilePicture, setProfilePicture] = useState(null); // or useState('')
+  const [profileBio, setProfileBio] = useState(""); // Add type annotation for the state variable
+  const [errorMessage, setErrorMessage] = useState("");
+  const userId = user && (user as { id: string }).id;
+  const fetchUserProfile = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/profile", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Could not fetch user profile.");
+      }
+
+      const data = await response.json();
+
+      setProfileData(data);
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      enqueueSnackbar("Failed to load user profile", {
+        variant: "error",
+      });
+    }
+  };
 
   const handleLike = async (post: any) => {
     // Add type annotation for the 'post' parameter
@@ -149,8 +180,6 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
     });
   }, [posts, refreshTrigger]);
 
-  console.log("commentsByPostId", commentsByPostId);
-
   const commentClick = () => {
     console.log("Comment button clicked");
     enqueueSnackbar("Commented", { variant: "success" });
@@ -158,6 +187,39 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
   const isLikedByUser = (post: any) => {
     return post.likes.some((like: any) => like.user_id === user.id);
   };
+  // const userId = user && user.id;
+
+  useEffect(() => {
+    const fetchProfilePicture = async (userId) => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`/api/profiles/${1}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Could not fetch profile picture.");
+        }
+
+        const data = await response.json();
+
+        setProfilePicture(data.profile_picture);
+        setProfileBio(data.bio);
+        console.log("Profile picture data:", data);
+      } catch (error) {
+        console.error("Error fetching profile picture:", error);
+        enqueueSnackbar("Failed to load profile picture", {
+          variant: "error",
+        });
+      }
+    };
+
+    fetchProfilePicture(userId);
+  }, [userId]);
 
   return (
     <BackendDataContext.Provider
@@ -174,6 +236,11 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
         setSelectedPost,
         refreshTrigger,
         setRefreshTrigger,
+        profileData,
+        fetchUserProfile,
+        setProfileData,
+        profilePicture,
+        profileBio,
       }}
     >
       {children}

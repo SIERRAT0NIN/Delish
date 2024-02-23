@@ -15,7 +15,12 @@ class Profile(db.Model, SerializerMixin):
     )
     bio = db.Column(db.Text)
     profile_picture = db.Column(db.String(255))
-
+    def to_dict(self):
+        return {
+            'profile_picture': self.profile_picture,
+            'bio': self.bio
+        }
+    
     user = db.relationship("User", back_populates="profile")
 
     def __repr__(self):
@@ -214,12 +219,15 @@ class User(db.Model, SerializerMixin):
     )
     
     def to_dict(self, only=None):
+            profile_data = self.profile.to_dict() if self.profile else {}
+
             # Define a mapping of all possible fields to include
             all_fields = {
                 'id': self.id,
                 'username': self.username,
                 'email': self.email,
-                # Add other fields as needed
+                'profile_picture': profile_data.get('profile_picture'),
+                'bio': profile_data.get('bio'),
             }
             if only is None:
                 return all_fields

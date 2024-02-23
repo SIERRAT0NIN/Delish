@@ -90,7 +90,7 @@ export default function NavBar() {
               </NavbarItem>
               <NavbarItem>
                 <Link color="foreground" href="community">
-                  Community
+                  Community Night
                 </Link>
               </NavbarItem>
               <div className="hidden md:flex flex p-5 ">
