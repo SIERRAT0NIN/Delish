@@ -361,6 +361,14 @@ class ChatID(Resource):
 # Add the resource to your API
 api.add_resource(ChatID, "/chats/<int:id>")
 
+@app.route('/users/<int:id>', methods=['GET'])
+@jwt_required()
+def get_username_by_id(id):
+    user = User.query.get(id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    
+    return jsonify({"username": user.username}), 200
 
 
 class Posts(Resource):

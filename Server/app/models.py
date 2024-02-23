@@ -222,7 +222,12 @@ class User(db.Model, SerializerMixin):
             else:
                 return {key: value for key, value in all_fields.items() if key in only}
     
- 
+    def get_username_by_user_id(user_id):
+        user = User.query.filter_by(id=user_id).first()
+        if user:
+            return user.username
+        else:
+            return None
     def __repr__(self):
         return f"<User {self.username}>"
 

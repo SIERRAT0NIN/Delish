@@ -14,7 +14,6 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
   const [profilePicture, setProfilePicture] = useState(null);
   const [profileBio, setProfileBio] = useState("");
 
-  const userId = user && (user as { id: string }).id;
   const fetchUserProfile = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -181,11 +180,13 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
     return post.likes.some((like: any) => like.user_id === user.id);
   };
 
+  const userId = user ? user.id : "no user";
   useEffect(() => {
-    const fetchProfilePicture = async (userId) => {
+    console.log("userId", userId);
+    const fetchProfilePicture = async (userId: string | null) => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`/api/profiles/${1}`, {
+        const response = await fetch(`/api/profiles/${userId}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
