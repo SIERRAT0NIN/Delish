@@ -1,4 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy  # cSpell:ignore SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.sql import func
 from app_config import db
@@ -15,7 +15,12 @@ class Profile(db.Model, SerializerMixin):
     )
     bio = db.Column(db.Text)
     profile_picture = db.Column(db.String(255))
-
+    def to_dict(self):
+        return {
+            'profile_picture': self.profile_picture,
+            'bio': self.bio
+        }
+    
     user = db.relationship("User", back_populates="profile")
 
     def __repr__(self):
@@ -65,8 +70,6 @@ class Post(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     comments = db.relationship("Comment", back_populates='post', lazy="dynamic")
     likers = db.relationship('User', secondary=likes, lazy='dynamic', back_populates='liked_posts')
-
-    # likers = db.relationship('User', secondary=likes, backref=db.backref('liked_posts', lazy='dynamic'))
     comments = db.relationship('Comment', back_populates='post', lazy='dynamic')
     
 
@@ -82,10 +85,10 @@ class Post(db.Model, SerializerMixin):
             "id": self.id,
             "user_id": self.user_id,
             "content": self.content,
-            "ingredients": self.ingredients.split(','),  # Assuming ingredients are comma-separated
+            "ingredients": self.ingredients.split(','),  
             "image_url": self.image_url,
-            "created_at": self.created_at.isoformat(),  # Format datetime as a string
-            # Include any other fields you want in the response
+            "created_at": self.created_at.isoformat(),  
+
         }
 
     def __repr__(self):
@@ -98,7 +101,7 @@ class Tag(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
-    # Relationship with Post model needs to be defined (possibly a many-to-many relationship)
+
 
     def __repr__(self):
         return f"<Tag {self.name}>"
@@ -109,10 +112,7 @@ followers = db.Table('followers',
     db.Column('followed_id', db.Integer, db.ForeignKey('users.id'), primary_key=True)
 )
 
-# likes = db.Table('likes',
-#     db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
-#     db.Column('post_id', db.Integer, db.ForeignKey('posts.id'), primary_key=True)
-# )
+ 
 
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"
@@ -132,14 +132,10 @@ class User(db.Model, SerializerMixin):
         backref=db.backref('followers', lazy='dynamic'),
         lazy='dynamic'
     )
-    # liked_posts = db.relationship('Post', secondary=likes, 
-    #                             backref=db.backref('likers', lazy='dynamic'))
+ 
     liked_posts = db.relationship('Post', secondary=likes, lazy='dynamic', back_populates='likers')
 
-    # def like_post(self, post):
-    #     if not self.has_liked_post(post):
-    #         self.liked_posts.append(post)
-    #         db.session.commit()
+ 
     def like_post(self, post):
         if not self.has_liked_post(post):
             self.liked_posts.append(post)
@@ -207,27 +203,31 @@ class User(db.Model, SerializerMixin):
         "Chat",
         back_populates="users",
         primaryjoin="or_(User.id == Chat.user1_id, User.id == Chat.user2_id)",
-        # primary_join="or_(User.id == Chat.user1_id, User.id == Chat.user2_id)",
         overlaps="chats_as_user1,chats_as_user2",
         
         
     )
     
     def to_dict(self, only=None):
-            # Define a mapping of all possible fields to include
+            profile_data = self.profile.to_dict() if self.profile else {}
             all_fields = {
                 'id': self.id,
                 'username': self.username,
                 'email': self.email,
-                # Add other fields as needed
+                'profile_picture': profile_data.get('profile_picture'),
+                'bio': profile_data.get('bio'),
             }
             if only is None:
                 return all_fields
             else:
-                # Filter the fields based on the 'only' parameter
                 return {key: value for key, value in all_fields.items() if key in only}
     
- 
+    def get_username_by_user_id(user_id):
+        user = User.query.filter_by(id=user_id).first()
+        if user:
+            return user.username
+        else:
+            return None
     def __repr__(self):
         return f"<User {self.username}>"
 

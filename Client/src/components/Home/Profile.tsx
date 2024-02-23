@@ -9,52 +9,24 @@ import {
   DropdownItem,
 } from "@nextui-org/react";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useAuth } from "../Auth/AuthContext";
+import { BackendDataContext } from "../Auth/BackendDataContext";
 
 import DeleteUser from "./DeleteUser";
 import FollowersInfo from "./FollowersInfo";
+import { enqueueSnackbar } from "notistack";
 
 export default function Component() {
+  const { refreshTrigger, profileBio, profilePicture } =
+    useContext(BackendDataContext);
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [warning, setWarning] = useState(false);
-
+  const [profileData, setProfileData] = useState(null);
   const { getCookie, user } = useAuth();
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await fetch("/profiles/1", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": getCookie("csrf_access_token"),
-            // Include authorization header if your API requires authentication
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch profile data");
-        }
-
-        const data = await response.json(); // Parse response body as JSON
-        setProfile(data); // Set profile data in state
-        console.log("Profile", data);
-        setLoading(false);
-      } catch (error) {
-        setError(error.message);
-        setLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, [getCookie]);
-
+  const userId = user.id;
   const deleteUser = async () => {
     try {
       const response = await fetch("/user/delete", {
@@ -62,28 +34,52 @@ export default function Component() {
         headers: {
           "Content-Type": "application/json",
           "X-CSRF-TOKEN": getCookie("csrf_access_token"),
-          // Include authorization header if your API requires authentication
+
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      // Optionally, you can handle success response here
+
       console.log("User deleted successfully");
     } catch (error) {
-      // Handle error response here
       console.error("Failed to delete user", error);
     }
   };
 
+  const fetchMyPosts = async () => {
+    try {
+      const response = await fetch("/api/my/posts", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "X-CSRF-TOKEN": getCookie("csrf_access_token"),
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch user posts");
+      }
+
+      const data = await response.json();
+
+      setPosts(data);
+    } catch (error) {
+      console.error("Error fetching user posts:", error);
+      enqueueSnackbar("Failed to load user posts", {
+        variant: "error",
+      });
+    }
+  };
+
   const fetchUserPosts = async () => {
-    setIsLoading(true); // Assuming you have a loading state to manage UI feedback
+    setIsLoading(true);
     try {
       const response = await fetch("/user/posts", {
-        method: "GET", // GET is used for fetching data
+        method: "GET",
 
         headers: {
           "Content-Type": "application/json",
-          "X-CSRF-TOKEN": getCookie("csrf_access_token"), // If CSRF protection is needed
-          // Include authorization header if your API requires authentication
+          "X-CSRF-TOKEN": getCookie("csrf_access_token"),
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
@@ -92,29 +88,30 @@ export default function Component() {
         throw new Error("Failed to fetch user posts");
       }
 
-      const data = await response.json(); // Parse response body as JSON
+      const data = await response.json();
 
-      setPosts(data); // Assuming you have a state to hold the posts
+      setPosts(data);
     } catch (error) {
-      setError(error.message); // Assuming you manage errors in state
-    } finally {
-      setIsLoading(false); // Reset loading state regardless of outcome
+      setError(error.message);
+      setIsLoading(false);
     }
   };
-
+  console.log("posts", posts);
   useEffect(() => {
     fetchUserPosts();
-  }, []); // Dependency array left empty to run once on component mount
+  }, []);
+  useEffect(() => {
+    fetchMyPosts();
+  }, []);
 
   if (isLoading) {
     return <p>Loading...</p>;
   }
-  console.log("Posts", posts);
 
   return (
     <div className="w-full">
       <Card className="mt-5 mb-10">
-        <div className="text-lg bg-gradient-to-r from-violet-200 to-green-500 text-white p-5 rounded  text-center">
+        <div className="text-lg bg-gradient-to-r from-pink-500 to-yellow-500 text-white p-5 rounded  text-center shadow-md">
           <span className="">Profile</span>
         </div>
         <span className="flex justify-end p-5">
@@ -145,27 +142,39 @@ export default function Component() {
             <DropdownMenu>
               <DropdownItem href="/logout">Logout</DropdownItem>
               <DropdownItem color="danger">
-                <DeleteUser />
+                <DeleteUser deleteUser={deleteUser} />
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </span>
         <div className="flex flex-col items-center space-y-6 profile-card">
           <div className="justify-center contents">
-            <Avatar
-              src="https://w7.pngwing.com/pngs/480/557/png-transparent-bart-simpsons-illustration-homer-simpson-lisa-simpson-marge-simpson-fox-satire-homer-television-face-animals.png"
-              alt="User's name"
-              size="lg"
-              className="place-content-stretch"
-            />
-            <h1 className="text-2xl font-bold">@{user.username}</h1>
-            <p className="justify-center text-sm text-gray-500 dark:text-gray-400 line-clamp-4">
-              This is a short bio about the user. It's a brief introduction that
-              is limited to 150 characters.
-            </p>
+            <div>
+              <Avatar
+                // src={profileData?.profile_picture}
+                src={profilePicture}
+                alt="Profile Picture"
+                size="xl"
+                className="m-auto"
+              />
+              <h1>{user.username}</h1>
+              <h1>{user.email}</h1>
+              <br />
+              <p>{profileBio}</p>
+              {profileData && (
+                <>
+                  <h1></h1>
+                  <p>
+                    Profile Picture:
+                    <img src={profilePicture} alt="Profile" />
+                  </p>
+                  <p>Bio: {profile.bio}</p>
+                </>
+              )}
+            </div>
             <div className="flex space-x-4">
               <div className="flex items-center space-x-2">
-                <span>3 Posts</span>
+                <span>{posts.length} Posts</span>
               </div>
               <div className="flex items-center space-x-2">
                 <UserIcon className="w-5 h-5" />
@@ -188,47 +197,11 @@ export default function Component() {
                   <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                     {post.content}
                   </div>
-                  {/* You can add more post details here, such as likes, comments, etc. */}
                 </div>
               ))
             ) : (
               <div>No posts found</div>
             )}
-
-            <div>
-              <Image
-                alt="Image caption"
-                className="aspect-square object-cover rounded-[12px]"
-                height={300}
-                src={
-                  "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                }
-                width={300}
-              />
-              <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                Image caption
-              </div>
-              <div className="flex items-center space-x-2 mt-1">
-                <HeartIcon className="w-5 h-5" />
-                <span>85 likes</span>
-              </div>
-            </div>
-            <div>
-              <Image
-                alt="Image caption"
-                className="aspect-square object-cover rounded-[12px]"
-                height={300}
-                src="https://plus.unsplash.com/premium_photo-1675252369719-dd52bc69c3df?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                width={300}
-              />
-              <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                Image caption
-              </div>
-              <div className="flex items-center space-x-2 mt-1">
-                <HeartIcon className="w-5 h-5" />
-                <span>200 likes</span>
-              </div>
-            </div>
           </div>
         </div>
       </Card>

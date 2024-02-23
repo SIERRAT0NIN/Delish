@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -6,19 +6,47 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  useDisclosure,
   Image,
 } from "@nextui-org/react";
-import { Chip } from "@mui/material";
-
+import { useAuth } from "../Auth/AuthContext";
+// import { BackendContext } from "../Auth/BackendDataContext";
 const ExploreImgModal = ({
   isOpen,
   onOpenChange,
   selectedPost,
   likeClick,
   commentClick,
+  commentsByPostId,
 }) => {
-  console.log("Selected post:", selectedPost);
+  const { user, getCookie } = useAuth();
+  // const {  } = useContext(BackendContext);
+  const [username, setUsername] = useState("");
+
+  const comments = selectedPost ? commentsByPostId[selectedPost.id] || [] : [];
+
+  const fetchUsernameById = async (user1: string) => {
+    try {
+      const response = await fetch(`/api/${user1}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          x_csrf_token: getCookie("csrf_access_token"),
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch user");
+      }
+      const data = await response.json();
+      console.log("Username data:", data);
+      console.log("Username data:", data.username);
+      return data.username;
+    } catch (error) {
+      console.error("Failed to fetch user", error);
+    }
+  };
+  fetchUsernameById(selectedPost.user_id);
+
   return (
     <>
       <Modal
@@ -33,7 +61,7 @@ const ExploreImgModal = ({
               <ModalHeader className="flex flex-col gap-1">
                 <h3 className="text-lg font-bold">{selectedPost.content}</h3>
                 <p className="text-sm text-gray-500">
-                  Posted by: {selectedPost.user_id}
+                  Posted by: {user?.username};
                 </p>
                 <Button
                   className="justify-center"
@@ -50,6 +78,24 @@ const ExploreImgModal = ({
                   )}
                 </div>
                 <p>{selectedPost.ingredients}</p>
+                <div className="mt-4">
+                  <h4 className="text-md font-semibold mb-2">Comments</h4>
+                  {comments.length > 0 ? (
+                    comments.map((comment) => (
+                      <div key={comment.id} className="mb-2">
+                        <div className="flex items-center justify-between">
+                          <p className="font-medium">{comment.user}</p>
+                          <span className="text-sm text-gray-500">
+                            {comment.date}
+                          </span>
+                        </div>
+                        <p>{comment.content}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No comments yet.</p>
+                  )}
+                </div>
               </ModalBody>
               <ModalFooter className="flex items-center justify-center ">
                 <div className="flex gap-2 mt-2">

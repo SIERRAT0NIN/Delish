@@ -190,10 +190,43 @@ class MyUser(Resource):
             return u, 200
         else:
             return {"error": "User not found"}, 404
+    
 
 
 api.add_resource(MyUser, "/user")
 
+class UserProfile(Resource):
+    @jwt_required()
+    def get(self, user_id):
+        # Fetch the profile from the database
+        profile = Profile.query.filter_by(user_id=user_id).first()
+        if not profile:
+            # Return a 404 if the profile doesn't exist
+            return {'message': 'Profile not found'}, 404
+        
+        # Return the profile information
+        return jsonify(profile.to_dict())
+api.add_resource(UserProfile, '/profiles/<int:user_id>')
+
+class CurrentUserPosts(Resource):
+    @jwt_required()
+    def get(self):
+        # Get the current user's identity from the JWT token
+        current_user_email = get_jwt_identity()
+
+        # Find the user by email
+        user = User.query.filter_by(email=current_user_email).first()
+
+        # If the user is not found, return an error
+        if not user:
+            return {'message': 'User not found'}, 404
+
+        # Fetch the posts created by the user
+        posts = Post.query.filter_by(user_id=user.id).all()
+
+        # Serialize and return the posts
+        return jsonify([post.to_dict() for post in posts])
+api.add_resource(CurrentUserPosts, '/my/posts')
 
 class Messages(Resource):
     def get(self):
@@ -328,6 +361,14 @@ class ChatID(Resource):
 # Add the resource to your API
 api.add_resource(ChatID, "/chats/<int:id>")
 
+@app.route('/users/<int:id>', methods=['GET'])
+@jwt_required()
+def get_username_by_id(id):
+    user = User.query.get(id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    
+    return jsonify({"username": user.username}), 200
 
 
 class Posts(Resource):
@@ -549,68 +590,6 @@ class SearchUsers(Resource):
 
 api.add_resource(SearchUsers, '/search_users')
 
-# class LikePost(Resource):
-#     @jwt_required()
-#     def post(self, post_id):
-#         current_user_email = get_jwt_identity()
-#         current_user = User.query.filter_by(email=current_user_email).first()
-
-#         if not current_user:
-#             return {'message': 'User not found'}, 404
-
-#         post = Post.query.get_or_404(post_id)
-
-
-#         try:
-#             current_user.like_post(post)
-#             db.session.commit()
-#             return {'message': 'Post liked successfully'}, 200
-#         except Exception as e:
-#             db.session.rollback()
-#             return {'message': 'An error occurred while liking the post', 'error': str(e)}, 500
-
-# api.add_resource(LikePost, '/like/<int:post_id>')
-
-# class LikePost(Resource):
-#     @jwt_required()
-#     def post(self, post_id):
-#         current_user_email = get_jwt_identity()
-#         current_user = User.query.filter_by(email=current_user_email).first()
-
-#         if not current_user:
-#             return {'message': 'User not found'}, 404
-
-#         post = Post.query.get_or_404(post_id)
-
-#         # Check if the post is already liked by the current user
-#         if current_user.has_liked_post(post):
-#             return {'message': 'Post already liked by this user'}, 400
-#         try:
-#             current_user.like_post(post)
-#             db.session.commit()
-#             return {'message': 'Post liked successfully'}, 200
-#         except Exception as e:
-#             db.session.rollback()
-#             return {'message': 'An error occurred while liking the post', 'error': str(e)}, 500
-        
-#     @jwt_required()
-#     def delete(self, post_id):
-#         current_user_email = get_jwt_identity()
-#         current_user = User.query.filter_by(email=current_user_email).first()
-
-#         if not current_user:
-#             return {'message': 'User not found'}, 404
-
-#         post = Post.query.get_or_404(post_id)
-
-#         try:
-#             # Directly attempt to unlike the post without checking if it's currently liked
-#             current_user.unlike_post(post)  # Assumes you have an unlike_post method
-#             db.session.commit()
-#             return {'message': 'Post unliked successfully'}, 200
-#         except Exception as e:
-#             db.session.rollback()
-#             return {'message': 'An error occurred while unliking the post', 'error': str(e)}, 500
 class LikePost(Resource):
     @jwt_required()
     def post(self, post_id):
@@ -729,14 +708,7 @@ class CommentOnPost(Resource):
 
 api.add_resource(CommentOnPost, '/posts/<int:post_id>/comment')
 
-class ProfileResource(Resource):
-    def get(self, profile_id):
-        profile = Profile.query.get_or_404(profile_id)
-        return jsonify(profile.to_dict())
 
-api.add_resource(ProfileResource, '/profiles/<int:profile_id>')
-
- 
 
 class Follow(Resource):
     @jwt_required()

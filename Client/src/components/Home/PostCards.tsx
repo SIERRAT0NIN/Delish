@@ -23,6 +23,7 @@ import { useSnackbar } from "notistack";
 import { useAuth } from "../Auth/AuthContext";
 import { BackendDataContext } from "../Auth/BackendDataContext";
 import CommentModal from "./CommentModal";
+import { FoodImgCarousel } from "./FoodImgCarousel";
 
 export default function PostCards() {
   const { user, getCookie } = useAuth();
@@ -31,20 +32,18 @@ export default function PostCards() {
 
   const {
     handleLike,
-    fetchCommentsForPost,
-    commentClick,
-    isLikedByUser,
+
     commentsByPostId,
-    selectedPost,
+
     setSelectedPost,
-    refreshTrigger,
+
     setRefreshTrigger,
     posts,
   } = useContext(BackendDataContext);
 
   const openCommentModal = (postId) => {
-    setSelectedPost(postId); // Set the ID of the selected post in context
-    onOpenChange(true); // Open the modal
+    setSelectedPost(postId);
+    onOpenChange(true);
   };
 
   const deleteComment = async (commentId) => {
@@ -70,6 +69,7 @@ export default function PostCards() {
     }
   };
 
+  console.log("posts", posts);
   return (
     <div className="flex flex-col justify-center items-center px-4 py-3">
       {posts ? (
@@ -80,17 +80,11 @@ export default function PostCards() {
           >
             <div className="w-full xl:w-1/2">
               <div className="">
-                <Image
-                  alt="Delicious meal"
-                  className="rounded-lg object-cover"
-                  src={post.image_url || "https://via.placeholder.com/300"} // Fallback for missing images
-                  width={600}
-                  height={600}
-                />
+                <FoodImgCarousel post={post} />
                 <div className="flex justify-center gap-2 mt-2">
                   <Button
                     color="danger"
-                    variant={post.isLikedByUser ? "solid" : "ghost"} // Change button variant based on like status
+                    variant={post.isLikedByUser ? "solid" : "ghost"}
                     onClick={() => handleLike(post)}
                   >
                     <svg
@@ -136,7 +130,7 @@ export default function PostCards() {
               </div>
             </div>
             <div className="w-full md:w-3/5 p-3">
-              <p className="text-sm mb-2">@{post.user_id}</p>
+              <p className="text-sm mb-2">@{user.username}</p>
               <h2 className="text-lg font-extrabold mb-2">Recipe:</h2>
               <p>{post.content}</p>
               <h3 className="text-lg font-extrabold mt-4 mb-2">Ingredients:</h3>
@@ -162,44 +156,46 @@ export default function PostCards() {
                 </Chip>
               </div>
               <h3>Comments</h3>
-              {commentsByPostId[post.id] &&
-              commentsByPostId[post.id].length > 0 ? (
-                commentsByPostId[post.id].map((comment) => (
-                  <div
-                    key={comment.id}
-                    className=" bg-zinc-100 p-3 rounded-sm justify-right flex "
-                  >
-                    <div className="justify-left flex">
-                      <p className="font-bold">@Alberto:</p>
-                      <p className="text-black ml-1">{comment.content}</p>
-                    </div>
-
-                    {/* DELETE BUTTON */}
-                    <Button
-                      isIconOnly
-                      className="delete-icon ml-5"
-                      onPress={() => deleteComment(comment.id)}
+              <div className="rounded-lg bg-zinc-100">
+                {commentsByPostId[post.id] &&
+                commentsByPostId[post.id].length > 0 ? (
+                  commentsByPostId[post.id].map((comment) => (
+                    <div
+                      key={comment.id}
+                      className="  p-3  justify-right flex "
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6 hover:block cursor-pointer hover:text-red-500 transition-all duration-300 ease-in-out hover:rotate-180 transform hover:scale-125 "
+                      <div className="justify-left flex">
+                        <p className="font-bold">@Alberto:</p>
+                        <p className="text-black ml-1">{comment.content}</p>
+                      </div>
+
+                      {/* DELETE BUTTON */}
+                      <Button
+                        isIconOnly
+                        className="delete-icon ml-5"
+                        onPress={() => deleteComment(comment.id)}
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                        />
-                      </svg>
-                    </Button>
-                  </div>
-                ))
-              ) : (
-                <p>No comments yet</p>
-              )}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="w-6 h-6 hover:block cursor-pointer hover:text-red-500 transition-all duration-300 ease-in-out hover:rotate-180 transform hover:scale-125 "
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                          />
+                        </svg>
+                      </Button>
+                    </div>
+                  ))
+                ) : (
+                  <p>No comments yet</p>
+                )}
+              </div>
             </div>
           </div>
         ))

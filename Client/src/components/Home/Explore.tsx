@@ -7,10 +7,10 @@ import { CircularProgress } from "@nextui-org/react";
 import { BackendDataContext } from "../Auth/BackendDataContext";
 
 export default function Explore() {
-  const { posts, setPosts, selectedPost, setSelectedPost } =
+  const { commentsByPostId, posts, setPosts, selectedPost, setSelectedPost } =
     useContext(BackendDataContext);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  // const [posts, setPosts] = useState([]);
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
@@ -110,6 +110,7 @@ export default function Explore() {
         selectedPost={selectedPost} // Pass selectedPost as a prop
         likeClick={likeClick}
         commentClick={commentClick}
+        commentsByPostId={commentsByPostId}
       />
     </Card>
     // </div>

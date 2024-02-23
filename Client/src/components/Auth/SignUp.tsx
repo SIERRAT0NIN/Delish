@@ -7,7 +7,6 @@ import { useSnackbar } from "notistack";
 
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-// TypeScript interface for form values
 interface FormValues {
   username: string;
   email: string;
@@ -56,13 +55,6 @@ const SignUp: React.FC = () => {
     setSubmitting(false);
   };
 
-  // const handleClose = (event, reason) => {
-  //   if (reason === "clickaway") {
-  //     return;
-  //   }
-
-  //   setOpen(false);
-  // };
   return (
     <>
       <div className="form-card mx-auto max-w-md space-y-6">
