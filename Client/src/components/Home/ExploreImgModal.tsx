@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   Modal,
   ModalContent,
@@ -23,29 +23,37 @@ const ExploreImgModal = ({
   const [username, setUsername] = useState("");
 
   const comments = selectedPost ? commentsByPostId[selectedPost.id] || [] : [];
+  useEffect(() => {
+    const fetchUsernameById = async (userId: string) => {
+      try {
+        const response = await fetch(`/api/users/${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            x_csrf_token: getCookie("csrf_access_token"),
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch user");
+        }
+        const data = await response.json();
+        setUsername(data.username); // Set username state
 
-  const fetchUsernameById = async (user1: string) => {
-    try {
-      const response = await fetch(`/api/${user1}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          x_csrf_token: getCookie("csrf_access_token"),
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch user");
+        console.log("Username data:", data);
+        console.log("Username data:", data.username);
+      } catch (error) {
+        console.error("Failed to fetch user", error);
       }
-      const data = await response.json();
-      console.log("Username data:", data);
-      console.log("Username data:", data.username);
-      return data.username;
-    } catch (error) {
-      console.error("Failed to fetch user", error);
+    };
+
+    if (selectedPost && selectedPost.user_id) {
+      fetchUsernameById(selectedPost.user_id);
     }
-  };
-  fetchUsernameById(selectedPost.user_id);
+  }, [selectedPost, getCookie]);
+  if (!selectedPost) {
+    return null;
+  }
 
   return (
     <>
@@ -60,9 +68,7 @@ const ExploreImgModal = ({
             <>
               <ModalHeader className="flex flex-col gap-1">
                 <h3 className="text-lg font-bold">{selectedPost.content}</h3>
-                <p className="text-sm text-gray-500">
-                  Posted by: {user?.username};
-                </p>
+                <p className="text-sm text-gray-500">Posted by: {username};</p>
                 <Button
                   className="justify-center"
                   variant="shadow"
