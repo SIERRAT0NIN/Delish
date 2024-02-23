@@ -1,4 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy  # cSpell:ignore SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.sql import func
 from app_config import db
@@ -70,8 +70,6 @@ class Post(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     comments = db.relationship("Comment", back_populates='post', lazy="dynamic")
     likers = db.relationship('User', secondary=likes, lazy='dynamic', back_populates='liked_posts')
-
-    # likers = db.relationship('User', secondary=likes, backref=db.backref('liked_posts', lazy='dynamic'))
     comments = db.relationship('Comment', back_populates='post', lazy='dynamic')
     
 
@@ -87,10 +85,10 @@ class Post(db.Model, SerializerMixin):
             "id": self.id,
             "user_id": self.user_id,
             "content": self.content,
-            "ingredients": self.ingredients.split(','),  # Assuming ingredients are comma-separated
+            "ingredients": self.ingredients.split(','),  
             "image_url": self.image_url,
-            "created_at": self.created_at.isoformat(),  # Format datetime as a string
-            # Include any other fields you want in the response
+            "created_at": self.created_at.isoformat(),  
+
         }
 
     def __repr__(self):
@@ -103,7 +101,7 @@ class Tag(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
-    # Relationship with Post model needs to be defined (possibly a many-to-many relationship)
+
 
     def __repr__(self):
         return f"<Tag {self.name}>"
@@ -114,10 +112,7 @@ followers = db.Table('followers',
     db.Column('followed_id', db.Integer, db.ForeignKey('users.id'), primary_key=True)
 )
 
-# likes = db.Table('likes',
-#     db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
-#     db.Column('post_id', db.Integer, db.ForeignKey('posts.id'), primary_key=True)
-# )
+ 
 
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"
@@ -137,14 +132,10 @@ class User(db.Model, SerializerMixin):
         backref=db.backref('followers', lazy='dynamic'),
         lazy='dynamic'
     )
-    # liked_posts = db.relationship('Post', secondary=likes, 
-    #                             backref=db.backref('likers', lazy='dynamic'))
+ 
     liked_posts = db.relationship('Post', secondary=likes, lazy='dynamic', back_populates='likers')
 
-    # def like_post(self, post):
-    #     if not self.has_liked_post(post):
-    #         self.liked_posts.append(post)
-    #         db.session.commit()
+ 
     def like_post(self, post):
         if not self.has_liked_post(post):
             self.liked_posts.append(post)
@@ -212,7 +203,6 @@ class User(db.Model, SerializerMixin):
         "Chat",
         back_populates="users",
         primaryjoin="or_(User.id == Chat.user1_id, User.id == Chat.user2_id)",
-        # primary_join="or_(User.id == Chat.user1_id, User.id == Chat.user2_id)",
         overlaps="chats_as_user1,chats_as_user2",
         
         
@@ -220,8 +210,6 @@ class User(db.Model, SerializerMixin):
     
     def to_dict(self, only=None):
             profile_data = self.profile.to_dict() if self.profile else {}
-
-            # Define a mapping of all possible fields to include
             all_fields = {
                 'id': self.id,
                 'username': self.username,
@@ -232,7 +220,6 @@ class User(db.Model, SerializerMixin):
             if only is None:
                 return all_fields
             else:
-                # Filter the fields based on the 'only' parameter
                 return {key: value for key, value in all_fields.items() if key in only}
     
  

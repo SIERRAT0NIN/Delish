@@ -32,20 +32,18 @@ export default function PostCards() {
 
   const {
     handleLike,
-    fetchCommentsForPost,
-    commentClick,
-    isLikedByUser,
+
     commentsByPostId,
-    selectedPost,
+
     setSelectedPost,
-    refreshTrigger,
+
     setRefreshTrigger,
     posts,
   } = useContext(BackendDataContext);
 
   const openCommentModal = (postId) => {
-    setSelectedPost(postId); // Set the ID of the selected post in context
-    onOpenChange(true); // Open the modal
+    setSelectedPost(postId);
+    onOpenChange(true);
   };
 
   const deleteComment = async (commentId) => {
@@ -82,18 +80,11 @@ export default function PostCards() {
           >
             <div className="w-full xl:w-1/2">
               <div className="">
-                {/* <Image
-                  alt="Delicious meal"
-                  className="rounded-lg object-cover"
-                  src={post.image_url || "https://via.placeholder.com/300"} // Fallback for missing images
-                  width={600}
-                  height={600}
-                /> */}
                 <FoodImgCarousel post={post} />
                 <div className="flex justify-center gap-2 mt-2">
                   <Button
                     color="danger"
-                    variant={post.isLikedByUser ? "solid" : "ghost"} // Change button variant based on like status
+                    variant={post.isLikedByUser ? "solid" : "ghost"}
                     onClick={() => handleLike(post)}
                   >
                     <svg

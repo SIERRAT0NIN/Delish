@@ -5,8 +5,6 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
 
 interface FormValues {
   username: string;
@@ -92,9 +90,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${refreshToken}`,
-                "X-CSRF-TOKEN": getCookie("csrf_refresh_token"), // Assuming CSRF protection is required
+                "X-CSRF-TOKEN": getCookie("csrf_refresh_token"),
               },
-              credentials: "include", // If your endpoint requires cookies to be sent
+              credentials: "include",
             })
               .then((res) => {
                 if (res.ok) {
@@ -204,7 +202,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setSnackbarSeverity("error");
           setSnackbarOpen(true);
           console.log(data);
-          localStorage.setItem("token", data.accessToken); // Assuming the token is named accessToken in the response
+          localStorage.setItem("token", data.accessToken);
           localStorage.setItem("refreshToken", data.refreshToken);
           return false;
         }

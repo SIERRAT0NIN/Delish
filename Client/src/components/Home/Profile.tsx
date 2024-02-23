@@ -23,11 +23,8 @@ export default function Component() {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [warning, setWarning] = useState(false);
   const [profileData, setProfileData] = useState(null);
   const { getCookie, user } = useAuth();
-
-  const [loading, setLoading] = useState(true);
 
   const userId = user.id;
   const deleteUser = async () => {
@@ -37,14 +34,13 @@ export default function Component() {
         headers: {
           "Content-Type": "application/json",
           "X-CSRF-TOKEN": getCookie("csrf_access_token"),
-          // Include authorization header if your API requires authentication
+
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      // Optionally, you can handle success response here
+
       console.log("User deleted successfully");
     } catch (error) {
-      // Handle error response here
       console.error("Failed to delete user", error);
     }
   };
@@ -76,15 +72,14 @@ export default function Component() {
   };
 
   const fetchUserPosts = async () => {
-    setIsLoading(true); // Assuming you have a loading state to manage UI feedback
+    setIsLoading(true);
     try {
       const response = await fetch("/user/posts", {
-        method: "GET", // GET is used for fetching data
+        method: "GET",
 
         headers: {
           "Content-Type": "application/json",
-          "X-CSRF-TOKEN": getCookie("csrf_access_token"), // If CSRF protection is needed
-          // Include authorization header if your API requires authentication
+          "X-CSRF-TOKEN": getCookie("csrf_access_token"),
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
@@ -93,22 +88,21 @@ export default function Component() {
         throw new Error("Failed to fetch user posts");
       }
 
-      const data = await response.json(); // Parse response body as JSON
+      const data = await response.json();
 
-      setPosts(data); // Assuming you have a state to hold the posts
+      setPosts(data);
     } catch (error) {
-      setError(error.message); // Assuming you manage errors in state
-    } finally {
-      setIsLoading(false); // Reset loading state regardless of outcome
+      setError(error.message);
+      setIsLoading(false);
     }
   };
   console.log("posts", posts);
   useEffect(() => {
     fetchUserPosts();
-  }, []); // Dependency array left empty to run once on component mount
+  }, []);
   useEffect(() => {
     fetchMyPosts();
-  }, []); // Dependency array left empty to run once on component mount
+  }, []);
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -117,7 +111,7 @@ export default function Component() {
   return (
     <div className="w-full">
       <Card className="mt-5 mb-10">
-        <div className="text-lg bg-gradient-to-r from-violet-200 to-green-500 text-white p-5 rounded  text-center">
+        <div className="text-lg bg-gradient-to-r from-pink-500 to-yellow-500 text-white p-5 rounded  text-center shadow-md">
           <span className="">Profile</span>
         </div>
         <span className="flex justify-end p-5">

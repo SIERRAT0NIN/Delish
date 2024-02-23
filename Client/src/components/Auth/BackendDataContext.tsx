@@ -1,24 +1,19 @@
-// Create a file named AuthContext.js
-
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import { useAuth } from "./AuthContext";
 import { useSnackbar } from "notistack";
-import axios from "axios";
 
-export const BackendDataContext = createContext({}); // Provide an argument for createContext()
-
+export const BackendDataContext = createContext({});
 export const BackendContext = ({ children }: { children: React.ReactNode }) => {
-  // Add type annotation for the 'children' parameter
   const { user, getCookie } = useAuth();
-  const [posts, setPosts] = useState<never[]>([]); // Add type annotation for the state variable
+  const [posts, setPosts] = useState<never[]>([]);
   const { enqueueSnackbar } = useSnackbar();
   const [selectedPost, setSelectedPost] = useState(null);
   const [commentsByPostId, setCommentsByPostId] = useState({});
-  const [refreshTrigger, setRefreshTrigger] = useState(0); // Initial state as 0
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [profileData, setProfileData] = useState(null);
-  const [profilePicture, setProfilePicture] = useState(null); // or useState('')
-  const [profileBio, setProfileBio] = useState(""); // Add type annotation for the state variable
-  const [errorMessage, setErrorMessage] = useState("");
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [profileBio, setProfileBio] = useState("");
+
   const userId = user && (user as { id: string }).id;
   const fetchUserProfile = async () => {
     try {
@@ -47,7 +42,6 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handleLike = async (post: any) => {
-    // Add type annotation for the 'post' parameter
     const token = localStorage.getItem("token");
     if (!token) {
       console.error("No token found");
@@ -84,8 +78,7 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
         return p;
       });
 
-      setPosts(updatedPosts as never[]); // Add type assertion for the setPosts function
-
+      setPosts(updatedPosts as never[]);
       enqueueSnackbar(
         post.isLikedByUser
           ? "Post unliked successfully"
@@ -141,7 +134,7 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
 
   //! Add the fetchCommentsForPost function
 
-  const [comments, setComments] = useState([]); // Add type annotation for the state variable
+  const [comments, setComments] = useState([]);
   const fetchCommentsForPost = async (postId: any) => {
     try {
       const token = localStorage.getItem("token");
@@ -187,7 +180,6 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
   const isLikedByUser = (post: any) => {
     return post.likes.some((like: any) => like.user_id === user.id);
   };
-  // const userId = user && user.id;
 
   useEffect(() => {
     const fetchProfilePicture = async (userId) => {
