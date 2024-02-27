@@ -20,7 +20,6 @@ import * as Yup from "yup";
 export default function CreatePostModal() {
   const { enqueueSnackbar } = useSnackbar();
   const { getCookie } = useAuth();
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [ingredients, setIngredients] = useState([]);
   const [tags, setTags] = useState([]);
   const [input, setInput] = useState("");
@@ -28,6 +27,7 @@ export default function CreatePostModal() {
   const [image_url, setImageUrl] = useState(
     "https://plus.unsplash.com/premium_photo-1663858367001-89e5c92d1e0e?q=80&w=1915&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
   );
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleClose = () => {
     onClose();
@@ -40,6 +40,7 @@ export default function CreatePostModal() {
 
   const formik = useFormik({
     initialValues: {
+      title: "",
       content: "",
       ingredients: [],
       tags: [],
@@ -91,9 +92,23 @@ export default function CreatePostModal() {
           href="chat "
           color="success"
           variant="shadow"
-          className="text-white"
+          className="text-white "
           onPress={onOpen}
         >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+            />
+          </svg>
           Create Post
         </Button>
       </div>
@@ -112,6 +127,25 @@ export default function CreatePostModal() {
                   value={formik.values.image_url}
                   onChange={formik.handleChange}
                   placeholder="Upload a photo url"
+                />
+              </div>
+              <div className="flex align-center">
+                <Textarea
+                  label="RecipeTitle"
+                  id="title"
+                  name="title"
+                  value={formik.values.title}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  variant="bordered"
+                  placeholder="Enter the title of your recipe"
+                  disableAnimation
+                  disableAutosize
+                  isRequired
+                  classNames={{
+                    base: "max-w-md",
+                    input: "resize-y min-h-[40px]",
+                  }}
                 />
               </div>
               <div className="">
@@ -170,8 +204,8 @@ export default function CreatePostModal() {
                 </Button>
               </div>
             </ModalBody>
-            <h1>List of ingredients</h1>
             <ModalBody>
+              <h1>List of ingredients</h1>
               <ul className="mt-3">
                 {ingredients.map((ingredient, index) => (
                   <li key={index} className="mt-1">

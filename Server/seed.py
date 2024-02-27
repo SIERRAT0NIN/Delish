@@ -24,8 +24,10 @@ def seed_database():
                 bio=f'This is a bio for {username}',
                 profile_picture='https://images.unsplash.com/photo-1501959915551-4e8d30928317?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
             )
+            
             post = Post(
                 author=user,
+                title=f"This is a post title {i}",
                 content="This is a post content",
                 ingredients="This is a list of ingredients",
                 image_url='https://images.unsplash.com/photo-1501959915551-4e8d30928317?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',

@@ -374,8 +374,6 @@ def get_username_by_id(id):
 class Posts(Resource):
     @jwt_required()
     def get(self):
-        # user_id = get_jwt_identity()
-        # Using .first_or_404() to simplify and directly handle user not found scenario.
         posts = Post.query.all()
         if not posts:
             return jsonify([])
@@ -388,20 +386,14 @@ class Posts(Resource):
             description="User not found."
         )
 
-    # # Accessing the profile picture
-    # if user and user.profile:
-    #     profile_picture_url = user.profile.profile_picture
-    #     print(f"Profile picture URL: {profile_picture_url}")
-    # else:
-    #     print("User not found or user does not have a profile.")
 
         data = request.get_json()
-
+        title = data.get("title")
         content = data.get("content")
         ingredients = data.get("ingredients")
         image_url = data.get(
             "image_url", None
-        )  # Using None as default if key doesn't exist
+        ) 
 
         if not content or not ingredients:
             return {"error": "Missing data for content or ingredients"}, 400
@@ -409,6 +401,7 @@ class Posts(Resource):
         try:
             new_post = Post(
                 user_id=user.id,
+                title=title,
                 content=content,
                 ingredients=ingredients,
                 image_url=image_url,
@@ -430,14 +423,13 @@ class Posts(Resource):
 
         current_user_email = get_jwt_identity()
         current_user = User.query.filter_by(email=current_user_email).first()
-        print(current_user_email)
-        print(1)
+
         
         if not current_user:
             return {'message': 'User not found'}, 404
         all_ingredients = ''.join(args['ingredients'])
         # Create the post
-        new_post = Post(user_id=current_user.id, content=args['content'], ingredients=all_ingredients, image_url=args['image_url'])
+        new_post = Post(user_id=current_user.id, title=args['title'], content=args['content'], ingredients=all_ingredients, image_url=args['image_url'])
 
 
         try:

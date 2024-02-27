@@ -21,7 +21,8 @@ import NightmodeBtn from "../Misc/NightmodeBtn";
 export default function NavBar() {
   const { user } = useAuth(); // Check for token
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  // const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleUserClick = () => {
     onOpen(true);
@@ -35,8 +36,6 @@ export default function NavBar() {
         isMenuOpen={isMenuOpen}
         onMenuOpenChange={setIsMenuOpen}
       >
-        {/* <NavbarContent className="md:hidden justify-center flex"></NavbarContent> */}
-
         <NavbarContent className="md:hidden">
           <NavbarBrand className="justify-center flex">
             <p className="font-bold dancing-script ">Delish</p>
@@ -145,6 +144,24 @@ export default function NavBar() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+              />
+            </svg>
+          </a>
+        </Button>
+        <Button className="glass" color="primary" variant="shadow">
+          <a href="">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
               />
             </svg>
           </a>

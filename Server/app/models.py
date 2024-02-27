@@ -64,6 +64,7 @@ class Post(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    title = db.Column(db.Text, nullable=False)
     content = db.Column(db.Text, nullable=False)
     ingredients = db.Column(db.Text, nullable=False)
     image_url = db.Column(db.String(255))
@@ -84,6 +85,7 @@ class Post(db.Model, SerializerMixin):
         return {
             "id": self.id,
             "user_id": self.user_id,
+            "title": self.title,
             "content": self.content,
             "ingredients": self.ingredients.split(','),  
             "image_url": self.image_url,

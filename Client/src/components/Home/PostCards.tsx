@@ -131,7 +131,7 @@ export default function PostCards() {
             </div>
             <div className="w-full md:w-3/5 p-3">
               <p className="text-sm mb-2">@{user.username}</p>
-              <h1 className="text-2xl font-bold mb-2">{"Post title"}</h1>
+              <h1 className="text-2xl font-bold mb-2">{post.title}</h1>
               <h2 className="text-lg font-extrabold mb-2">Recipe:</h2>
               <p>{post.content}</p>
               <h3 className="text-lg font-extrabold mt-4 mb-2">Ingredients:</h3>
