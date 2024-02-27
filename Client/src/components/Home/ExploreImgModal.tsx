@@ -45,7 +45,7 @@ const ExploreImgModal = ({
       console.error("Failed to fetch user", error);
     }
   };
-  fetchUsernameById(selectedPost.user_id);
+  // fetchUsernameById(selectedPost.user_id);
 
   return (
     <>

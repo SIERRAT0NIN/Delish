@@ -14,6 +14,8 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
   const [profilePicture, setProfilePicture] = useState(null);
   const [profileBio, setProfileBio] = useState("");
 
+  const token = localStorage.getItem("token");
+
   const fetchUserProfile = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -41,7 +43,6 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handleLike = async (post: any) => {
-    const token = localStorage.getItem("token");
     if (!token) {
       console.error("No token found");
       enqueueSnackbar("Please login to like or unlike posts", {
@@ -180,7 +181,7 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
     return post.likes.some((like: any) => like.user_id === user.id);
   };
 
-  const userId = user ? user.id : "no user";
+  const userId = user ? (user as { id: string }).id : "no user";
   useEffect(() => {
     console.log("userId", userId);
     const fetchProfilePicture = async (userId: string | null) => {

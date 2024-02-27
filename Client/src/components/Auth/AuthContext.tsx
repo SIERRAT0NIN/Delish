@@ -24,7 +24,7 @@ interface AuthContextProps {
   signup: (values: FormValues) => Promise<void | boolean>;
   getCookie: (name: string) => string;
   user: object | null;
-  userId: string;
+  userId: () => Promise<string>;
 }
 
 export const AuthContext = createContext<AuthContextProps | undefined>(
@@ -129,13 +129,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const login = (values: LoginValues): Promise<void | boolean> => {
-    const token = localStorage.getItem("token");
     return fetch("/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        x_csrf_token: getCookie("csrf_access_token"),
+        Bearer: `Bearer ${localStorage.getItem("token")}`,
+        "X-CSRF-TOKEN": getCookie("csrf_access_token"),
       },
       body: JSON.stringify({
         email: values.email,
@@ -149,13 +148,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return response.json();
       })
       .then((data) => {
-        setUser({
-          id: data.id,
-          username: data.username,
-          email: data.email,
-        });
+        // setUser(data);
+        setUser({ id: "id", username: "username", email: "email" });
 
         setUserId(data.id);
+        console.log(data);
         setSnackbarMessage(data.message || "Login successful");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);

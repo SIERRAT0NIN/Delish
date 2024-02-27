@@ -5,6 +5,7 @@ import {
   NavbarMenuToggle,
   NavbarMenuItem,
   NavbarMenu,
+  ButtonGroup,
   NavbarContent,
   NavbarItem,
   Link,
@@ -16,25 +17,10 @@ import CreatePostModal from "./CreatePostModal";
 import { useAuth } from "../Auth/AuthContext";
 
 import NightmodeBtn from "../Misc/NightmodeBtn";
-import NotificationCenter from "./NotificationCenter";
+
 export default function NavBar() {
   const { user } = useAuth(); // Check for token
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const menuItems = [
-    { label: "Login", href: "/login" },
-    { label: "Home Page", href: "/home" },
-    { label: "Create a new post", href: "/new-post" },
-    { label: "Profile", href: "/profile" },
-    { label: "Explore Recipes", href: "/explore_recipes" },
-    { label: "Messages", href: "/chat" },
-    { label: "Followers", href: "/followers" },
-    { label: "Notification", href: "/notifications" },
-    { label: "My Settings", href: "/settings" },
-    { label: "Help & Feedback", href: "/help" },
-    { label: "Log Out", href: "/logout" },
-    <NightmodeBtn />,
-  ];
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const handleUserClick = () => {
@@ -42,26 +28,22 @@ export default function NavBar() {
   };
 
   return (
-    <div className="container  ">
+    <>
       <Navbar
-        className="nav-bar content-stretch p-2 shadow-lg "
+        className="nav-bar content-stretch p-2 shadow-lg overflow-y-auto"
         isBordered
         isMenuOpen={isMenuOpen}
         onMenuOpenChange={setIsMenuOpen}
       >
-        <NavbarContent className="sm:hidden" justify="start">
-          <NavbarMenuToggle
-            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          />
-        </NavbarContent>
+        <NavbarContent className="md:hidden" justify="start"></NavbarContent>
 
-        <NavbarContent className="sm:hidden  pr-3">
+        <NavbarContent className="md:hidden  pr-3">
           <NavbarBrand>
             <p className="font-bold dancing-script">Delish</p>
           </NavbarBrand>
         </NavbarContent>
 
-        <NavbarContent className="hidden sm:flex gap-4" justify="center">
+        <NavbarContent className="hidden md:flex gap-4" justify="center">
           {user && (
             <NavbarContent justify="end">
               <NavbarItem>
@@ -123,91 +105,70 @@ export default function NavBar() {
               </div>
             </NavbarContent>
           )}
-          <Badge content="5" color="default">
-            <Button isIconOnly onPress={handleUserClick}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M5.25 9a6.75 6.75 0 0 1 13.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 0 1-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 1 1-7.48 0 24.585 24.585 0 0 1-4.831-1.244.75.75 0 0 1-.298-1.205A8.217 8.217 0 0 0 5.25 9.75V9Zm4.502 8.9a2.25 2.25 0 1 0 4.496 0 25.057 25.057 0 0 1-4.496 0Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </Button>
-          </Badge>
+
           <div className="hidden md:inline-block">{<NightmodeBtn />}</div>
         </NavbarContent>
-
-        <NavbarContent justify="center">
-          {!user && (
-            <NavbarContent justify="end">
-              <NavbarItem className="hidden lg:flex ">
-                <Link href="login">Login</Link>
-              </NavbarItem>
-              <NavbarItem>
-                <Button
-                  as={Link}
-                  color="secondary"
-                  href="signup"
-                  variant="flat"
-                >
-                  Sign Up
-                </Button>
-              </NavbarItem>
-            </NavbarContent>
-          )}
-        </NavbarContent>
-
-        <div className="nav">
-          <NavbarMenu>
-            <div className="mt-7 pt-10 z-10">
-              {menuItems.map((item, index) => (
-                <NavbarMenuItem className="mb-2" key={`${item}-${index}`}>
-                  <Link
-                    className="w-full  "
-                    color={
-                      index === 0
-                        ? "warning"
-                        : index === menuItems.length - 1
-                        ? "danger"
-                        : "foreground"
-                    }
-                    href={item.href}
-                    size="lg"
-                  >
-                    {item.label}
-                  </Link>
-                </NavbarMenuItem>
-              ))}
-              <NavbarItem className="">
-                <Link href="logout">
-                  <Button color="danger">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-6 h-6  sm:hidden"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
-                      />
-                    </svg>
-                  </Button>
-                </Link>
-              </NavbarItem>
-            </div>
-          </NavbarMenu>
-        </div>
       </Navbar>
-      <NotificationCenter isOpen={isOpen} onOpenChange={onOpenChange} />
-    </div>
+      <ButtonGroup
+        variant="ghost"
+        className="btm-nav fixed bottom-0 inset-x-0 bg-transparent shadow-md p-4 flex justify-around md:hidden z-10"
+      >
+        <Button href="/home" className="glass">
+          <a href="/home">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+              />
+            </svg>
+          </a>
+        </Button>
+        <Button className="glass">
+          <a href="/baskets">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+              />
+            </svg>
+          </a>
+        </Button>
+        <Button className="glass">
+          <a href="/account">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+              />
+            </svg>
+          </a>
+        </Button>
+      </ButtonGroup>
+      {/* <NotificationCenter isOpen={isOpen} onOpenChange={onOpenChange} /> */}
+    </>
   );
 }
