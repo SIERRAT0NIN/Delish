@@ -69,7 +69,6 @@ export default function PostCards() {
     }
   };
 
-  console.log("posts", posts);
   return (
     <div className="flex flex-col justify-center items-center px-4 py-3">
       {posts ? (

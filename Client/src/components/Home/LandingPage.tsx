@@ -19,13 +19,13 @@ export default function LandingPage() {
   const { user } = useAuth();
 
   return (
-    <div className="flex flex-col min-h-screen lg:container lg:mx-auto rounded mt-5 mb-10">
+    <div className="flex  flex-col min-h-screen lg:container lg:mx-auto rounded mt-5 mb-10 ">
       <header className="flex items-center justify-between px-6 py-4  rounded-lg">
         <Link href="/">
           <span className="sr-only">Delish</span>
         </Link>
       </header>
-      <main className="flex-1 rounded bg-glass border border-glass shadow-lg glass">
+      <main className="flex-1 rounded bg-glass border border-glass shadow-lg glass ">
         <section className="flex flex-col items-center justify-center py-12 md:py-24 lg:py-32 ">
           <h1 className="text-3xl  font-bold text-black tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
             Welcome to
@@ -48,7 +48,7 @@ export default function LandingPage() {
           {/* <Cake3D /> */}
         </section>
         <section className="px-6 py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-center">
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-center ">
             Latest Posts
           </h2>
           <div className="mt-8 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -111,8 +111,12 @@ export default function LandingPage() {
             </Card>
           </div>
           <a href="developers">
-            <Button className="mt-10" variant="ghost" color="warning">
-              Developers
+            <Button
+              className="mt-10 hover:text-white hover:bg-warning-500"
+              variant="ghost"
+              color="warning"
+            >
+              <span className="hover:text-white">Developers</span>
             </Button>
           </a>
         </section>

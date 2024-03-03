@@ -47,6 +47,7 @@ export default function CreatePostModal() {
       image_url: "",
     },
     validationSchema: validationSchema,
+
     onSubmit: (values) => {
       fetch("/api/posts", {
         method: "POST",
@@ -130,8 +131,8 @@ export default function CreatePostModal() {
                 />
               </div>
               <div className="flex align-center">
-                <Textarea
-                  label="RecipeTitle"
+                <Input
+                  // label="RecipeTitle"
                   id="title"
                   name="title"
                   value={formik.values.title}

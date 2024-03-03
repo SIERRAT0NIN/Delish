@@ -14,9 +14,9 @@ export default function UserInfoCard() {
   const { user } = useAuth();
 
   return (
-    <Card className="max-w-[100%] bg-glass border border-glass shadow-sm backdrop-filter-blur justify-center">
-      <div className="bg-glass border border-glass shadow-sm backdrop-filter-blur">
-        <CardHeader className="justify-between bg-glass border border-glass shadow-sm backdrop-filter-blur">
+    <Card className="max-w-[100%] bg-glass border border-glass shadow-sm backdrop-filter-blur justify-center ">
+      <div className="bg-glass border border-glass shadow-sm backdrop-filter-blur ">
+        <CardHeader className="justify-between bg-glass border border-glass shadow-sm backdrop-filter-blur dark:bg-slate-800">
           <div className="flex gap-5 ">
             <Avatar
               isBordered

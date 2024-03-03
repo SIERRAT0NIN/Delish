@@ -42,17 +42,18 @@ const SignUp: React.FC = () => {
     values: FormValues,
     { setSubmitting, resetForm }: FormikHelpers<FormValues>
   ) => {
-    signup(values).then((resp) => {
-      if (resp) {
-        resetForm();
-        navigate("/");
-        enqueueSnackbar("Signed up successfully", { variant: "success" });
-      } else {
-        enqueueSnackbar("Signup failed", { variant: "error" });
-        alert("Signup failed");
-      }
-    });
-    setSubmitting(false);
+    signup(values)
+      .then((success) => {
+        setSubmitting(false);
+        if (success) {
+          resetForm();
+          navigate("/");
+          enqueueSnackbar("Signed up successfully", { variant: "success" });
+        } else {
+          enqueueSnackbar("Signup failed", { variant: "error" });
+        }
+      })
+      .catch(() => setSubmitting(false)); // In case you add explicit throws in your signup promise
   };
 
   return (

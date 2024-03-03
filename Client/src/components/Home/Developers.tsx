@@ -1,5 +1,5 @@
 import { Link } from "@nextui-org/react";
-import NavBar from "./NavBar";
+
 import LogoIcon from "../3D-Models/LogoIcon3D";
 
 export default function Developers() {

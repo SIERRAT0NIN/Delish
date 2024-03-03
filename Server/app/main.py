@@ -198,14 +198,13 @@ api.add_resource(MyUser, "/user")
 class UserProfile(Resource):
     @jwt_required()
     def get(self, user_id):
-        # Fetch the profile from the database
         profile = Profile.query.filter_by(user_id=user_id).first()
         if not profile:
-            # Return a 404 if the profile doesn't exist
             return {'message': 'Profile not found'}, 404
         
-        # Return the profile information
-        return jsonify(profile.to_dict())
+        return profile.to_dict(), 200  # Assume to_dict() correctly serializes the profile
+
+# Assuming `api` is an instance of Api from Flask-RESTful
 api.add_resource(UserProfile, '/profiles/<int:user_id>')
 
 class CurrentUserPosts(Resource):
@@ -390,7 +389,7 @@ class Posts(Resource):
         data = request.get_json()
         title = data.get("title")
         content = data.get("content")
-        ingredients = data.get("ingredients")
+        ingredients = data.get(["ingredients"])
         image_url = data.get(
             "image_url", None
         ) 

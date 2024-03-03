@@ -92,6 +92,7 @@ class Post(db.Model, SerializerMixin):
             "created_at": self.created_at.isoformat(),  
 
         }
+        
 
     def __repr__(self):
         return f"<Post {self.id}>"

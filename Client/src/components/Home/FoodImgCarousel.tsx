@@ -1,7 +1,6 @@
 import React from "react";
 
 export const FoodImgCarousel = ({ post }) => {
-  console.log("post", post);
   return (
     <>
       <div className="w-70 carousel rounded-box">

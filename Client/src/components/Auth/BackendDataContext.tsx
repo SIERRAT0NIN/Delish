@@ -187,7 +187,7 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
     const fetchProfilePicture = async (userId: string | null) => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`/api/profiles/${userId}`, {
+        const response = await fetch(`/api/profiles/${user.id}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -200,10 +200,9 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
         }
 
         const data = await response.json();
-
+        console.log("data", data);
         setProfilePicture(data.profile_picture);
         setProfileBio(data.bio);
-        console.log("Profile picture data:", data);
       } catch (error) {
         console.error("Error fetching profile picture:", error);
         enqueueSnackbar("Failed to load profile picture", {
@@ -214,6 +213,51 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
 
     fetchProfilePicture(userId);
   }, [userId]);
+
+  const [usernames, setUsernames] = useState({});
+
+  const fetchUsernameById = async (userId) => {
+    if (!userId) return null;
+
+    // Check cache first
+    if (usernames[userId]) {
+      return usernames[userId];
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`/api/users/${userId}`, {
+        // Assuming you have such an endpoint
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          x_csrf_token: getCookie("csrf_access_token"),
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Could not fetch user details.");
+      }
+
+      const userData = await response.json();
+      const username = userData.username;
+
+      console.log("Fetched username:", username);
+      // Update cache
+      setUsernames((prevUsernames) => ({
+        ...prevUsernames,
+        [userId]: username,
+      }));
+
+      return username;
+    } catch (error) {
+      console.error("Error fetching username:", error);
+      enqueueSnackbar("Failed to load username", {
+        variant: "error",
+      });
+      return null;
+    }
+  };
 
   return (
     <BackendDataContext.Provider
