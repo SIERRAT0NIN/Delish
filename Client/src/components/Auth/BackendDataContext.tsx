@@ -13,6 +13,7 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
   const [profileData, setProfileData] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
   const [profileBio, setProfileBio] = useState("");
+  const [userNameByID, setUserNameById] = useState("");
 
   const token = localStorage.getItem("token");
 
@@ -132,8 +133,6 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
     fetchPosts();
   }, [user]);
 
-  //! Add the fetchCommentsForPost function
-
   const [comments, setComments] = useState([]);
   const fetchCommentsForPost = async (postId: any) => {
     try {
@@ -181,13 +180,11 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
     return post.likes.some((like: any) => like.user_id === user.id);
   };
 
-  const userId = user ? (user as { id: string }).id : "no user";
   useEffect(() => {
-    console.log("userId", userId);
-    const fetchProfilePicture = async (userId: string | null) => {
+    const fetchProfilePicture = async (user) => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`/api/profiles/${userId}`, {
+        const response = await fetch(`/api/profiles/${user.id}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -200,10 +197,9 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
         }
 
         const data = await response.json();
-
+        console.log("data", data);
         setProfilePicture(data.profile_picture);
         setProfileBio(data.bio);
-        console.log("Profile picture data:", data);
       } catch (error) {
         console.error("Error fetching profile picture:", error);
         enqueueSnackbar("Failed to load profile picture", {
@@ -212,8 +208,27 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
-    fetchProfilePicture(userId);
-  }, [userId]);
+    fetchProfilePicture(user);
+  }, [user]);
+
+  // useEffect(() => {
+  //   const fetchUserNameByID = async (user) => {
+  //     try {
+  //       const response = await fetch(`/api/users/${user.id}`);
+  //       if (!response.ok) {
+  //         throw new Error("Network response was not ok");
+  //       }
+  //       const data = await response.json();
+  //       setUserNameById(data.username);
+  //     } catch (error) {
+  //       console.error("There was a problem with your fetch operation:", error);
+  //     }
+  //   };
+
+  //   fetchUserNameByID(user);
+  // }, [user]); // Assuming user.id is stable, else consider dependencies carefully
+
+  // console.log(userNameByID);
 
   return (
     <BackendDataContext.Provider

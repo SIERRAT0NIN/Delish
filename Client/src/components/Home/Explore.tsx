@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext } from "react";
-import { Button, Card, Image, Tooltip, useDisclosure } from "@nextui-org/react";
+import { useEffect, useState, useContext } from "react";
+import { Button, Card, Image, useDisclosure } from "@nextui-org/react";
 import Followers from "./Followers";
 import { useSnackbar } from "notistack";
 import ExploreImgModal from "./ExploreImgModal";
@@ -10,7 +10,6 @@ export default function Explore() {
   const { commentsByPostId, posts, setPosts, selectedPost, setSelectedPost } =
     useContext(BackendDataContext);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
@@ -41,6 +40,7 @@ export default function Explore() {
     };
     fetchPosts();
   }, []);
+
   if (isLoading) {
     return <CircularProgress aria-label="Loading..." />;
   }
@@ -54,16 +54,16 @@ export default function Explore() {
     enqueueSnackbar("Liked", { variant: "success", className: "" });
   };
   const commentClick = () => {
-    console.log("Comment button clicked");
     enqueueSnackbar("Commented", { variant: "success" });
   };
   const imgClick = (post) => {
-    setSelectedPost(post); // Set the selected post
-
-    onOpenChange(true); // Open the modal
+    setSelectedPost(post);
+    onOpenChange(true);
   };
+
+  console.log(posts[0].user_id);
   return (
-    <Card className="mt-5 mb-10">
+    <Card className="mt-5 mb-10 p-2">
       <h1 className="flex justify-center text-lg bg-gradient-to-r from-pink-500 to-yellow-500 text-white p-5 rounded ">
         Explore
       </h1>
@@ -72,39 +72,36 @@ export default function Explore() {
       </div>
 
       <div className="grid grid-cols-1 p-3 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {posts.map(
-          (
-            post // Map over the posts array
-          ) => (
-            <div key={post.id} className="relative group">
-              <Image
-                alt="Post"
-                className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
-                src={post.image_url || "https://i.imgur.com/xIMZq7l.png"}
-                onClick={() => imgClick(post)}
-              />
+        {posts.map((post) => (
+          <div key={post.id} className="relative group">
+            <Image
+              alt="Post"
+              className="aspect-square object-cover w-full rounded-lg overflow-hidden group-hover:opacity-50"
+              src={post.image_url || "https://i.imgur.com/xIMZq7l.png"}
+              onClick={() => imgClick(post)}
+            />
 
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                <div className="flex flex-col items-center space-y-2 z-10">
-                  <Button onClick={likeClick} color="danger" variant="ghost">
-                    <HeartIcon className="w-6 h-6" />
-                    <span className="sr-only">Like</span>
-                  </Button>
-                  <Button
-                    color="danger"
-                    variant="ghost"
-                    onClick={() => imgClick(post)}
-                  >
-                    <MessageCircleIcon className="w-6 h-6" />
-                    <span className="sr-only">Comment</span>
-                  </Button>
-                </div>
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
+              <div className="flex flex-col items-center space-y-2 z-10">
+                <Button onClick={likeClick} color="danger" variant="ghost">
+                  <HeartIcon className="w-6 h-6" />
+                  <span className="sr-only">Like</span>
+                </Button>
+                <Button
+                  color="danger"
+                  variant="ghost"
+                  onClick={() => imgClick(post)}
+                >
+                  <MessageCircleIcon className="w-6 h-6" />
+                  <span className="sr-only">Comment</span>
+                </Button>
               </div>
             </div>
-          )
-        )}
+          </div>
+        ))}
       </div>
       <ExploreImgModal
+        onClose={onclose}
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         selectedPost={selectedPost} // Pass selectedPost as a prop
@@ -113,7 +110,6 @@ export default function Explore() {
         commentsByPostId={commentsByPostId}
       />
     </Card>
-    // </div>
   );
 }
 

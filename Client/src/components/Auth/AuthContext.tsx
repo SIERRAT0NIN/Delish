@@ -188,55 +188,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setLoadingLogout(false);
       });
   };
-
-  const signup = (values: FormValues): Promise<void | boolean> => {
+  const signup = (values: FormValues): Promise<boolean> => {
     return fetch("/api/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Bearer: `Bearer ${localStorage.getItem("token")}`,
+        "X-CSRF-TOKEN": getCookie("csrf_access_token"),
       },
-      body: JSON.stringify({
-        username: values.username,
-        email: values.email,
-        password: values.password,
-      }),
+      body: JSON.stringify(values),
     })
       .then((response) => {
         if (!response.ok) {
-          return false;
+          throw new Error("Network response was not ok");
         }
         return response.json();
       })
       .then((data) => {
         if (!data) {
-          console.error("Signup failed");
-          setSnackbarMessage("Failed to sign up. Please try again.");
-          setSnackbarSeverity("error");
-          setSnackbarOpen(true);
-          console.log(data);
-          localStorage.setItem("token", data.accessToken);
-          localStorage.setItem("refreshToken", data.refreshToken);
-          return false;
+          throw new Error("No data returned from signup");
         }
-
+        // Assuming setUser, setRefreshToken are context or prop functions to update the user state
         setUser(data);
-        setSnackbarMessage(data.message || "User created successfully");
-        setSnackbarSeverity("success");
-        setSnackbarOpen(true);
         localStorage.setItem("token", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
-        setRefreshToken(data.refreshToken);
         return true;
       })
       .catch((error) => {
         console.error("Error:", error);
-        setSnackbarMessage("Failed to sign up. Please try again.");
-        setSnackbarSeverity("error");
-        setSnackbarOpen(true);
+        // Use enqueueSnackbar here if you want to notify the user
         return false;
       });
   };
-
   return (
     <AuthContext.Provider
       value={{ signup, login, logout, refreshUser, user, getCookie, userId }}
