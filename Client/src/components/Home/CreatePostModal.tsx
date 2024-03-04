@@ -205,10 +205,17 @@ export default function CreatePostModal() {
             </ModalBody>
             <ModalBody>
               <h1>List of ingredients</h1>
-              <ul className="mt-3">
+              {/* <ul className="mt-3">
                 {ingredients.map((ingredient, index) => (
                   <li key={index} className="mt-1">
                     <Chip variant="dot" color="primary">
+                      {ingredient}
+                    </Chip>
+                  </li> */}
+              <ul className="mt-3">
+                {ingredients.map((ingredient, index) => (
+                  <li key={index} className="mt-1">
+                    <Chip variant="dot" color="success">
                       {ingredient}
                     </Chip>
                   </li>

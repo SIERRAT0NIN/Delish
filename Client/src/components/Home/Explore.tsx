@@ -63,7 +63,7 @@ export default function Explore() {
 
   console.log(posts[0].user_id);
   return (
-    <Card className="mt-5 mb-10">
+    <Card className="mt-5 mb-10 p-2">
       <h1 className="flex justify-center text-lg bg-gradient-to-r from-pink-500 to-yellow-500 text-white p-5 rounded ">
         Explore
       </h1>

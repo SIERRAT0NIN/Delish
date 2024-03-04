@@ -133,8 +133,6 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
     fetchPosts();
   }, [user]);
 
-  //! Add the fetchCommentsForPost function
-
   const [comments, setComments] = useState([]);
   const fetchCommentsForPost = async (postId: any) => {
     try {
@@ -182,8 +180,6 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
     return post.likes.some((like: any) => like.user_id === user.id);
   };
 
-  // const userId = user ? (user as { id: string }).id : "no user";
-
   useEffect(() => {
     const fetchProfilePicture = async (user) => {
       try {
@@ -214,7 +210,6 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
 
     fetchProfilePicture(user);
   }, [user]);
-  console.log(profilePicture);
 
   // useEffect(() => {
   //   const fetchUserNameByID = async (user) => {
