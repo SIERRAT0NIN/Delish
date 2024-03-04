@@ -200,7 +200,11 @@ export default function Component() {
                 </div>
               ))
             ) : (
-              <div>No posts found</div>
+              <div>
+                <span className="flex justify-center mx-auto">
+                  No posts found
+                </span>
+              </div>
             )}
           </div>
         </div>

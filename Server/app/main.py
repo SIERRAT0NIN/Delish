@@ -1,16 +1,16 @@
+import os
+import sqlalchemy
 from flask import Flask, request, make_response, jsonify
 from flask_restful import Api, Resource, reqparse
 from werkzeug.security import generate_password_hash, check_password_hash
-import sqlalchemy
 from sqlalchemy import or_
 from flask_socketio import SocketIO, join_room, leave_room
-from datetime import datetime, timedelta
-# from models import User, Message, Chat, Post, Profile
+from datetime import timedelta
 from models import *
 from app_config import db
-# from .app_config import db
 from flask_cors import CORS
 from flask_migrate import Migrate
+from dotenv import load_dotenv
 from flask_jwt_extended import (
     JWTManager,
     create_access_token,
@@ -22,14 +22,10 @@ from flask_jwt_extended import (
     unset_access_cookies,
     unset_refresh_cookies,
 )
-from dotenv import load_dotenv
-import os
 
-load_dotenv()  # Add this at the beginning
-
+load_dotenv()
 
 app = Flask(__name__)
-# Configure your app
 jwt_secret = os.getenv("JWT_SECRET")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.db"
 app.config["JWT_TOKEN_LOCATION"] = ["cookies", "headers"]
@@ -37,16 +33,14 @@ app.config["JWT_COOKIE_SAMESITE"] = "Strict"
 app.config["JWT_SECRET_KEY"] = jwt_secret
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=12)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
-jwt = JWTManager(app)  # Add this line
+jwt = JWTManager(app)
 
 db.init_app(app)
 
 Migrate(app, db)
 
-# Set up Flask-RESTful
 api = Api(app)
 
-# Set up CORS to allow all origins for the signup route
 cors = CORS(
     app,
     supports_credentials=True,
@@ -61,14 +55,11 @@ cors = CORS(
         r"/search_users": {"origins": "*"},
     },
 )
-CORS(
-    app, supports_credentials=True, origins="http://localhost:5173"
-)  # Adjust the origin as needed
+CORS(app, supports_credentials=True, origins="http://localhost:5173")
 
 socketio = SocketIO(app, cors_allowed_origins=["http://10.0.0.200:5173"])
 
 
-# Define your RESTful routes
 class SignUp(Resource):
     def post(self):
         data = request.get_json()
@@ -110,7 +101,6 @@ class SignUp(Resource):
             return {"error": str(e)}, 500
 
 
-# Add the SignUp resource to the API
 api.add_resource(SignUp, "/signup")
 
 
@@ -130,7 +120,7 @@ class Login(Resource):
             return {"message": "Email and password are required"}, 400
 
         user = User.query.filter_by(email=email).first()
-        
+
         if user and check_password_hash(user.password_hash, password):
             print(email)
             access_token = create_access_token(identity=email)
@@ -157,7 +147,6 @@ class Login(Resource):
             return {"message": "Invalid username or password"}, 401
 
 
-# Add the Login resource to the API
 api.add_resource(Login, "/login")
 
 
@@ -190,22 +179,25 @@ class MyUser(Resource):
             return u, 200
         else:
             return {"error": "User not found"}, 404
-    
 
 
 api.add_resource(MyUser, "/user")
+
 
 class UserProfile(Resource):
     @jwt_required()
     def get(self, user_id):
         profile = Profile.query.filter_by(user_id=user_id).first()
         if not profile:
-            return {'message': 'Profile not found'}, 404
-        
-        return profile.to_dict(), 200  # Assume to_dict() correctly serializes the profile
+            return {"message": "Profile not found"}, 404
+        return (
+            profile.to_dict(),
+            200,
+        )
 
-# Assuming `api` is an instance of Api from Flask-RESTful
-api.add_resource(UserProfile, '/profiles/<int:user_id>')
+
+api.add_resource(UserProfile, "/profiles/<int:user_id>")
+
 
 class CurrentUserPosts(Resource):
     @jwt_required()
@@ -218,14 +210,17 @@ class CurrentUserPosts(Resource):
 
         # If the user is not found, return an error
         if not user:
-            return {'message': 'User not found'}, 404
+            return {"message": "User not found"}, 404
 
         # Fetch the posts created by the user
         posts = Post.query.filter_by(user_id=user.id).all()
 
         # Serialize and return the posts
         return jsonify([post.to_dict() for post in posts])
-api.add_resource(CurrentUserPosts, '/my/posts')
+
+
+api.add_resource(CurrentUserPosts, "/my/posts")
+
 
 class Messages(Resource):
     def get(self):
@@ -357,17 +352,27 @@ class ChatID(Resource):
         )
 
 
-# Add the resource to your API
 api.add_resource(ChatID, "/chats/<int:id>")
 
-@app.route('/users/<int:id>', methods=['GET'])
-@jwt_required()
-def get_username_by_id(id):
-    user = User.query.get(id)
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-    
-    return jsonify({"username": user.username}), 200
+# @app.route('/users/<int:id>', methods=['GET'])
+# @jwt_required()
+# def get_username_by_id(id):
+#     user = User.query.get(id)
+#     if not user:
+#         return jsonify({"error": "User not found"}), 404
+
+#     return jsonify({"username": user.username}), 200
+
+
+class UserById(Resource):
+    def get(self, id):
+        user = User.query.get(id)
+        if not user:
+            return {"message": "User not found"}, 404
+        return {"username": user.username}
+
+
+api.add_resource(UserById, "/users/<int:id>")
 
 
 class Posts(Resource):
@@ -384,25 +389,22 @@ class Posts(Resource):
         user = User.query.filter_by(id=user_id).first_or_404(
             description="User not found."
         )
-
-
         data = request.get_json()
-        title = data.get("title")
-        content = data.get("content")
-        ingredients = data.get(["ingredients"])
-        image_url = data.get(
-            "image_url", None
-        ) 
+        title = (data["title"],)
+        content = (data["content"],)
+        ingredients = (",".join(data["ingredients"]),)
+        tag = (",".join(data["tags"]),)
+        image_url = data.get("image_url", None)
 
         if not content or not ingredients:
             return {"error": "Missing data for content or ingredients"}, 400
-
         try:
             new_post = Post(
                 user_id=user.id,
                 title=title,
                 content=content,
                 ingredients=ingredients,
+                tag=tag,
                 image_url=image_url,
             )
             db.session.add(new_post)
@@ -411,37 +413,42 @@ class Posts(Resource):
         except IntegrityError as e:
             db.session.rollback()
             return {"error": "Failed to create new post.", "details": str(e)}, 500
+
     @jwt_required()
     def post(self):
 
         parser = reqparse.RequestParser()
-        parser.add_argument('content', required=True, help="Content cannot be blank")
-        
-        args = request.json
+        parser.add_argument("content", required=True, help="Content cannot be blank")
 
+        args = request.json
 
         current_user_email = get_jwt_identity()
         current_user = User.query.filter_by(email=current_user_email).first()
 
-        
         if not current_user:
-            return {'message': 'User not found'}, 404
-        all_ingredients = ''.join(args['ingredients'])
+            return {"message": "User not found"}, 404
+        all_ingredients = "".join(args["ingredients"])
         # Create the post
-        new_post = Post(user_id=current_user.id, title=args['title'], content=args['content'], ingredients=all_ingredients, image_url=args['image_url'])
-
+        new_post = Post(
+            user_id=current_user.id,
+            title=args["title"],
+            content=args["content"],
+            ingredients=all_ingredients,
+            image_url=args["image_url"],
+        )
 
         try:
             db.session.add(new_post)
             db.session.commit()
-            return {'message': 'Post created successfully', 'post_id': new_post.id}, 201
+            return {"message": "Post created successfully", "post_id": new_post.id}, 201
         except Exception as e:
             db.session.rollback()
-            return {'message': 'An error occurred while creating the post', 'error': str(e)}, 500
+            return {
+                "message": "An error occurred while creating the post",
+                "error": str(e),
+            }, 500
 
 
-
-# Ensure to add the resource to the API after the class definition
 api.add_resource(Posts, "/posts")
 
 
@@ -451,7 +458,7 @@ class UserPosts(Resource):
         user_id = get_jwt_identity()
         # Using .first_or_404() to simplify and directly handle user not found scenario.
         posts = Post.query.filter_by(user_id=user_id).all()
-        
+
         if not posts:
             return jsonify([])
         return jsonify([post.to_dict() for post in posts])
@@ -488,7 +495,6 @@ class UserPosts(Resource):
             return {"error": "Failed to create new post.", "details": str(e)}, 500
 
 
-# Ensure to add the resource to the API after the class definition
 api.add_resource(UserPosts, "/user/posts")
 
 
@@ -501,6 +507,304 @@ class Logout(Resource):
 
 
 api.add_resource(Logout, "/user/logout")
+
+
+class SearchUsers(Resource):
+    def get(self):
+        query = request.args.get("query")
+        if query:
+            users = User.query.filter(User.username.ilike(f"%{query}%")).all()
+            profile = Profile.query.filter(
+                Profile.user_id.in_([user.id for user in users])
+            ).all()
+            return [user.to_dict() for user in users]
+
+            if user and user.profile:
+                profile_picture_url = user.profile.profile_picture
+                print(f"Profile picture URL: {profile_picture_url}")
+            else:
+                print("User not found or user does not have a profile.")
+        return []
+
+
+api.add_resource(SearchUsers, "/search_users")
+
+
+class LikePost(Resource):
+    @jwt_required()
+    def post(self, post_id):
+        current_user_email = get_jwt_identity()
+        current_user = User.query.filter_by(email=current_user_email).first()
+
+        if not current_user:
+            return {"message": "User not found"}, 404
+
+        post = Post.query.get_or_404(post_id)
+
+        # Toggle like state
+        if current_user.has_liked_post(post):
+            try:
+                # If the post is already liked, unlike it
+                current_user.unlike_post(post)
+                db.session.commit()
+                return {"message": "Post unliked successfully"}, 200
+            except Exception as e:
+                db.session.rollback()
+                return {
+                    "message": "An error occurred while unliking the post",
+                    "error": str(e),
+                }, 500
+        else:
+            try:
+                # If the post is not liked, like it
+                current_user.like_post(post)
+                db.session.commit()
+                return {"message": "Post liked successfully"}, 200
+            except Exception as e:
+                db.session.rollback()
+                return {
+                    "message": "An error occurred while liking the post",
+                    "error": str(e),
+                }, 500
+
+    @jwt_required()
+    def delete(self, post_id):
+        # Unlike post logic
+        current_user_email = get_jwt_identity()
+        current_user = User.query.filter_by(email=current_user_email).first()
+
+        if not current_user:
+            return {"message": "User not found"}, 404
+
+        post = Post.query.get_or_404(post_id)
+
+        if not current_user.has_liked_post(post):
+            return {"message": "Post not liked by this user"}, 400
+
+        try:
+            current_user.unlike_post(post)
+            db.session.commit()
+            return {"message": "Post unliked successfully"}, 200
+        except Exception as e:
+            db.session.rollback()
+            return {
+                "message": "An error occurred while unliking the post",
+                "error": str(e),
+            }, 500
+
+
+api.add_resource(LikePost, "/like/<int:post_id>")
+
+
+class DeleteUser(Resource):
+    @jwt_required()
+    def delete(self):
+        current_user_email = get_jwt_identity()
+        user = User.query.filter_by(email=current_user_email).first()
+
+        if not user:
+            return {"message": "User not found"}, 404
+
+        try:
+            db.session.delete(user)
+            db.session.commit()
+            return {"message": "User deleted successfully"}, 200
+        except Exception as e:
+            db.session.rollback()
+            return {"message": "Failed to delete user", "error": str(e)}, 500
+
+
+api.add_resource(DeleteUser, "/delete_user")
+
+
+class CommentOnPost(Resource):
+    @jwt_required()
+    def post(self, post_id):
+        parser = reqparse.RequestParser()
+        parser.add_argument("content", required=True, help="Content cannot be blank")
+        args = parser.parse_args()
+
+        current_user_email = get_jwt_identity()
+        current_user = User.query.filter_by(email=current_user_email).first()
+
+        if not current_user:
+            return {"message": "User not found"}, 404
+
+        post = Post.query.get_or_404(post_id)
+
+        comment = Comment(
+            content=args["content"], post_id=post.id, user_id=current_user.id
+        )
+
+        try:
+            db.session.add(comment)
+            db.session.commit()
+            return {
+                "message": "Comment added successfully",
+                "comment_id": comment.id,
+            }, 201
+        except Exception as e:
+            db.session.rollback()
+            return {
+                "message": "An error occurred while adding the comment",
+                "error": str(e),
+            }, 500
+
+    @jwt_required()
+    def get(self, post_id):
+        post = Post.query.get_or_404(post_id)
+        comments = Comment.query.filter_by(post_id=post.id).all()
+
+        if comments:
+            comments_data = [
+                {
+                    "id": comment.id,
+                    "user_id": comment.user_id,
+                    "post_id": comment.post_id,
+                    "content": comment.content,
+                    "created_at": comment.created_at.strftime(
+                        "%Y-%m-%d %H:%M:%S"
+                    ),  # Formatting the datetime
+                }
+                for comment in comments
+            ]
+            return {"comments": comments_data}, 200
+        else:
+            return {"message": "No comments found for this post"}, 404
+
+
+api.add_resource(CommentOnPost, "/posts/<int:post_id>/comment")
+
+
+class Follow(Resource):
+    @jwt_required()
+    def post(self, user_id):
+        current_user_id = get_jwt_identity()
+
+        follower = User.query.filter_by(email=current_user_id).first()
+        if follower.id == user_id:
+            return {"error": "You cannot follow yourself"}, 400
+
+        user_to_follow = User.query.get_or_404(user_id)
+        if follower.is_following(user_to_follow):
+            return {"message": "Already following"}, 409
+
+        try:
+            follower.follow(user_to_follow)
+            db.session.commit()
+            return {"message": f"Now following {user_to_follow.username}"}, 201
+        except Exception as e:
+            db.session.rollback()
+            return {"error": "Unable to follow user", "details": str(e)}, 500
+
+    @jwt_required()
+    def delete(self, user_id):
+        current_user_id = get_jwt_identity()
+        follower = User.query.filter_by(email=current_user_id).first()
+
+        if follower.id == int(user_id):
+            return {"error": "You cannot unfollow yourself"}, 400
+
+        user_to_unfollow = User.query.get_or_404(user_id)
+        if not follower.is_following(user_to_unfollow):
+            return {"message": "Not following this user"}, 404
+
+        try:
+            follower.unfollow(user_to_unfollow)
+            db.session.commit()
+            return {"message": f"Unfollowed {user_to_unfollow.username}"}, 200
+        except Exception as e:
+            db.session.rollback()
+            return {"error": "Unable to unfollow user", "details": str(e)}, 500
+
+    @jwt_required()
+    def get(self, user_id):
+        current_user_id = get_jwt_identity()
+
+        # Ensure a user can only see their own follow stats or make this publicly available
+        # depending on your application's requirements
+        if str(current_user_id) != str(user_id):
+            return {"error": "Access denied"}, 403
+
+        user = User.query.get_or_404(user_id)
+
+        # Assuming 'followers' and 'followed' are the relationship attributes
+        # You might need to adjust these based on your actual model attributes
+        followers_count = user.followers.count()
+        followed_count = user.followed.count()
+
+        return jsonify(
+            {"followers_count": followers_count, "followed_count": followed_count}
+        )
+
+
+api.add_resource(Follow, "/users/<int:user_id>/follow")
+
+
+class UserFollowInfo(Resource):
+    @jwt_required()
+    def get(self, user_id):
+        # Removing the identity check to make follow info publicly accessible
+        user = User.query.get_or_404(user_id)
+
+        followers_count = user.followers.count()
+        followed_count = user.followed.count()
+
+        return jsonify(
+            {"followers_count": followers_count, "followed_count": followed_count}
+        )
+
+
+api.add_resource(UserFollowInfo, "/users/<int:user_id>/follow-info")
+
+
+class CreateComment(Resource):
+    def post(self):
+        data = request.get_json(force=True)
+        new_comment = Comment(
+            user_id=data["user_id"],
+            post_id=data["post_id"],
+            content=data["content"],
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+        return {
+            "message": "Comment created successfully!",
+            "comment": str(new_comment),
+        }, 201
+
+
+api.add_resource(CreateComment, "/comments")
+
+
+class DeleteComment(Resource):
+    def delete(self, comment_id):
+        comment = Comment.query.get_or_404(comment_id)
+        db.session.delete(comment)
+        db.session.commit()
+        return {"message": "Comment deleted successfully!"}, 200
+
+
+api.add_resource(DeleteComment, "/comments/<int:comment_id>")
+
+
+class CommentsForPost(Resource):
+    def get(self, post_id):
+        comments = Comment.query.filter_by(post_id=post_id).all()
+        comments_data = [
+            {
+                "id": comment.id,
+                "user_id": comment.user_id,
+                "post_id": comment.post_id,
+                "content": comment.content,
+                "created_at": comment.created_at.isoformat(),
+            }
+            for comment in comments
+        ]
+        return comments_data, 200
+
+
+api.add_resource(CommentsForPost, "/posts/<int:post_id>/comments")
 
 
 @socketio.on("connect")
@@ -562,261 +866,6 @@ def handle_message(_message):
 @socketio.on("connect_error")
 def error(err):
     print(err)
-    
-    
-class SearchUsers(Resource):
-    def get(self):
-        query = request.args.get('query')
-        if query:
-            users = User.query.filter(User.username.ilike(f'%{query}%')).all()
-            profile = Profile.query.filter(Profile.user_id.in_([user.id for user in users])).all()
-            return [user.to_dict() for user in users]  
-  
-            if user and user.profile:
-                profile_picture_url = user.profile.profile_picture
-                print(f"Profile picture URL: {profile_picture_url}")
-            else:
-                print("User not found or user does not have a profile.")
-        return []
-
-api.add_resource(SearchUsers, '/search_users')
-
-class LikePost(Resource):
-    @jwt_required()
-    def post(self, post_id):
-        current_user_email = get_jwt_identity()
-        current_user = User.query.filter_by(email=current_user_email).first()
-
-        if not current_user:
-            return {'message': 'User not found'}, 404
-
-        post = Post.query.get_or_404(post_id)
-
-        # Toggle like state
-        if current_user.has_liked_post(post):
-            try:
-                # If the post is already liked, unlike it
-                current_user.unlike_post(post)
-                db.session.commit()
-                return {'message': 'Post unliked successfully'}, 200
-            except Exception as e:
-                db.session.rollback()
-                return {'message': 'An error occurred while unliking the post', 'error': str(e)}, 500
-        else:
-            try:
-                # If the post is not liked, like it
-                current_user.like_post(post)
-                db.session.commit()
-                return {'message': 'Post liked successfully'}, 200
-            except Exception as e:
-                db.session.rollback()
-                return {'message': 'An error occurred while liking the post', 'error': str(e)}, 500
-    @jwt_required()
-    def delete(self, post_id):
-        # Unlike post logic
-        current_user_email = get_jwt_identity()
-        current_user = User.query.filter_by(email=current_user_email).first()
-
-        if not current_user:
-            return {'message': 'User not found'}, 404
-
-        post = Post.query.get_or_404(post_id)
-
-        if not current_user.has_liked_post(post):
-            return {'message': 'Post not liked by this user'}, 400
-
-        try:
-            current_user.unlike_post(post)
-            db.session.commit()
-            return {'message': 'Post unliked successfully'}, 200
-        except Exception as e:
-            db.session.rollback()
-            return {'message': 'An error occurred while unliking the post', 'error': str(e)}, 500
-
-
-
-api.add_resource(LikePost, '/like/<int:post_id>')
-
-class DeleteUser(Resource):
-    @jwt_required()
-    def delete(self):
-        current_user_email = get_jwt_identity()
-        user = User.query.filter_by(email=current_user_email).first()
-
-        if not user:
-            return {'message': 'User not found'}, 404
-
-        try:
-            db.session.delete(user)
-            db.session.commit()
-            return {'message': 'User deleted successfully'}, 200
-        except Exception as e:
-            db.session.rollback()
-            return {'message': 'Failed to delete user', 'error': str(e)}, 500
-        
-api.add_resource(DeleteUser, '/delete_user')
-class CommentOnPost(Resource):
-    @jwt_required()
-    def post(self, post_id):
-        parser = reqparse.RequestParser()
-        parser.add_argument('content', required=True, help="Content cannot be blank")
-        args = parser.parse_args()
-
-        current_user_email = get_jwt_identity()
-        current_user = User.query.filter_by(email=current_user_email).first()
-
-        if not current_user:
-            return {'message': 'User not found'}, 404
-
-        post = Post.query.get_or_404(post_id)
-
-        comment = Comment(content=args['content'], post_id=post.id, user_id=current_user.id)
-
-        try:
-            db.session.add(comment)
-            db.session.commit()
-            return {'message': 'Comment added successfully', 'comment_id': comment.id}, 201
-        except Exception as e:
-            db.session.rollback()
-            return {'message': 'An error occurred while adding the comment', 'error': str(e)}, 500
-
-    @jwt_required()
-    def get(self, post_id):
-        post = Post.query.get_or_404(post_id)
-        comments = Comment.query.filter_by(post_id=post.id).all()
-        
-        if comments:
-            comments_data = [{
-                'id': comment.id,
-                'user_id': comment.user_id,
-                'post_id': comment.post_id,
-                'content': comment.content,
-                'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Formatting the datetime
-            } for comment in comments]
-            return {'comments': comments_data}, 200
-        else:
-            return {'message': 'No comments found for this post'}, 404
-
-api.add_resource(CommentOnPost, '/posts/<int:post_id>/comment')
-
-
-
-class Follow(Resource):
-    @jwt_required()
- 
-
-    def post(self, user_id):
-        current_user_id = get_jwt_identity()
-        
-        follower = User.query.filter_by(email=current_user_id).first()
-        if follower.id == user_id:
-            return {"error": "You cannot follow yourself"}, 400
-
-        user_to_follow = User.query.get_or_404(user_id)
-        if follower.is_following(user_to_follow):
-            return {"message": "Already following"}, 409
-
-        try:
-            follower.follow(user_to_follow)
-            db.session.commit()
-            return {"message": f"Now following {user_to_follow.username}"}, 201
-        except Exception as e:
-            db.session.rollback()
-            return {"error": "Unable to follow user", "details": str(e)}, 500
-    @jwt_required()
-    def delete(self, user_id):
-        current_user_id = get_jwt_identity()
-        follower = User.query.filter_by(email=current_user_id).first()
-        
-        if follower.id == int(user_id):
-            return {"error": "You cannot unfollow yourself"}, 400
-
-        user_to_unfollow = User.query.get_or_404(user_id)
-        if not follower.is_following(user_to_unfollow):
-            return {"message": "Not following this user"}, 404
-
-        try:
-            follower.unfollow(user_to_unfollow)
-            db.session.commit()
-            return {"message": f"Unfollowed {user_to_unfollow.username}"}, 200
-        except Exception as e:
-            db.session.rollback()
-            return {"error": "Unable to unfollow user", "details": str(e)}, 500
-    @jwt_required()
-    def get(self, user_id):
-        current_user_id = get_jwt_identity()
-        
-        # Ensure a user can only see their own follow stats or make this publicly available
-        # depending on your application's requirements
-        if str(current_user_id) != str(user_id):
-            return {"error": "Access denied"}, 403
-
-        user = User.query.get_or_404(user_id)
-        
-        # Assuming 'followers' and 'followed' are the relationship attributes
-        # You might need to adjust these based on your actual model attributes
-        followers_count = user.followers.count()
-        followed_count = user.followed.count()
-        
-        return jsonify({
-            "followers_count": followers_count,
-            "followed_count": followed_count
-        })
-# Add the resource to the API
-api.add_resource(Follow, '/users/<int:user_id>/follow')
-class UserFollowInfo(Resource):
-    @jwt_required()
-    def get(self, user_id):
-        # Removing the identity check to make follow info publicly accessible
-        user = User.query.get_or_404(user_id)
-        
-        followers_count = user.followers.count()
-        followed_count = user.followed.count()
-        
-        return jsonify({
-            "followers_count": followers_count,
-            "followed_count": followed_count
-        })
-
-# Add the resource to the API
-api.add_resource(UserFollowInfo, '/users/<int:user_id>/follow-info')
-
-class CreateComment(Resource):
-    def post(self):
-        data = request.get_json(force=True)
-        new_comment = Comment(
-            user_id=data['user_id'],
-            post_id=data['post_id'],
-            content=data['content'],
-        )
-        db.session.add(new_comment)
-        db.session.commit()
-        return {"message": "Comment created successfully!", "comment": str(new_comment)}, 201
-
-api.add_resource(CreateComment, '/comments')
-
-class DeleteComment(Resource):
-    def delete(self, comment_id):
-        comment = Comment.query.get_or_404(comment_id)
-        db.session.delete(comment)
-        db.session.commit()
-        return {"message": "Comment deleted successfully!"}, 200
-api.add_resource(DeleteComment, '/comments/<int:comment_id>')
-
-class CommentsForPost(Resource):
-    def get(self, post_id):
-        comments = Comment.query.filter_by(post_id=post_id).all()
-        comments_data = [{
-            'id': comment.id, 
-            'user_id': comment.user_id,
-            'post_id': comment.post_id,
-            'content': comment.content, 
-            'created_at': comment.created_at.isoformat()
-        } for comment in comments]
-        return comments_data, 200
-
-
-api.add_resource(CommentsForPost, '/posts/<int:post_id>/comments')
 
 
 if __name__ == "__main__":

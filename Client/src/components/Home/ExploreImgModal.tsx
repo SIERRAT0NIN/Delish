@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   Modal,
   ModalContent,
@@ -9,9 +9,9 @@ import {
   Image,
 } from "@nextui-org/react";
 import { useAuth } from "../Auth/AuthContext";
-// import { BackendContext } from "../Auth/BackendDataContext";
 const ExploreImgModal = ({
   isOpen,
+  onClose,
   onOpenChange,
   selectedPost,
   likeClick,
@@ -19,34 +19,34 @@ const ExploreImgModal = ({
   commentsByPostId,
 }) => {
   const { user, getCookie } = useAuth();
-  // const {  } = useContext(BackendContext);
   const [username, setUsername] = useState("");
+  const [userNameByID, setUserNameById] = useState("");
 
   const comments = selectedPost ? commentsByPostId[selectedPost.id] || [] : [];
 
-  const fetchUsernameById = async (user1: string) => {
-    try {
-      const response = await fetch(`/api/${user1}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          x_csrf_token: getCookie("csrf_access_token"),
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch user");
-      }
-      const data = await response.json();
-      console.log("Username data:", data);
-      console.log("Username data:", data.username);
-      return data.username;
-    } catch (error) {
-      console.error("Failed to fetch user", error);
-    }
-  };
-  // fetchUsernameById(selectedPost.user_id);
+  useEffect(() => {
+    // Ensure selectedPost exists and has a user_id before fetching
+    if (selectedPost && selectedPost.user_id) {
+      const fetchUserNameByID = async () => {
+        try {
+          const response = await fetch(`/api/users/${selectedPost.user_id}`);
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          const data = await response.json();
+          setUserNameById(data.username);
+        } catch (error) {
+          console.error(
+            "There was a problem with your fetch operation:",
+            error
+          );
+        }
+      };
 
+      fetchUserNameByID();
+    }
+  }, [selectedPost]);
+  console.log(userNameByID);
   return (
     <>
       <Modal
@@ -61,7 +61,7 @@ const ExploreImgModal = ({
               <ModalHeader className="flex flex-col gap-1">
                 <h3 className="text-lg font-bold">{selectedPost.content}</h3>
                 <p className="text-sm text-gray-500">
-                  Posted by: {user?.username};
+                  Posted by: @{userNameByID};
                 </p>
                 <Button
                   className="justify-center"

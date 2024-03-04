@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Modal,
   ModalContent,
@@ -12,7 +12,7 @@ import {
   Chip,
 } from "@nextui-org/react";
 import { useAuth } from "../Auth/AuthContext";
-import { Alert, Snackbar } from "@mui/material";
+import { Alert } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -24,9 +24,6 @@ export default function CreatePostModal() {
   const [tags, setTags] = useState([]);
   const [input, setInput] = useState("");
   const [inputTag, setInputTag] = useState("");
-  const [image_url, setImageUrl] = useState(
-    "https://plus.unsplash.com/premium_photo-1663858367001-89e5c92d1e0e?q=80&w=1915&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-  );
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleClose = () => {
@@ -42,8 +39,8 @@ export default function CreatePostModal() {
     initialValues: {
       title: "",
       content: "",
-      ingredients: [],
-      tags: [],
+      ingredients: "",
+      tags: "",
       image_url: "",
     },
     validationSchema: validationSchema,
@@ -72,15 +69,17 @@ export default function CreatePostModal() {
         });
     },
   });
-
+  // const removeIngredient = (indexToRemove) => {
+  //   setIngredients(ingredients.filter((_, index) => index !== indexToRemove));
+  // };
   const addIngredient = () => {
-    if (!input.trim()) return; // Prevent adding empty strings
+    if (!input.trim() || ingredients.includes(input)) return;
     setIngredients([...ingredients, input]);
     setInput("");
   };
 
   const addTag = () => {
-    if (!inputTag.trim()) return; // Prevent adding empty strings
+    if (!inputTag.trim() || tags.includes(inputTag)) return;
     setTags([...tags, inputTag]);
     setInputTag("");
   };
@@ -89,7 +88,6 @@ export default function CreatePostModal() {
     <>
       <div className="flex flex-wrap gap-3">
         <Button
-          // color="foreground"
           href="chat "
           color="success"
           variant="shadow"

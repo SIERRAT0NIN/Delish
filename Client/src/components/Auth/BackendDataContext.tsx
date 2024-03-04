@@ -13,6 +13,7 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
   const [profileData, setProfileData] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
   const [profileBio, setProfileBio] = useState("");
+  const [userNameByID, setUserNameById] = useState("");
 
   const token = localStorage.getItem("token");
 
@@ -181,10 +182,10 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
     return post.likes.some((like: any) => like.user_id === user.id);
   };
 
-  const userId = user ? (user as { id: string }).id : "no user";
+  // const userId = user ? (user as { id: string }).id : "no user";
+
   useEffect(() => {
-    console.log("userId", userId);
-    const fetchProfilePicture = async (userId: string | null) => {
+    const fetchProfilePicture = async (user) => {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(`/api/profiles/${user.id}`, {
@@ -211,53 +212,28 @@ export const BackendContext = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
-    fetchProfilePicture(userId);
-  }, [userId]);
+    fetchProfilePicture(user);
+  }, [user]);
+  console.log(profilePicture);
 
-  const [usernames, setUsernames] = useState({});
+  // useEffect(() => {
+  //   const fetchUserNameByID = async (user) => {
+  //     try {
+  //       const response = await fetch(`/api/users/${user.id}`);
+  //       if (!response.ok) {
+  //         throw new Error("Network response was not ok");
+  //       }
+  //       const data = await response.json();
+  //       setUserNameById(data.username);
+  //     } catch (error) {
+  //       console.error("There was a problem with your fetch operation:", error);
+  //     }
+  //   };
 
-  const fetchUsernameById = async (userId) => {
-    if (!userId) return null;
+  //   fetchUserNameByID(user);
+  // }, [user]); // Assuming user.id is stable, else consider dependencies carefully
 
-    // Check cache first
-    if (usernames[userId]) {
-      return usernames[userId];
-    }
-
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`/api/users/${userId}`, {
-        // Assuming you have such an endpoint
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          x_csrf_token: getCookie("csrf_access_token"),
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Could not fetch user details.");
-      }
-
-      const userData = await response.json();
-      const username = userData.username;
-
-      console.log("Fetched username:", username);
-      // Update cache
-      setUsernames((prevUsernames) => ({
-        ...prevUsernames,
-        [userId]: username,
-      }));
-
-      return username;
-    } catch (error) {
-      console.error("Error fetching username:", error);
-      enqueueSnackbar("Failed to load username", {
-        variant: "error",
-      });
-      return null;
-    }
-  };
+  // console.log(userNameByID);
 
   return (
     <BackendDataContext.Provider
